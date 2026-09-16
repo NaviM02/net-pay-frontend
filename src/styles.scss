@@ -187,194 +187,25 @@ p {
   font-family: var(--np-mono-family);
 }
 
+// For inputs
+.is-dark-theme {
+  color: var(--np-neutral-text) !important;
+}
+
+.is-dark-placeholder::placeholder {
+  color: var(--np-neutral-text) !important;
+  opacity: 0.6;
+}
 
 /* ============================================================
    Layout
    ============================================================ */
-
-.np-app {
-  display: flex;
-  min-height: 100vh;
-  background-color: var(--np-background);
-}
-
-.np-main {
-  display: flex;
-  flex: 1;
-  min-width: 0;
-  flex-direction: column;
-  margin-left: 220px;
-}
 
 .np-content {
   flex: 1;
   padding: 20px 24px;
   overflow-y: auto;
 }
-
-
-/* ============================================================
-   Sidebar
-   ============================================================ */
-
-.np-sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 30;
-
-  display: flex;
-  width: 220px;
-  height: 100vh;
-  flex-direction: column;
-  flex-shrink: 0;
-
-  background-color: var(--np-dark);
-}
-
-.np-sidebar-header {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-
-  padding: 16px 18px;
-
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.np-sidebar-logo {
-  display: flex;
-  width: 30px;
-  height: 30px;
-  align-items: center;
-  justify-content: center;
-
-  flex-shrink: 0;
-
-  background-color: var(--np-primary);
-  border-radius: 7px;
-
-  color: #fff;
-}
-
-.np-sidebar-brand {
-  color: #F1F5F9;
-  font-size: 13.5px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1;
-}
-
-.np-sidebar-brand-subtitle {
-  margin-top: 2px;
-
-  color: var(--np-blue);
-  font-size: 9.5px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.np-sidebar-nav {
-  flex: 1;
-  padding: 8px;
-  overflow-y: auto;
-}
-
-.np-sidebar-item {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 9px;
-
-  margin-bottom: 1px;
-  padding: 8px 10px;
-
-  border: none;
-  border-radius: 7px;
-
-  background-color: transparent;
-
-  color: var(--np-text-light);
-  font-size: 13px;
-  font-weight: 400;
-  text-align: left;
-
-  transition: all 0.1s;
-}
-
-.np-sidebar-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #CBD5E1;
-}
-
-.np-sidebar-item.active {
-  background-color: rgba(30, 92, 230, 0.15);
-  color: var(--np-blue-light);
-  font-weight: 500;
-}
-
-.np-sidebar-footer {
-  padding: 12px;
-
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-
-/* ============================================================
-   Header
-   ============================================================ */
-
-.np-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-
-  display: flex;
-  height: 52px;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 0 20px;
-
-  background-color: var(--np-surface);
-  border-bottom: 1px solid var(--np-border);
-}
-
-.np-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  color: var(--np-text-light);
-  font-size: 12px;
-}
-
-.np-breadcrumb-current {
-  color: var(--np-text-secondary);
-  font-weight: 500;
-}
-
-
-/* ============================================================
-   Page Header
-   ============================================================ */
-
-.np-page-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-
-  margin-bottom: 20px;
-}
-
-.np-page-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 
 /* ============================================================
    Cards

@@ -1,6 +1,7 @@
 import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { PasswordService } from '../../../services/other/password.service';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-input-for-password',
@@ -13,10 +14,10 @@ import { PasswordService } from '../../../services/other/password.service';
       multi: true,
     },
   ],
-  imports: [],
+  imports: [NgClass],
 })
 export class InputForPasswordComponent implements ControlValueAccessor {
-  @Input() variant: 'default' | 'dark' = 'default';
+  @Input() isDark: boolean = false;
 
   @Input() placeholder: string = '';
   @Input() icon: string = 'lock';

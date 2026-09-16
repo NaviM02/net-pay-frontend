@@ -1,4 +1,4 @@
-<div class="d-flex align-items-center gap-2 rounded border">
+<div class="d-flex align-items-center gap-2 rounded border" [ngClass]="isDark ? 'bg-transparent border-secondary is-dark-theme' : 'bg-white text-dark'">
   @if (iconPosition === 'left') {
     <span class="material-symbols-outlined ms-2">{{ icon }}</span>
   }
@@ -6,8 +6,8 @@
     [type]="inputType"
     [(ngModel)]="model"
     (ngModelChange)="onInputChange($event)"
-    class="form-control border-0 rounded-0"
-    [ngClass]="{ 'rounded-end': iconPosition == 'left', 'rounded-start': iconPosition == 'right' }"
+    class="form-control border-0 rounded-0 bg-transparent shadow-none"
+    [ngClass]="[ iconPosition == 'left' ? 'rounded-end' : '', iconPosition == 'right' ? 'rounded-start' : '', isDark ? 'text-white is-dark-placeholder' : 'text-dark' ]"
     [placeholder]="placeholder"
   >
   @if (iconPosition === 'right') {

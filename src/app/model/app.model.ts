@@ -18,9 +18,10 @@ export class AppUser {
   public hashId!: string;
   public email!: string;
   public password!: string;
-  public userFullName!: string;
+  public fullName!: string;
   public phoneNumber!: string;
   public tpStatus!: AdmTypology;
+  public tpRole!: AdmTypology;
   public entryDate!: string;
 }
 

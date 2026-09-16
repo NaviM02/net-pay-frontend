@@ -9,8 +9,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './input-with-icon.component.scss',
 })
 export class InputWithIconComponent {
-
-  @Input() variant: 'default' | 'dark' = 'default';
+  @Input() isDark: boolean = false;
 
   @Input() placeholder: string = '';
   @Input() icon: string = '';

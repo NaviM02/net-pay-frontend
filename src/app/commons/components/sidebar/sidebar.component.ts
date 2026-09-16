@@ -1,62 +1,62 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Component, Input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 type MenuItem = {
-  label: string;
+  name: string;
   icon: string;
   path: string;
 };
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [NgClass, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
-  @Input() open = true;
-
-  @Output() closeSidebar = new EventEmitter<void>();
+  @Input() active: boolean = true;
 
   items: MenuItem[] = [
     {
-      label: 'Dashboard',
+      name: 'Dashboard',
       icon: 'dashboard',
-      path: '/admin/dashboard',
+      path: '/dashboard',
     },
     {
-      label: 'Clientes',
+      name: 'Clientes',
       icon: 'people',
-      path: '/admin/customers',
+      path: '/clientes',
     },
     {
-      label: 'Planes',
-      icon: 'wifi',
-      path: '/admin/plans',
+      name: 'Servicios',
+      icon: 'business_center',
+      path: '/servicios',
     },
     {
-      label: 'Pagos',
+      name: 'Pagos',
       icon: 'payments',
-      path: '/admin/payments',
+      path: '/pagos',
     },
     {
-      label: 'Recibos',
+      name: 'Recibos',
       icon: 'receipt_long',
-      path: '/admin/receipts',
+      path: '/recibos',
     },
     {
-      label: 'Usuarios',
-      icon: 'manage_accounts',
-      path: '/admin/users',
+      name: 'Reportes',
+      icon: 'description',
+      path: '/reportes',
     },
     {
-      label: 'Auditoría',
-      icon: 'history',
-      path: '/admin/audit',
+      name: 'Auditoría',
+      icon: 'fact_check',
+      path: '/auditoria',
+    },
+    {
+      name: 'Usuarios',
+      icon: 'group',
+      path: '/usuarios',
     },
   ];
-
-  onMenuClick(): void {
-    this.closeSidebar.emit();
-  }
 }

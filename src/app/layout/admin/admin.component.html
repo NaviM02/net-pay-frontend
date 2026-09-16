@@ -1,7 +1,7 @@
 <div class="np-app">
   <app-header (toggleSidebar)="toggleSidebar()"></app-header>
   <div class="np-app-body">
-    <app-sidebar [open]="sidebarOpen" (closeSidebar)="sidebarOpen = false"></app-sidebar>
+    <app-sidebar [active]="sidebarOpen"></app-sidebar>
     <main class="np-main">
       <router-outlet></router-outlet>
     </main>
