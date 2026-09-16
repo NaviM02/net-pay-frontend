@@ -1,0 +1,90 @@
+<header class="np-header">
+
+  <div class="np-header-left">
+
+    <button
+      type="button"
+      class="np-header-menu"
+      (click)="onToggleSidebar()"
+      aria-label="Abrir menú">
+
+      <span class="material-symbols-outlined">
+        menu
+      </span>
+
+    </button>
+
+    <div class="np-header-brand">
+      <span class="np-header-brand-name">NetPay</span>
+      <span class="np-header-brand-divider"></span>
+      <span class="np-header-brand-section">Manager</span>
+    </div>
+
+  </div>
+
+  <div class="np-header-right">
+
+    <div class="dropdown">
+
+      <button
+        type="button"
+        class="np-user-button dropdown-toggle"
+        data-bs-toggle="dropdown"
+        aria-expanded="false">
+
+        <div class="np-user-info">
+          <span class="np-user-name">
+            {{ currentUser.userFullName }}
+          </span>
+
+          <span class="np-user-role">
+            Administrador
+          </span>
+        </div>
+
+        <div class="np-user-avatar">
+          {{ initials }}
+        </div>
+
+      </button>
+
+      <ul class="dropdown-menu dropdown-menu-end np-user-menu">
+
+        <li>
+          <a
+            class="dropdown-item"
+            routerLink="/admin/profile">
+
+            <span class="material-symbols-outlined">
+              account_circle
+            </span>
+
+            Mi perfil
+          </a>
+        </li>
+
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+
+        <li>
+          <button
+            type="button"
+            class="dropdown-item"
+            (click)="logout()">
+
+            <span class="material-symbols-outlined">
+              logout
+            </span>
+
+            Cerrar sesión
+          </button>
+        </li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</header>

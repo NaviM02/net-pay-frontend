@@ -1,0 +1,21 @@
+@if (loadingService.loading()) {
+  <div class="loading-indicator-container">
+    <div class="loading-text-container border-bottom border-top d-flex flex-column shadow-sm">
+      <h2 class="mx-auto font-weight-semi-bold text-primary">Cargando...</h2>
+      <span class="text-muted mx-4 text-center">
+        {{ 'Espere un momento' }}
+    </span>
+      <div class="mx-auto m-4 py-4">
+        <div class="loading">
+          <div class='loading__square'></div>
+          <div class='loading__square'></div>
+          <div class='loading__square'></div>
+          <div class='loading__square'></div>
+          <div class='loading__square'></div>
+          <div class='loading__square'></div>
+          <div class='loading__square'></div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

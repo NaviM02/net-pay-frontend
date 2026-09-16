@@ -1,0 +1,16 @@
+<div class="d-flex align-items-center gap-2 rounded border">
+  @if (iconPosition === 'left') {
+    <span class="material-symbols-outlined ms-2">{{ icon }}</span>
+  }
+  <input
+    [type]="inputType"
+    [(ngModel)]="model"
+    (ngModelChange)="onInputChange($event)"
+    class="form-control border-0 rounded-0"
+    [ngClass]="{ 'rounded-end': iconPosition == 'left', 'rounded-start': iconPosition == 'right' }"
+    [placeholder]="placeholder"
+  >
+  @if (iconPosition === 'right') {
+    <span class="material-symbols-outlined me-2">{{ icon }}</span>
+  }
+</div>

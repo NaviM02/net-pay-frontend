@@ -1,0 +1,39 @@
+.toast {
+  background-color: #fff;
+
+  .toast-title {
+    font-size: 1.125em;
+  }
+}
+
+.success-toast {
+  border-left: var(--bs-success) 8px solid;
+
+  app-material-icon, .toast-title {
+    color: var(--bs-success);
+  }
+}
+
+.error-toast {
+  border-left: var(--bs-danger) 8px solid;
+
+  app-material-icon, .toast-title {
+    color: var(--bs-danger);
+  }
+}
+
+.info-toast {
+  border-left: var(--bs-secondary) 8px solid;
+
+  app-material-icon, .toast-title {
+    color: var(--bs-secondary);
+  }
+}
+
+.warning-toast {
+  border-left: var(--bs-warning) 8px solid;
+
+  app-material-icon, .toast-title {
+    color: var(--bs-warning);
+  }
+}

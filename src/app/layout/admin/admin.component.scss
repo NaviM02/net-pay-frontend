@@ -1,0 +1,21 @@
+.np-app {
+  min-height: 100vh;
+  background-color: var(--np-background);
+}
+
+.np-app-body {
+  display: flex;
+  min-height: calc(100vh - 64px);
+}
+
+.np-main {
+  flex: 1;
+  min-width: 0;
+  padding: 24px;
+}
+
+@media (max-width: 767.98px) {
+  .np-main {
+    padding: 16px;
+  }
+}

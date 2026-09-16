@@ -1,0 +1,46 @@
+<aside
+  class="np-sidebar"
+  [class.is-open]="open">
+
+  <div class="np-sidebar-brand">
+    <div class="np-sidebar-logo">
+      NP
+    </div>
+
+    <div class="np-sidebar-title">
+      <span>NetPay</span>
+      <small>Manager</small>
+    </div>
+  </div>
+
+  <nav class="np-sidebar-nav">
+
+    @for (item of items; track item.path) {
+      <a
+        class="np-sidebar-item"
+        [routerLink]="item.path"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="onMenuClick()">
+
+        <span class="material-symbols-outlined">
+          {{ item.icon }}
+        </span>
+
+        <span class="np-sidebar-label">
+          {{ item.label }}
+        </span>
+
+      </a>
+    }
+
+  </nav>
+
+</aside>
+
+@if (open) {
+  <div
+    class="np-sidebar-backdrop"
+    (click)="closeSidebar.emit()">
+  </div>
+}
