@@ -1,0 +1,17 @@
+<aside class="side-bar" [ngClass]="{ 'active': active }">
+  <nav class="menu">
+    @for (item of items; track item.path) {
+      <a class="menu-item" [routerLink]="item.path" routerLinkActive="active">
+        <span class="material-symbols-outlined">
+          {{ item.icon }}
+        </span>
+
+        <span class="item-name">{{ item.name }}</span>
+
+        @if (item.name === 'Dashboard') {
+          <span class="active-indicator"></span>
+        }
+      </a>
+    }
+  </nav>
+</aside>

@@ -1,0 +1,49 @@
+<header class="header">
+  <div class="header-left">
+    <button type="button" class="toggle-button" (click)="onToggleSidebar()">
+      <app-material-icon [size]="20">menu</app-material-icon>
+    </button>
+
+    <div class="brand">
+      <img src="assets/images/logos/logo.jpg" alt="NetPay">
+
+      <div class="brand-name">
+        <span>NetPay</span>
+        <small>MANAGER</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-actions">
+    <button class="header-button" type="button">
+      <app-material-icon [size]="18">notifications</app-material-icon>
+    </button>
+
+    <div ngbDropdown class="user-dropdown" placement="bottom-end">
+      <button type="button" class="user-button" ngbDropdownToggle>
+        <div class="user-info align-items-center d-flex gap-2">
+          <!-- displaying name and role on md and larger screens -->
+          <div class="d-none d-md-flex flex-column align-items-end">
+            <p class="user-name text-gray-100 m-0 fw-semibold fs-14">{{ currentUser.fullName }}</p>
+            <p class="user-role text-primary-100 m-0 fs-12">{{ roleName }}</p>
+          </div>
+          <div class="avatar fw-semibold h6 m-0">{{ initials }}</div>
+          <!-- displaying expand icon on md and larger screens -->
+          <app-material-icon class="d-none d-md-block">expand_more</app-material-icon>
+        </div>
+      </button>
+
+      <div ngbDropdownMenu>
+        <button ngbDropdownItem [routerLink]="['profile']">
+          <app-material-icon [size]="18">account_circle</app-material-icon>
+          <span>Mi perfil</span>
+        </button>
+
+        <button ngbDropdownItem (click)="logout()">
+          <app-material-icon [size]="18">logout</app-material-icon>
+          <span>Cerrar sesión</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,88 @@
+<main class="np-login">
+
+  <section class="np-login-info">
+
+    <div class="np-login-brand">
+      <div class="np-login-logo">
+        <span class="material-symbols-outlined">payments</span>
+      </div>
+
+      <div>
+        <div class="np-login-brand-name">NetPay</div>
+        <div class="np-login-brand-subtitle">Manager</div>
+      </div>
+    </div>
+
+    <div class="np-login-message">
+      <h1>Gestiona tus cobros con claridad.</h1>
+      <p>Registro de pagos, clientes y servicios en un solo lugar.</p>
+    </div>
+
+    <!--TODO: use true data-->
+    <div class="np-login-stats">
+      <div class="np-login-stat">
+        <span class="np-login-stat-value">1,126</span>
+        <span class="np-login-stat-label">Clientes activos</span>
+      </div>
+      <div class="np-login-stat">
+        <span class="np-login-stat-value">Q 1.24M</span>
+        <span class="np-login-stat-label">Cobros este mes</span>
+      </div>
+      <div class="np-login-stat">
+        <span class="np-login-stat-value">97.9%</span>
+        <span class="np-login-stat-label">Tasa de cobro</span>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="np-login-form-section">
+    <div class="np-login-form">
+      <div class="np-login-mobile-brand">
+        <div class="np-login-logo">
+          <span class="material-symbols-outlined">payments</span>
+        </div>
+        <div>
+          <div class="np-login-brand-name">NetPay</div>
+          <div class="np-login-brand-subtitle">Manager</div>
+        </div>
+      </div>
+
+      <div class="np-login-heading">
+        <h2>Iniciar sesión</h2>
+        <p>Ingresa con tu cuenta de acceso.</p>
+      </div>
+
+      <div class="np-form-group">
+        <label class="np-form-label required-field">Correo electrónico</label>
+        <app-input-with-icon
+          [(model)]="authReq.email"
+          [inputType]="'text'"
+          placeholder="admin@netpay.com"
+          icon="account_circle"
+          [iconPosition]="'left'"
+          [isDark]="true"
+        />
+      </div>
+
+      <div class="np-form-group">
+        <label class="np-form-label required-field">Contraseña</label>
+        <app-input-for-password
+          [(ngModel)]="authReq.password"
+          placeholder="Introduce tu contraseña"
+          [iconPosition]="'left'"
+          [isDark]="true"
+        />
+      </div>
+
+      <div class="np-login-actions">
+        <a routerLink="/auth/request-password-recovery" class="np-login-link">
+          ¿Olvidaste tu contraseña?
+        </a>
+      </div>
+
+      <button type="submit" class="btn btn-primary np-login-submit" (click)="doLogin()">Iniciar Sesión</button>
+    </div>
+
+  </section>
+</main>
