@@ -1,0 +1,57 @@
+<div class="np-page">
+
+  <app-list-page-header
+    title="Usuarios"
+    description="Gestión de cuentas de acceso al sistema"
+    saveText="Nuevo usuario"
+  />
+
+  <div class="np-list-card">
+    <div class="np-table-actions-bar">
+      <app-filter-menu
+        [filterGroup]="listStateService.filter"
+        (onFilterChange)="listStateService.onFilterChange($event)"
+      />
+    </div>
+
+    <div class="table-responsive">
+      <table class="table np-table mb-0">
+
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>NOMBRE</th>
+          <th>EMAIL</th>
+          <th>ROL</th>
+          <th>ESTADO</th>
+          <th>FECHA DE INGRESO</th>
+          <th class="text-end">ACCIONES</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          @for (user of users; track user.id) {
+            <tr>
+              <td class="np-id">USR-{{ user.id }}</td>
+              <td>
+                <span class="np-user-name">{{ user.fullName }}</span>
+              </td>
+              <td class="np-email">{{ user.email }}</td>
+              <td><app-typology-badge [typology]="user.tpRole" /></td>
+              <td><app-typology-badge [typology]="user.tpStatus" /></td>
+              <td class="np-date">{{ user.entryDate }}</td>
+              <td>
+                <app-table-row-action (deleteAction)="delete(user.hashId)" />
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pagination
+      [pagination]="listStateService.pagination"
+      (onPaginationChange)="listStateService.onPaginationChange($event)"
+    />
+  </div>
+</div>

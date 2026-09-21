@@ -1,0 +1,83 @@
+<div
+  class="pagination-content d-flex flex-column align-items-center flex-md-row align-items-sm-center align-items-md-center justify-content-md-between gap-2"
+>
+  <div class="d-flex align-items-center gap-2 h-100">
+    <p class="m-0">{{ 'Filas a mostrar' }}</p>
+    <div>
+      <div ngbDropdown class="d-inline-block" placement="top-start" container="body">
+        <button type="button" class="btn btn-light border-black border-opacity-25 px-2" id="pagination-dropdown" ngbDropdownToggle>
+          <div class="d-flex align-items-center gap-2">
+            <span class="mx-2">{{ pagination.size }}</span>
+            <app-material-icon class="icon text-color-gray-500">expand_more</app-material-icon>
+          </div>
+        </button>
+        <div ngbDropdownMenu aria-labelledby="pagination-dropdown">
+          @for (option of rowsToShow; track option) {
+            <button ngbDropdownItem (click)="selectMax(option)">{{ option }}</button>
+          }
+        </div>
+      </div>
+    </div>
+    <span class="vl"></span>
+    <p class="m-0 d-flex gap-1">
+      <span>{{ 'Mostrando' }}</span>
+      <span>{{ pagination.currentLength }}</span>
+      <span>{{ 'de' }}</span>
+      <span>{{ pagination.total }}</span>
+    </p>
+  </div>
+  <div class="h-100">
+    <ngb-pagination
+      [collectionSize]="pagination.total"
+      [(page)]="pagination.page"
+      [pageSize]="pagination.size"
+      (pageChange)="emitChange()"
+      [boundaryLinks]="true"
+    >
+      <ng-template ngbPaginationFirst>
+        <div class="d-flex align-items-center">
+          <app-material-icon>keyboard_double_arrow_left</app-material-icon>
+        </div>
+      </ng-template>
+      <ng-template ngbPaginationLast>
+        <div class="d-flex align-items-center">
+          <app-material-icon>keyboard_double_arrow_right</app-material-icon>
+        </div>
+      </ng-template>
+      <ng-template ngbPaginationPrevious>
+        <div class="d-flex align-items-center">
+          <app-material-icon>chevron_left</app-material-icon>
+        </div>
+      </ng-template>
+      <ng-template ngbPaginationNext>
+        <div class="d-flex align-items-center">
+          <app-material-icon>chevron_right</app-material-icon>
+        </div>
+      </ng-template>
+
+      <ng-template ngbPaginationPages let-page let-pages="pages">
+        @if (pages.length > 0) {
+          <li class="ngb-custom-pages-item">
+            <div class="d-flex flex-nowrap px-2">
+              <span id="paginationInputLabel" class="col-form-label me-2 ms-1">{{ 'Página' }}</span>
+              <input
+                #i
+                type="text"
+                inputmode="numeric"
+                pattern="0|[1-9][0-9]*"
+                class="form-control custom-pages-input"
+                id="paginationInput"
+                [value]="page"
+                (keyup.enter)="selectPage(i.value, pages.length, $any($event).target)"
+                (blur)="selectPage(i.value, pages.length, $any($event).target)"
+                (input)="formatInput($any($event).target)"
+                aria-labelledby="paginationInputLabel paginationDescription"
+              />
+              <span id="paginationDescription" class="col-form-label text-nowrap px-2"> {{ 'de' }} {{ pages.length }}</span>
+            </div>
+          </li>
+        }
+      </ng-template>
+    </ngb-pagination>
+  </div>
+</div>

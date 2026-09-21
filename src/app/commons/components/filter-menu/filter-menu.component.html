@@ -1,0 +1,170 @@
+<div class="d-flex flex-row-reverse justify-content-end gap-2">
+  <!-- Filter dropdown -->
+  <div ngbDropdown class="d-inline-block" placement="bottom-start">
+    <button class="btn btn-info" id="menu-filter-dropdown" ngbDropdownToggle>
+      <div class="d-flex justify-content-center align-content-center gap-1">
+        <span class="fw-semibold">{{ 'Agregar filtro' }}</span>
+        <app-material-icon>add</app-material-icon>
+      </div>
+      @if (totalSelected) {
+        <span class="badge text-bg-dark">{{ totalSelected }}</span>
+      }
+    </button>
+    <div ngbDropdownMenu aria-labelledby="menu-filter-dropdown" class="menu-filter-dropdown bg-light-subtle">
+      <div class="d-flex gap-2 p-2 w-100 h-100">
+        <!-- Add filter options here -->
+        <div class="filter-list d-flex flex-column align-items-start justify-content-between px-2">
+          <div class="filter-group">
+            @for (filter of _filterGroup.filters; track filter.id; let i = $index) {
+              <div role="button" class="filter mt-1 p-1 w-100 d-flex align-items-start justify-content-between" (click)="onSelectedFilterChange(i)">
+                <span class="text-muted small">
+                  {{ filter.name }}
+                </span>
+                @if (selectedCount[filter.id]) {
+                  <span class="badge text-bg-info">{{ selectedCount[filter.id] }}</span>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="filter-list-footer">
+            @if (totalSelected) {
+              <button class="btn btn-outline-light btn-sm text-muted small" (click)="onClearAll()">{{ 'Limpiar todos los filtros' }}</button>
+            }
+          </div>
+        </div>
+        <div class="filter-details">
+          <div class="filter-detail">
+
+            @if (!selectedFilter) {
+              <div class="py-2 px-4">
+                <span class="text-muted">{{ 'Selecciona un filtro para comenzar' }}</span>
+              </div>
+            }
+
+            @if (selectedFilter) {
+              <!-- add options of selected filter here -->
+              @if (selectedFilter.type === FilterEnum.STRING) {
+                <div class="px-4 d-flex flex-column justify-content-between h-100">
+                  <div>
+                    <label class="form-label text-muted mb-1">{{ selectedFilter.name }}</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      [name]="selectedFilter.name"
+                      [(ngModel)]="selectedFilter.curValue"
+                      (ngModelChange)="onAnyFilterChange()"
+                    >
+                  </div>
+
+                  @if (selectedCount[selectedFilter.id]) {
+                    <div class="filter-detail-footer">
+                      <ng-container *ngTemplateOutlet="clearSelectedTemplate"></ng-container>
+                    </div>
+                  }
+                </div>
+              }
+
+              @if (selectedFilter.type === FilterEnum.LIST) {
+                <div class="px-4 d-flex flex-sm-column justify-content-between h-100">
+                  <div>
+                    @for (option of selectedFilter.values; track option.value) {
+                      <div class="form-check mt-2">
+                        <input
+                          class="form-check-input me-2"
+                          type="checkbox"
+                          [(ngModel)]="option.checked"
+                          [name]="selectedFilter.name"
+                          (ngModelChange)="onAnyFilterChange()"
+                        >
+                        <label class="form-check-label text-muted">{{ selectedFilter.translatable ? option.description : option.description }}</label>
+                      </div>
+                    }
+                  </div>
+                  <div class="filter-detail-footer" [ngClass]="{ 'justify-content-between': selectedCount[selectedFilter.id], 'justify-content-end': !selectedCount[selectedFilter.id] }">
+                    @if (selectedCount[selectedFilter.id]) {
+                      <ng-container *ngTemplateOutlet="clearSelectedTemplate"></ng-container>
+                    }
+                    <span role="button" class="text-muted small">{{ selectedFilter.values.length }} <span>{{ 'de' }}</span> {{ selectedFilter.values.length }}</span>
+                  </div>
+                </div>
+              }
+
+              @if (selectedFilter.type === FilterEnum.DATE_RANGE) {
+                <div class="px-4 d-flex flex-column justify-content-between h-100">
+                  <div>
+                    <label class="form-label text-muted mb-1">{{ 'Selecciona el rango de fechas' }}</label>
+                    <app-date-range-picker
+                      [popup]="false"
+                      [fromDate]="selectedFilter.fromDate"
+                      [toDate]="selectedFilter.toDate"
+                      (dateRangeChange)="onDateRangeChange($event, selectedFilter)"
+                    ></app-date-range-picker>
+                  </div>
+
+                  @if (selectedCount[selectedFilter.id]) {
+                    <div class="filter-detail-footer">
+                      <ng-container *ngTemplateOutlet="clearSelectedTemplate"></ng-container>
+                    </div>
+                  }
+                </div>
+              }
+
+              @if (selectedFilter.type === FilterEnum.DYNAMIC_LIST) {
+                <div class="px-4 d-flex flex-sm-column justify-content-between h-100">
+                  <div class="d-flex flex-column gap-2">
+                    <label class="form-label text-muted mb-0">{{ 'Buscar' }}</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      [name]="selectedFilter.name"
+                      [(ngModel)]="dynamicSearchValue"
+                      (ngModelChange)="onDynamicSearchChange()"
+                    >
+
+                    <div
+                      class="dynamic-list-results">
+<!--                      infinite-scroll
+                      [infiniteScrollDistance]="1"
+                      [infiniteScrollThrottle]="300"
+                      [scrollWindow]="false"
+                      (scrolled)="onDynamicScrollDown()"-->
+
+                      @for (option of dynamicItems; track option.id) {
+                        <div class="form-check mt-2">
+                          <input
+                            class="form-check-input me-2"
+                            type="checkbox"
+                            [name]="selectedFilter.name + '-' + option.id"
+                            [(ngModel)]="option.checked"
+                            (ngModelChange)="onDynamicOptionChange(option)"
+                          >
+                          <label class="form-check-label text-muted">{{ option.value }}</label>
+                        </div>
+                      }
+
+                      @if (dynamicLoading) {
+                        <div class="small text-muted mt-2">{{ 'Cargando' }}</div>
+                      }
+                    </div>
+                  </div>
+
+                  <div class="filter-detail-footer" [ngClass]="{ 'justify-content-between': selectedCount[selectedFilter.id], 'justify-content-end': !selectedCount[selectedFilter.id] }">
+                    @if (selectedCount[selectedFilter.id]) {
+                      <ng-container *ngTemplateOutlet="clearSelectedTemplate"></ng-container>
+                    }
+                    <span class="text-muted small">{{ dynamicItems.length }} <span>{{ 'de' }}</span> {{ dynamicTotal || dynamicItems.length }}</span>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #clearSelectedTemplate>
+    <button class="btn btn-outline-light btn-sm text-muted small" (click)="onClearSelected()">{{ 'Limpiar filtro' }}</button>
+  </ng-template>
+</div>

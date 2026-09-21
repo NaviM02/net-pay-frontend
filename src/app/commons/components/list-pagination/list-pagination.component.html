@@ -1,0 +1,37 @@
+<div class="np-list-footer">
+
+  <span class="np-results">
+    {{ total }} usuarios encontrados
+  </span>
+
+  <div class="np-pagination">
+
+    <button
+      type="button"
+      class="np-page-button"
+      [disabled]="!hasPrevious"
+      (click)="previous()"
+    >
+      <span class="material-symbols-outlined">
+        chevron_left
+      </span>
+    </button>
+
+    <span class="np-page-number">
+      {{ page }}
+    </span>
+
+    <button
+      type="button"
+      class="np-page-button"
+      [disabled]="!hasNext"
+      (click)="next()"
+    >
+      <span class="material-symbols-outlined">
+        chevron_right
+      </span>
+    </button>
+
+  </div>
+
+</div>
