@@ -4,7 +4,11 @@ export const dashboardRoutes: Routes = [
   {
     path: '',
     children: [
-      { path: '', loadComponent: () => import('./home/home.component').then(c => c.HomeComponent) },
+      {
+        path: '',
+        loadComponent: () =>
+          import('./admin-dashboard/admin-dashboard.component').then(c => c.AdminDashboardComponent),
+      },
     ]
   }
 ];

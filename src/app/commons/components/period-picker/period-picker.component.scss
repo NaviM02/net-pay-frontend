@@ -1,0 +1,15 @@
+.np-period-picker {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.np-field {
+  width: 150px;
+  margin-bottom: 0;
+}
+
+.np-field .np-select {
+  width: 100%;
+}

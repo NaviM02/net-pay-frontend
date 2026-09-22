@@ -1,0 +1,97 @@
+<div class="np-report">
+
+  <div class="np-report-toolbar">
+    <div>
+      <span class="np-card-title">Cobros por periodo</span>
+      <span class="np-card-subtitle">{{ periodLabel }}</span>
+    </div>
+
+    <div class="np-report-toolbar-actions">
+      <app-period-picker [year]="pickerYear" [month]="pickerMonth" (periodChange)="onPeriodChange($event)" />
+      <app-export-button label="Exportar" />
+    </div>
+  </div>
+
+  <div class="np-kpi-row np-report-kpis">
+    <div class="np-card np-kpi">
+      <p class="np-kpi-label">Total cobrado</p>
+      <p class="np-kpi-value success">
+        {{ summary?.totalCollected ?? 0 | currency: 'Q' : 'symbol' : '1.0-0' }}
+      </p>
+      <p class="np-kpi-subtitle">pagos completados del periodo</p>
+    </div>
+
+    <div class="np-card np-kpi">
+      <p class="np-kpi-label">Pagos completados</p>
+      <p class="np-kpi-value">{{ summary?.completedCount ?? 0 | number }}</p>
+      <p class="np-kpi-subtitle">{{ summary?.pendingCount ?? 0 | number }} pendientes</p>
+    </div>
+
+    <div class="np-card np-kpi">
+      <p class="np-kpi-label">Pagos fallidos</p>
+      <p class="np-kpi-value">{{ summary?.failedCount ?? 0 | number }}</p>
+      <p class="np-kpi-subtitle">no se contabilizan en el total</p>
+    </div>
+
+    <div class="np-card np-kpi">
+      <p class="np-kpi-label">Tasa de éxito</p>
+      <p class="np-kpi-value">{{ summary?.successRate ?? 0 | number: '1.2-2' }}%</p>
+      <p class="np-kpi-subtitle">completados sobre intentados</p>
+    </div>
+  </div>
+
+  <div class="np-detail-section">
+    <div class="np-detail-section-header">
+      <div>
+        <span class="np-detail-section-title">Cobros por cobrador</span>
+        <span class="np-detail-section-count">{{ byCollector.length }} cobradores</span>
+      </div>
+    </div>
+
+    <div class="np-table-scroll">
+      <table class="table np-table mb-0">
+        <thead>
+        <tr>
+          <th>COBRADOR</th>
+          <th class="text-end">PAGOS</th>
+          <th class="text-end">TOTAL COBRADO</th>
+          <th>PARTICIPACIÓN</th>
+          <th class="np-table-actions-cell text-end">ACCIONES</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          @for (collector of byCollector; track collector.collectorHashId ?? 'unassigned') {
+            <tr>
+              <td>
+                <span class="np-table-primary">{{ getCollectorName(collector) }}</span>
+              </td>
+              <td class="text-end np-table-muted">{{ collector.paymentCount | number }}</td>
+              <td class="text-end np-table-mono">
+                {{ collector.totalCollected | currency: 'Q' : 'symbol' : '1.2-2' }}
+              </td>
+              <td class="np-report-share">
+                <span
+                  class="np-report-share-bar"
+                  [style.width.%]="share(collector)"
+                ></span>
+                <span class="np-report-share-value">
+                  {{ share(collector) | number: '1.1-1' }}%
+                </span>
+              </td>
+              <td class="np-table-actions-cell text-end">
+                <app-table-row-action [viewRoute]="collectorRoute(collector)" />
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5">
+                <div class="np-empty-state">No hay cobros en el periodo seleccionado.</div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -833,6 +833,25 @@ p {
    KPI
    ============================================================ */
 
+/* Row of `.np-card.np-kpi` blocks, used by the dashboard and the reports. */
+.np-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 1399.98px) {
+  .np-kpi-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 575.98px) {
+  .np-kpi-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .np-kpi {
   padding: 20px;
 }
@@ -866,6 +885,38 @@ p {
 
   color: var(--np-text-light);
   font-size: 12px;
+}
+
+/* ============================================================
+   Reports (shared by every report tab)
+   ============================================================ */
+
+.np-report {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.np-report-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+
+  padding: 14px 18px;
+
+  background-color: var(--np-surface);
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-lg);
+  box-shadow: var(--np-shadow-card);
+}
+
+.np-report-toolbar-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 /* ============================================================

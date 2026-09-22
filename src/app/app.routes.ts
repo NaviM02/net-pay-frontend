@@ -44,6 +44,11 @@ export const routes: Routes = [
           import('./features/admin/pages/receipts/receipts.routes').then(r => r.adminReceiptRoutes),
       },
       {
+        path: 'reports',
+        loadChildren: () =>
+          import('./features/admin/pages/reports/reports.routes').then(r => r.adminReportRoutes),
+      },
+      {
         path: 'audit',
         loadChildren: () =>
           import('./features/admin/pages/audit/audits.routes').then(r => r.adminAuditRoutes),

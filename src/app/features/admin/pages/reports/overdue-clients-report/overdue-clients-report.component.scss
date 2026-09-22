@@ -1,0 +1,17 @@
+.np-report-table {
+  flex: 1 1 auto;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.np-report-months {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  color: var(--np-warning-text);
+  font-family: var(--np-mono-family);
+  font-size: 13px;
+  cursor: help;
+}
