@@ -1,0 +1,56 @@
+.np-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  flex: 1 1 auto;
+
+  padding: 48px 20px;
+
+  background-color: var(--np-surface);
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-lg);
+  box-shadow: var(--np-shadow-card);
+
+  text-align: center;
+}
+
+.np-not-found-icon {
+  width: 68px;
+  height: 68px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+
+  background-color: var(--np-neutral-background);
+  color: var(--np-text-light);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.np-not-found-code {
+  margin: 0;
+  color: var(--np-text);
+
+  font-family: var(--np-mono-family);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.np-not-found-text {
+  margin: 0;
+  max-width: 380px;
+
+  color: var(--np-text-muted);
+  font-size: 13.5px;
+}
+
+.np-not-found-action {
+  margin-top: 8px;
+  padding: 8px 16px;
+  text-decoration: none;
+}

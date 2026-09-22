@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { AppClient, AppUser } from '../../model/app.model';
 import { QueryParamService } from '../other/query-param.service';
 import { buildSkipGlobalLoadingContext } from '../../interceptors/loading-ui-context';
@@ -32,10 +32,11 @@ export class AppUserService {
 
   /**
    * Clients assigned to a collector, server-paginated.
-   * Only receives the pagination params because this endpoint has no filters yet.
+   * `hashId` is always the collector of the session, never a value typed in the
+   * UI. The endpoint reads the same query params as `/api/clients`.
    */
-  findByCollectorHashId(hashId: string, size: number, offset: number) {
-    const params = new HttpParams().set('size', `${size}`).set('offset', `${offset}`);
+  findByCollectorHashId(hashId: string, queryParams: Map<string, string> = new Map()) {
+    const params = this.queryParamService.getParams(queryParams);
     return this.http.get<AppClient[]>(`${this.baseUrl}/${hashId}/clients`, { params, observe: 'response' });
   }
 

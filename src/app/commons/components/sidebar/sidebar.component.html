@@ -8,7 +8,7 @@
 
         <span class="item-name">{{ item.name }}</span>
 
-        @if (item.name === 'Dashboard') {
+        @if (item.path === '/dashboard' || item.path === '/collector/dashboard') {
           <span class="active-indicator"></span>
         }
       </a>
