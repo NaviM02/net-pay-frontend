@@ -40,7 +40,8 @@ const FILTER_PAG_REGEX = /[^0-9]/g;
     NgbDropdownToggle
   ],
   templateUrl: './pagination.component.html',
-  styleUrl: './pagination.component.scss'
+  styleUrl: './pagination.component.scss',
+  host: { class: 'np-table-footer' }
 })
 export class PaginationComponent {
 

@@ -113,6 +113,9 @@ $dark: #0F172A;
   --np-font-family: 'Inter', system-ui, sans-serif;
   --np-mono-family: 'JetBrains Mono', monospace;
 
+  /* List table sizing (override per page when a list needs a taller/shorter body) */
+  --np-table-min-height: 320px;
+
   /* Radius */
   --np-radius-sm: 5px;
   --np-radius-md: 7px;
@@ -249,29 +252,93 @@ p {
   font-size: 12px;
 }
 
+/* ============================================================
+   List page
+   ============================================================ */
+
+/* Page fills the scroll area of the layout, so list cards can stretch to the
+   bottom of the viewport while still respecting the layout padding as a margin. */
+.np-page {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100%;
+}
+
+.np-list-card {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1 1 auto;
+
+  background-color: var(--np-surface);
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-lg);
+  box-shadow: var(--np-shadow-card);
+
+  overflow: hidden;
+}
+
+.np-table-actions-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  flex-shrink: 0;
+
+  padding: 12px 16px;
+
+  border-bottom: 1px solid var(--np-border-light);
+}
+
+.np-table-footer {
+  flex-shrink: 0;
+
+  padding: 12px 16px;
+
+  border-top: 1px solid var(--np-border-light);
+}
+
 
 /* ============================================================
    Tables
    ============================================================ */
 
-.np-table-container {
-  width: 100%;
-  overflow-x: auto;
+/* Scroll container for the table body. It absorbs all the leftover height of the
+   card, so the table always reaches the bottom of the viewport. `min-height`
+   acts as the floor when the browser window is too short; the card then grows
+   and the layout scrolls instead of squashing the table. */
+.np-table-scroll {
+  flex: 1 1 auto;
+
+  min-height: var(--np-table-min-height);
+
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .np-table {
   width: 100%;
 
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
 
   font-size: 13px;
 }
 
-.np-table thead tr {
+.np-table thead tr th {
   border-bottom: 1px solid var(--np-border);
 }
 
-.np-table th {
+/* Header stays visible while the body scrolls. */
+.np-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+
+  background-color: var(--np-surface);
+
   padding: 10px 14px;
 
   color: var(--np-text-light);
@@ -284,8 +351,6 @@ p {
 }
 
 .np-table tbody tr {
-  border-bottom: 1px solid var(--np-border-light);
-
   transition: background-color 0.1s;
 }
 
@@ -296,19 +361,51 @@ p {
 .np-table td {
   padding: 10px 14px;
 
+  border-bottom: 1px solid var(--np-border-light);
+
   color: var(--np-text-secondary);
   vertical-align: middle;
 }
 
-.np-table td.np-table-id {
+.np-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Cell modifiers: usable on the <td> or on any element inside it. */
+.np-table .np-table-id {
   color: var(--np-text-muted);
   font-family: var(--np-mono-family);
   font-size: 12px;
 }
 
-.np-table td.np-table-primary {
+.np-table .np-table-primary {
   color: var(--np-text);
   font-weight: 500;
+}
+
+.np-table .np-table-mono {
+  color: var(--np-text);
+  font-family: var(--np-mono-family);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.np-table .np-table-muted {
+  color: var(--np-text-muted);
+  font-size: 12px;
+}
+
+/* Cells that hold a row action group keep a fixed width so the actions column
+   does not shift between pages with different content. */
+.np-table .np-table-actions-cell {
+  width: 1%;
+  white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+  .np-table-scroll {
+    --np-table-min-height: 240px;
+  }
 }
 
 
@@ -499,7 +596,7 @@ p {
 .np-modal {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: 1050;
 
   display: flex;
   align-items: center;
@@ -517,7 +614,7 @@ p {
 .np-modal-content {
   position: relative;
 
-  width: 520px;
+  width: 560px;
   max-width: calc(100vw - 32px);
   max-height: calc(100vh - 48px);
 
@@ -534,14 +631,14 @@ p {
   align-items: center;
   justify-content: space-between;
 
-  padding: 16px 20px;
+  padding: 18px 20px;
 
   border-bottom: 1px solid var(--np-border-light);
 }
 
 .np-modal-title {
   color: var(--np-text);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -549,6 +646,167 @@ p {
   padding: 20px;
 }
 
+.np-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  margin-top: 24px;
+  padding-top: 20px;
+
+  border-top: 1px solid var(--np-border-light);
+}
+
+@media (max-width: 576px) {
+  .np-modal-content {
+    width: 100%;
+    max-width: calc(100vw - 20px);
+  }
+}
+
+.np-modal :focus-visible {
+  outline: 2px solid var(--np-primary);
+  outline-offset: 2px;
+}
+
+
+/* ============================================================
+   Detail (shared by every *-detail page)
+   ============================================================ */
+
+.np-detail-card,
+.np-detail-section {
+  background: #fff;
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-lg);
+  box-shadow: var(--np-shadow-sm);
+}
+
+.np-detail-card {
+  min-height: 154px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.np-detail-label {
+  color: var(--np-text-light);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.57px;
+  text-transform: uppercase;
+}
+
+.np-detail-value {
+  padding-top: 8px;
+  color: var(--np-text);
+  font-family: var(--np-mono-family);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 45px;
+}
+
+.np-detail-value.np-success {
+  color: var(--np-success-text);
+}
+
+.np-detail-description {
+  padding-top: 4px;
+  color: var(--np-text-light);
+  font-size: 12px;
+}
+
+.np-detail-section {
+  overflow: hidden;
+}
+
+.np-detail-section-header {
+  min-height: 51px;
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid var(--np-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.np-detail-section-header > div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.np-detail-section-title {
+  color: var(--np-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.np-detail-section-count {
+  color: var(--np-text-light);
+  font-size: 12px;
+}
+
+.np-detail-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+  padding: 22px;
+}
+
+.np-detail-field {
+  min-width: 0;
+}
+
+.np-detail-field-label {
+  display: block;
+  color: var(--np-text-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.np-detail-field-value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 4px;
+  color: var(--np-text);
+  font-size: 14px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.np-detail-placeholder {
+  color: var(--np-text-light);
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.np-empty-state {
+  padding: 32px 20px;
+  color: var(--np-text-light);
+  font-size: 13px;
+  text-align: center;
+}
+
+.np-export-button {
+  padding: 4px 9px;
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-md);
+  background: #fff;
+  color: var(--np-text-secondary);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 28px;
+}
+
+@media (max-width: 576px) {
+  .np-detail-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 
 /* ============================================================
    KPI
@@ -659,6 +917,44 @@ p {
 
 .np-text-warning {
   color: var(--np-warning-text);
+}
+
+/* ============================================================
+   Accessibility
+   ============================================================ */
+
+.required-field::after {
+  content: ' *';
+  color: #EF4444;
+  font-weight: 600;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--np-primary);
+  outline-offset: 2px;
+}
+
+button,
+[role='button'],
+a[href] {
+  min-width: 24px;
+  min-height: 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 // Toggle icon remove

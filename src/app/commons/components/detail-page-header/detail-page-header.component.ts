@@ -57,4 +57,8 @@ export class DetailPageHeaderComponent {
 
   // The route to navigate to when the "Edit" button is clicked. If not provided, the button will be hidden.
   @Input() editRoute: any[] | string | null | undefined = undefined;
+
+  // Event emitted when the "Edit" action is triggered and no editRoute is set,
+  // so the page can open its own form (e.g. a modal).
+  @Output() editAction = new EventEmitter<void>();
 }

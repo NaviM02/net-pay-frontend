@@ -1,27 +1,34 @@
 <div class="d-flex flex-row-reverse justify-content-end gap-2">
-  <!-- Filter dropdown -->
-  <div ngbDropdown class="d-inline-block" placement="bottom-start">
-    <button class="btn btn-info" id="menu-filter-dropdown" ngbDropdownToggle>
+  <!-- Filter dropdown. `container="body"` moves the panel out of the list card so
+       `overflow: hidden` (needed for the rounded corners) cannot clip it. -->
+  <div ngbDropdown class="d-inline-block" placement="bottom-start" container="body">
+    <button class="btn np-btn np-btn-secondary np-btn-sm" id="menu-filter-dropdown" ngbDropdownToggle>
       <div class="d-flex justify-content-center align-content-center gap-1">
         <span class="fw-semibold">{{ 'Agregar filtro' }}</span>
-        <app-material-icon>add</app-material-icon>
+        <app-material-icon [size]="18">add</app-material-icon>
       </div>
       @if (totalSelected) {
-        <span class="badge text-bg-dark">{{ totalSelected }}</span>
+        <span class="badge np-badge np-badge-primary">{{ totalSelected }}</span>
       }
     </button>
-    <div ngbDropdownMenu aria-labelledby="menu-filter-dropdown" class="menu-filter-dropdown bg-light-subtle">
+    <div ngbDropdownMenu aria-labelledby="menu-filter-dropdown" class="menu-filter-dropdown">
       <div class="d-flex gap-2 p-2 w-100 h-100">
         <!-- Add filter options here -->
         <div class="filter-list d-flex flex-column align-items-start justify-content-between px-2">
           <div class="filter-group">
             @for (filter of _filterGroup.filters; track filter.id; let i = $index) {
-              <div role="button" class="filter mt-1 p-1 w-100 d-flex align-items-start justify-content-between" (click)="onSelectedFilterChange(i)">
+              <div
+                role="button"
+                tabindex="0"
+                class="filter mt-1 p-1 w-100 d-flex align-items-start justify-content-between"
+                [class.filter-active]="selectedFilter === filter"
+                (click)="onSelectedFilterChange(i)"
+              >
                 <span class="text-muted small">
                   {{ filter.name }}
                 </span>
                 @if (selectedCount[filter.id]) {
-                  <span class="badge text-bg-info">{{ selectedCount[filter.id] }}</span>
+                  <span class="np-badge np-badge-neutral">{{ selectedCount[filter.id] }}</span>
                 }
               </div>
             }
@@ -29,7 +36,7 @@
 
           <div class="filter-list-footer">
             @if (totalSelected) {
-              <button class="btn btn-outline-light btn-sm text-muted small" (click)="onClearAll()">{{ 'Limpiar todos los filtros' }}</button>
+              <button class="btn np-btn np-btn-ghost np-btn-xs" (click)="onClearAll()">{{ 'Limpiar todos los filtros' }}</button>
             }
           </div>
         </div>
@@ -165,6 +172,6 @@
   </div>
 
   <ng-template #clearSelectedTemplate>
-    <button class="btn btn-outline-light btn-sm text-muted small" (click)="onClearSelected()">{{ 'Limpiar filtro' }}</button>
+    <button class="btn np-btn np-btn-ghost np-btn-xs" (click)="onClearSelected()">{{ 'Limpiar filtro' }}</button>
   </ng-template>
 </div>

@@ -1,16 +1,159 @@
-.pagination-content {
-  height: 100%;
+:host {
+  display: block;
+}
 
-  .vl {
-    height: 100%;
-    border: 1px solid var(--bs-gray-300);
+.pagination-content {
+  --np-pagination-control-height: 30px;
+
+  gap: 10px;
+}
+
+.np-pagination-text {
+  color: var(--np-text-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.np-pagination-text strong {
+  color: var(--np-text);
+  font-weight: 600;
+}
+
+.np-pagination-divider {
+  align-self: stretch;
+  border-left: 1px solid var(--np-border);
+}
+
+
+/* ============================================================
+   Page controls (arrows + page numbers)
+   ============================================================ */
+
+.np-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.np-pagination .page-item {
+  display: flex;
+}
+
+.np-pagination .page-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: var(--np-pagination-control-height);
+  height: var(--np-pagination-control-height);
+  padding: 0 8px;
+
+  border: 1px solid transparent;
+  border-radius: var(--np-radius-md);
+
+  background-color: transparent;
+
+  color: var(--np-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+
+  transition: background-color 0.12s, border-color 0.12s, color 0.12s;
+
+  &:hover:not(.disabled):not([aria-disabled='true']) {
+    background-color: var(--np-surface-hover);
+    border-color: var(--np-border);
+    color: var(--np-text);
   }
 }
 
-.ngb-custom-pages-item {
-  input.form-control {
-    width: 5rem;
-    padding: 0.5rem 1rem;
-    text-align: center;
+.np-pagination .page-item.active .page-link {
+  background-color: var(--np-primary);
+  border-color: var(--np-primary);
+
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Boundary / direction arrows when they are the active navigation target. */
+.np-pagination .page-item.active .page-link:hover {
+  background-color: var(--np-primary-hover);
+  border-color: var(--np-primary-hover);
+  color: #fff;
+}
+
+.np-pagination .page-item.disabled .page-link {
+  background-color: transparent;
+  border-color: transparent;
+
+  color: var(--np-text-light);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+
+/* ============================================================
+   "Página [input] de N" jump box
+   ============================================================ */
+
+.np-pagination-pages {
+  margin-left: 6px;
+}
+
+.np-pagination-pages-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--np-pagination-control-height);
+}
+
+.np-pagination-input {
+  width: 52px;
+  height: var(--np-pagination-control-height);
+  padding: 0 6px;
+
+  background-color: #fff;
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-md);
+  outline: none;
+
+  color: var(--np-text);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+
+  transition: border-color 0.12s, box-shadow 0.12s;
+
+  &:focus {
+    border-color: var(--np-primary);
+    box-shadow: 0 0 0 3px rgba(30, 92, 230, 0.1);
+  }
+}
+
+
+/* ============================================================
+   Rows-per-page dropdown
+   ============================================================ */
+
+.dropdown-item {
+  font-size: 12px;
+}
+
+@media (max-width: 575.98px) {
+  .np-pagination {
+    justify-content: center;
+  }
+
+  .np-pagination-pages {
+    margin-left: 0;
   }
 }

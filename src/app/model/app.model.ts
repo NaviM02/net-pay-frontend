@@ -28,3 +28,13 @@ export class AppUser {
 export class AppToken {
   public authc!: string;
 }
+
+export class AppService {
+  public id!: number;
+  public hashId!: string;
+  public name!: string;
+  public speed!: string;
+  public monthlyPrice!: number;
+  public tpType!: AdmTypology;
+  public tpStatus!: AdmTypology;
+}

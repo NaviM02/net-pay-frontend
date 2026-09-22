@@ -1,11 +1,21 @@
 .menu-filter-dropdown {
-  height: 380px;
   width: 600px;
+  max-width: calc(100vw - 32px);
+  height: 380px;
+  max-height: calc(100vh - 120px);
+
+  padding: 0;
+  background-color: var(--np-surface);
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-lg);
+  box-shadow: var(--np-shadow-modal);
+  overflow: hidden;
 }
 
 .filter-list {
   height: 100%;
   width: 280px;
+  flex-shrink: 0;
 
   .filter-group {
     min-width: 100%;
@@ -15,18 +25,29 @@
 
     .filter {
       padding: 10px;
+      border-radius: var(--np-radius-md);
       cursor: pointer;
 
       &:hover {
-        background-color: var(--bs-gray-200);
+        background-color: var(--np-surface-hover);
+      }
+
+      &.filter-active {
+        background-color: var(--np-primary-light);
+
+        .text-muted {
+          color: var(--np-primary) !important;
+          font-weight: 600;
+        }
       }
     }
   }
 }
 
 .filter-details {
-  border-left: 1px solid var(--bs-gray-200);
+  border-left: 1px solid var(--np-border);
   width: 100%;
+  min-width: 0;
   height: 100%;
 
   .filter-detail {
@@ -36,12 +57,12 @@
 
 .btn.bg-transparent {
   &:hover {
-    background-color: var(--bs-gray-200) !important;
+    background-color: var(--np-border-light) !important;
   }
 }
 
 .filter-detail-footer, .filter-list-footer {
-  height: 40px;
+  min-height: 40px;
   display: flex;
   align-items: center;
 }

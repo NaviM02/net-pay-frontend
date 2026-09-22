@@ -1,0 +1,81 @@
+<div class="np-page">
+  <app-detail-page-header
+    [backRoute]="['/services']"
+    [description]="'Planes y tarifas disponibles'"
+    [itemName]="service.name"
+    [showEdit]="service.hashId != null"
+    [showDelete]="service.hashId != null"
+    (editAction)="onEdit()"
+    (deleteAction)="onDelete()"
+  />
+
+  <div class="np-service-detail">
+
+    @if (service.hashId) {
+      <div class="np-detail-section">
+        <div class="np-detail-section-header">
+          <div>
+            <span class="np-detail-section-title">Detalle del plan</span>
+            <span class="np-detail-section-count">{{ service.hashId }}</span>
+          </div>
+        </div>
+
+        <div class="np-detail-fields">
+          <div class="np-detail-field">
+            <span class="np-detail-field-label" id="serviceFieldName">Nombre del plan</span>
+            <span class="np-detail-field-value" aria-labelledby="serviceFieldName">
+              {{ service.name }}
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label" id="serviceFieldSpeed">Velocidad</span>
+            <span class="np-detail-field-value" aria-labelledby="serviceFieldSpeed">
+              {{ service.speed }}
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label" id="serviceFieldPrice">Precio mensual</span>
+            <span class="np-detail-field-value" aria-labelledby="serviceFieldPrice">
+              {{ service.monthlyPrice | currency: 'Q' : 'symbol' : '1.0-0' }}
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Tipo</span>
+            <span class="np-detail-field-value">
+              @if (service.tpType) {
+                <app-typology-badge [typology]="service.tpType" />
+              } @else {
+                <span class="np-detail-placeholder">Sin definir</span>
+              }
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Estado</span>
+            <span class="np-detail-field-value">
+              @if (service.tpStatus) {
+                <app-typology-badge [typology]="service.tpStatus" />
+              } @else {
+                <span class="np-detail-placeholder">Sin definir</span>
+              }
+            </span>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="np-detail-section">
+        <div class="np-empty-state">No se encontró el plan solicitado.</div>
+      </div>
+    }
+  </div>
+</div>
+
+@if (showModal) {
+  <app-service-form-modal
+    [hashId]="hashId"
+    (close)="onModalClose($event)"
+  />
+}
