@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AppUser } from '../../../../../model/app.model';
+import { AppClient, AppUser } from '../../../../../model/app.model';
+import { Pagination } from '../../../../../model/filter.model';
 import { AppUserService } from '../../../../../services/core/app-user.service';
+import { ListStateService } from '../../../../../services/other/list-state.service';
 import { ToastService } from '../../../../../services/other/toast.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { concatMap, tap } from 'rxjs';
@@ -9,6 +11,8 @@ import { MaterialIconComponent } from '../../../../../commons/components/materia
 import {
   DetailPageHeaderComponent
 } from '../../../../../commons/components/detail-page-header/detail-page-header.component';
+import { PaginationComponent } from '../../../../../commons/components/pagination/pagination.component';
+import { TableRowActionComponent } from '../../../../../commons/components/table-row-action/table-row-action.component';
 import { TypologyBadgeComponent } from '../../../../../commons/components/typology-badge/typology-badge.component';
 
 @Component({
@@ -16,6 +20,8 @@ import { TypologyBadgeComponent } from '../../../../../commons/components/typolo
   imports: [
     MaterialIconComponent,
     DetailPageHeaderComponent,
+    PaginationComponent,
+    TableRowActionComponent,
     TypologyBadgeComponent
   ],
   templateUrl: './user-detail.component.html',
@@ -26,7 +32,7 @@ export class UserDetailComponent implements OnInit {
   hashId!: string | null;
   user: AppUser = new AppUser();
 
-  assignedClients = 0;
+  assignedClients: AppClient[] = [];
   registeredPayments = 0;
   completedPayments = 0;
   totalPayments = 0;
@@ -39,7 +45,15 @@ export class UserDetailComponent implements OnInit {
     private toastService: ToastService,
     private router: Router,
     private route: ActivatedRoute,
-  ) {}
+    protected listStateService: ListStateService,
+  ) {
+    // This table has no filters, only pagination.
+    this.listStateService.init(
+      { id: 'user-detail-clients-filters', filters: [], order: undefined },
+      new Pagination('user-detail-clients-pagination'),
+      () => this.findAll(),
+    );
+  }
 
   ngOnInit(): void {
     this.route.paramMap
@@ -49,6 +63,7 @@ export class UserDetailComponent implements OnInit {
           this.userService.findByHashId(this.hashId!)
         ),
         tap(user => this.user = user),
+        tap(() => this.findAll()),
       )
       .subscribe({
         error: (e: HttpErrorResponse) => {
@@ -63,6 +78,21 @@ export class UserDetailComponent implements OnInit {
       });
   }
 
+  findAll(): void {
+    if (!this.hashId) return;
+
+    const { size, offset } = this.listStateService.pagination;
+
+    this.userService.findByCollectorHashId(this.hashId, size, offset).subscribe({
+      next: (response) => {
+        this.assignedClients = response.body ?? [];
+        const total = Number(response.headers.get('X-Total-Count')) || this.assignedClients.length;
+        this.listStateService.updatePagination(total, this.assignedClients.length);
+      },
+      error: () => this.toastService.error('Error al cargar los clientes del usuario'),
+    });
+  }
+
   get initials(): string {
     return this.user.fullName
       ?.split(' ')
@@ -70,6 +100,10 @@ export class UserDetailComponent implements OnInit {
       .slice(0, 2)
       .map(name => name.charAt(0).toUpperCase())
       .join('') ?? '';
+  }
+
+  get assignedClientsTotal(): number {
+    return this.listStateService.pagination.total;
   }
 
   get lastLoginText(): string {
