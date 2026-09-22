@@ -80,6 +80,12 @@
   gap: 14px;
 }
 
+/* The clients table lives inside a detail section, so it needs a shorter body
+   than the full-height list pages. */
+.np-user-clients-table {
+  --np-table-min-height: 220px;
+}
+
 .np-activity-list {
   padding: 8px 0;
 }

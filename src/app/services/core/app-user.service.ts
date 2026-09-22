@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { AppUser } from '../../model/app.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { AppClient, AppUser } from '../../model/app.model';
 import { QueryParamService } from '../other/query-param.service';
 import { buildSkipGlobalLoadingContext } from '../../interceptors/loading-ui-context';
 
@@ -28,6 +28,15 @@ export class AppUserService {
 
   findByHashId(hashId: string) {
     return this.http.get<AppUser>(`${this.baseUrl}/${hashId}`);
+  }
+
+  /**
+   * Clients assigned to a collector, server-paginated.
+   * Only receives the pagination params because this endpoint has no filters yet.
+   */
+  findByCollectorHashId(hashId: string, size: number, offset: number) {
+    const params = new HttpParams().set('size', `${size}`).set('offset', `${offset}`);
+    return this.http.get<AppClient[]>(`${this.baseUrl}/${hashId}/clients`, { params, observe: 'response' });
   }
 
   save(user: AppUser) {

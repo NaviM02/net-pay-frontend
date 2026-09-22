@@ -57,7 +57,7 @@
 
         <div class="np-detail-card">
           <span class="np-detail-label">CLIENTES ASIGNADOS</span>
-          <span class="np-detail-value">{{ assignedClients }}</span>
+          <span class="np-detail-value">{{ assignedClientsTotal }}</span>
           <span class="np-detail-description">cartera activa</span>
         </div>
 
@@ -94,16 +94,51 @@
         <div>
           <span class="np-detail-section-title">Clientes asignados</span>
           <span class="np-detail-section-count">
-            {{ assignedClients }} clientes
+            {{ assignedClientsTotal }} clientes
           </span>
         </div>
       </div>
 
-      @if (assignedClients === 0) {
-        <div class="np-empty-state">
-          Este usuario no tiene clientes asignados.
-        </div>
-      }
+      <div class="np-table-scroll np-user-clients-table">
+        <table class="table np-table mb-0">
+          <thead>
+          <tr>
+            <th>NEGOCIO</th>
+            <th>CONTACTO</th>
+            <th>SERVICIO</th>
+            <th>ESTADO</th>
+            <th class="np-table-actions-cell text-end">ACCIONES</th>
+          </tr>
+          </thead>
+
+          <tbody>
+            @for (client of assignedClients; track client.hashId) {
+              <tr>
+                <td>
+                  <span class="np-table-primary">{{ client.businessName }}</span>
+                </td>
+                <td class="np-table-muted">{{ client.contactName || '—' }}</td>
+                <td class="np-table-muted">{{ client.service?.name || '—' }}</td>
+                <td><app-typology-badge [typology]="client.tpStatus" /></td>
+                <td class="np-table-actions-cell text-end">
+                  <app-table-row-action [viewRoute]="['/clients', client.hashId]" />
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5">
+                  <div class="np-empty-state">Este usuario no tiene clientes asignados.</div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <app-pagination
+        [pagination]="listStateService.pagination"
+        (onPaginationChange)="listStateService.onPaginationChange($event)"
+      />
     </div>
 
     <div class="np-detail-section">
