@@ -3,6 +3,9 @@
 // Importing ng-select default theme.
 @import "../node_modules/@ng-select/ng-select/themes/default.theme.css";
 
+// Importing Leaflet base styles (OpenStreetMap map for location picking).
+@import "../node_modules/leaflet/dist/leaflet.css";
+
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/functions';
 
@@ -538,6 +541,18 @@ p {
   font-weight: 500;
 }
 
+/* Body for form sections built on top of `.np-detail-section`. */
+.np-form-body {
+  padding: 18px 20px;
+}
+
+.np-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+}
+
 
 /* ============================================================
    Badges
@@ -956,6 +971,37 @@ a[href] {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================================================
+   Location picker (Leaflet)
+   ============================================================ */
+
+/* Leaflet creates the marker/panes nodes dynamically, outside Angular's
+   view encapsulation, so these rules must live in the global stylesheet. */
+.np-map-div-icon {
+  background: transparent;
+  border: 0;
+}
+
+.np-map-marker {
+  display: block;
+
+  width: 22px;
+  height: 22px;
+
+  background-color: var(--np-primary);
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.35);
+
+  transform: rotate(-45deg);
+}
+
+.leaflet-container {
+  font-family: var(--np-font-family);
+  background-color: var(--np-border-light);
+}
+
 
 // Toggle icon remove
 .dropdown-toggle {

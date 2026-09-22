@@ -1,0 +1,62 @@
+<div class="np-location-picker">
+  <div class="np-location-search" [class.d-none]="readonly">
+    <div class="np-location-input">
+      <app-material-icon [size]="18">search</app-material-icon>
+      <input
+        type="text"
+        class="np-input"
+        [(ngModel)]="searchTerm"
+        [placeholder]="placeholder"
+        [disabled]="disabled || searching"
+        (keydown.enter)="search()"
+      />
+    </div>
+
+    <button
+      type="button"
+      class="btn np-btn np-btn-secondary np-btn-sm"
+      [disabled]="disabled || searching"
+      (click)="search()"
+    >
+      {{ searching ? 'Buscando...' : 'Buscar' }}
+    </button>
+
+    <button
+      type="button"
+      class="btn np-btn np-btn-secondary np-btn-sm"
+      [disabled]="disabled"
+      (click)="useMyLocation()"
+    >
+      <app-material-icon [size]="16">my_location</app-material-icon>
+      Mi ubicación
+    </button>
+
+    @if (hasValue) {
+      <button
+        type="button"
+        class="btn np-btn np-btn-ghost np-btn-sm"
+        [disabled]="disabled"
+        (click)="clear()"
+      >
+        Limpiar
+      </button>
+    }
+  </div>
+
+  <div #mapContainer class="np-location-map" [style.height.px]="height"></div>
+
+  @if (hasValue) {
+    <div class="np-location-coords">
+      <app-material-icon [size]="14">location_on</app-material-icon>
+      <span>{{ value.latitude }}, {{ value.longitude }}</span>
+    </div>
+  } @else {
+    <div class="np-location-hint">
+      @if (readonly) {
+        Sin ubicación registrada.
+      } @else {
+        Haz clic en el mapa o busca una dirección para marcar la ubicación.
+      }
+    </div>
+  }
+</div>
