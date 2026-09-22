@@ -23,9 +23,18 @@
 
   @for (customAction of customActions; track customAction.label) {
     <button
+      type="button"
+      class="np-action-button"
+      [class.np-action-danger]="customAction.danger"
+      [title]="customAction.label"
+      [attr.aria-label]="customAction.label"
       (click)="customAction.action()"
     >
-      {{ customAction.label }}
+      @if (customAction.icon) {
+        <span class="material-symbols-outlined">{{ customAction.icon }}</span>
+      } @else {
+        {{ customAction.label }}
+      }
     </button>
   }
 

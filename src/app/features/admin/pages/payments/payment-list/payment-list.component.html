@@ -47,7 +47,7 @@
               <td class="np-table-actions-cell text-end">
                 <app-table-row-action
                   [viewRoute]="['/payments', payment.hashId]"
-                  [showEdit]="!isPaymentCompleted(payment)"
+                  [showEdit]="!isPaymentLocked(payment)"
                   (editAction)="edit(payment.hashId)" />
               </td>
             </tr>

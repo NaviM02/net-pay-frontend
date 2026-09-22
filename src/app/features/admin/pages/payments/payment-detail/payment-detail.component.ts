@@ -9,7 +9,7 @@ import { AppPaymentService } from '../../../../../services/core/app-payment.serv
 import { ToastService } from '../../../../../services/other/toast.service';
 import { DetailPageHeaderComponent } from '../../../../../commons/components/detail-page-header/detail-page-header.component';
 import { TypologyBadgeComponent } from '../../../../../commons/components/typology-badge/typology-badge.component';
-import { isPaymentCompleted } from '../../../../../commons/utils/payment.utils';
+import { isPaymentLocked } from '../../../../../commons/utils/payment.utils';
 
 @Component({
   selector: 'app-payment-detail',
@@ -24,7 +24,7 @@ import { isPaymentCompleted } from '../../../../../commons/utils/payment.utils';
   ],
 })
 export class PaymentDetailComponent implements OnInit {
-  protected readonly isPaymentCompleted = isPaymentCompleted;
+  protected readonly isPaymentLocked = isPaymentLocked;
 
   hashId!: string | null;
   payment: AppPayment = new AppPayment();

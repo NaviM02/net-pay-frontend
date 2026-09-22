@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgOptionComponent, NgSelectComponent } from '@ng-select/ng-select';
 import { concatMap, iif, Observable, of, tap } from 'rxjs';
 
-import { AdmTypology, AppClient, AppClientAccount, AppPayment } from '../../../../../model/app.model';
+import { AdmTypology, AppClientAccount, AppPayment } from '../../../../../model/app.model';
 import { DynamicProviderKey } from '../../../../../model/dynamic-provider-key.enum';
 import { ChargeStatusEnum } from '../../../../../model/payment.enum';
 import { TypologyEnum } from '../../../../../model/typology.enum';
@@ -16,10 +16,9 @@ import { AdmTypologyService } from '../../../../../services/core/adm-typology.se
 import { ToastService } from '../../../../../services/other/toast.service';
 import { DetailPageHeaderComponent } from '../../../../../commons/components/detail-page-header/detail-page-header.component';
 import { DynamicSelectComponent } from '../../../../../commons/components/dynamic-select/dynamic-select.component';
-import { TypologyBadgeComponent } from '../../../../../commons/components/typology-badge/typology-badge.component';
-import { compareTps } from '../../../../../commons/utils/typology.utils';
 import { getChargeStatusClass, getChargeStatusLabel } from '../../../../../commons/utils/charge-status.utils';
-import { isPaymentCompleted, resolvePaymentStatusInternalId } from '../../../../../commons/utils/payment.utils';
+import { isPaymentLocked } from '../../../../../commons/utils/payment.utils';
+import { compareTps } from '../../../../../commons/utils/typology.utils';
 
 @Component({
   selector: 'app-payment-form',
@@ -31,7 +30,6 @@ import { isPaymentCompleted, resolvePaymentStatusInternalId } from '../../../../
     NgSelectComponent,
     NgOptionComponent,
     DynamicSelectComponent,
-    TypologyBadgeComponent,
     DetailPageHeaderComponent,
   ],
 })
@@ -40,14 +38,14 @@ export class PaymentFormComponent implements OnInit {
   protected readonly DynamicProviderKey = DynamicProviderKey;
   protected readonly getChargeStatusLabel = getChargeStatusLabel;
   protected readonly getChargeStatusClass = getChargeStatusClass;
-  protected readonly isPaymentCompleted = isPaymentCompleted;
 
   hashId: string | null = null;
   payment: AppPayment = new AppPayment();
 
   tpsMethods: AdmTypology[] = [];
-  tpPending!: AdmTypology;
-  tpCompleted!: AdmTypology;
+
+  // `FAILED` is never offered: the backend stamps it when the payment ages.
+  tpsStatuses: AdmTypology[] = [];
 
   // Statement of the selected client, used to suggest the amount.
   account: AppClientAccount | null = null;
@@ -72,13 +70,15 @@ export class PaymentFormComponent implements OnInit {
         ),
         concatMap(() =>
           this.typologyService
-            .findByInternalId(TypologyEnum.PENDING)
-            .pipe(tap((tp) => (this.tpPending = tp))),
-        ),
-        concatMap(() =>
-          this.typologyService
-            .findByInternalId(TypologyEnum.COMPLETED)
-            .pipe(tap((tp) => (this.tpCompleted = tp))),
+            .findByParentInternalId(TypologyEnum.PAYMENT_STATUS)
+            .pipe(
+              tap(
+                (tps) =>
+                  (this.tpsStatuses = tps.filter(
+                    tp => tp.internalId !== TypologyEnum.FAILED,
+                  )),
+              ),
+            ),
         ),
         concatMap(() =>
           iif(
@@ -106,9 +106,9 @@ export class PaymentFormComponent implements OnInit {
     return !!this.hashId;
   }
 
-  /** A completed payment is settled, so the form becomes read-only. */
+  /** A payment that is not completed cannot be edited anymore. */
   get isLocked(): boolean {
-    return this.isEdit && isPaymentCompleted(this.payment);
+    return isPaymentLocked(this.payment);
   }
 
   get isValid(): boolean {
@@ -120,7 +120,8 @@ export class PaymentFormComponent implements OnInit {
       this.payment.amount !== undefined &&
       this.payment.amount > 0 &&
       !!this.payment.paidAt &&
-      !!this.payment.tpPaymentMethod
+      !!this.payment.tpPaymentMethod &&
+      !!this.payment.tpPaymentStatus
     );
   }
 
@@ -131,23 +132,6 @@ export class PaymentFormComponent implements OnInit {
 
   get suggestedAmount(): number {
     return this.account?.balance ?? 0;
-  }
-
-  /**
-   * Status the payment will be saved with, derived from the amount against the
-   * balance. It is only a preview: the backend recalculates the allocations.
-   */
-  get derivedStatus(): AdmTypology | null {
-    const internalId = resolvePaymentStatusInternalId(
-      this.payment.amount,
-      this.account?.balance,
-      this.isEdit,
-    );
-
-    if (internalId === TypologyEnum.COMPLETED) return this.tpCompleted;
-    if (internalId === TypologyEnum.PENDING) return this.tpPending;
-
-    return this.payment.tpPaymentStatus ?? null;
   }
 
   onClientChange(): void {
@@ -162,7 +146,7 @@ export class PaymentFormComponent implements OnInit {
 
   save(): void {
     if (this.isLocked) {
-      this.toastService.warning('El pago ya está completado y no se puede modificar.');
+      this.toastService.warning('El pago ya no se puede modificar.');
       return;
     }
 
@@ -170,8 +154,6 @@ export class PaymentFormComponent implements OnInit {
       this.toastService.warning('Completa los campos obligatorios.');
       return;
     }
-
-    this.payment.tpPaymentStatus = this.derivedStatus ?? this.tpPending;
 
     this.paymentService.save(this.payment).subscribe({
       next: () => {
@@ -181,6 +163,10 @@ export class PaymentFormComponent implements OnInit {
       error: (e: HttpErrorResponse) => {
         if (e.error === 'payment_not_found' || e.error === 'payment_client_not_found') {
           return this.toastService.error('Pago o cliente no encontrado.');
+        }
+
+        if (e.error === 'payment_locked_by_receipt') {
+          return this.toastService.warning('El pago ya tiene un recibo emitido.');
         }
 
         if (
@@ -210,7 +196,9 @@ export class PaymentFormComponent implements OnInit {
     this.payment = new AppPayment();
     this.payment.paidAt = this.today();
     this.payment.tpPaymentMethod = this.tpsMethods.find(tp => tp.internalId === TypologyEnum.CASH)!;
-    this.payment.tpPaymentStatus = this.tpPending;
+    this.payment.tpPaymentStatus = this.tpsStatuses.find(
+      tp => tp.internalId === TypologyEnum.COMPLETED,
+    )!;
   }
 
   private loadAccount(): Observable<AppClientAccount | null> {

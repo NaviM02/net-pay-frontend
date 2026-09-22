@@ -4,12 +4,14 @@
     <p>{{ description }}</p>
   </div>
 
-  <button
-    type="button"
-    class="btn np-primary-button"
-    (click)="onButtonClick()"
-  >
-    <span class="material-symbols-outlined">add</span>
-    {{ saveText }}
-  </button>
+  @if (saveText) {
+    <button
+      type="button"
+      class="btn np-primary-button"
+      (click)="onButtonClick()"
+    >
+      <span class="material-symbols-outlined">add</span>
+      {{ saveText }}
+    </button>
+  }
 </div>

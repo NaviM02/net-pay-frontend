@@ -4,6 +4,8 @@ import { RouterLink } from '@angular/router';
 export interface TableRowCustomAction {
   label: string;
   action: () => void;
+  icon?: string;
+  danger?: boolean;
 }
 
 @Component({
