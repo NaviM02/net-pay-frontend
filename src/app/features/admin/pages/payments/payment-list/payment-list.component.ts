@@ -12,7 +12,7 @@ import { ListPageHeaderComponent } from '../../../../../commons/components/list-
 import { PaginationComponent } from '../../../../../commons/components/pagination/pagination.component';
 import { TableRowActionComponent } from '../../../../../commons/components/table-row-action/table-row-action.component';
 import { TypologyBadgeComponent } from '../../../../../commons/components/typology-badge/typology-badge.component';
-import { isPaymentCompleted } from '../../../../../commons/utils/payment.utils';
+import { isPaymentLocked } from '../../../../../commons/utils/payment.utils';
 import { PaymentListFilter } from './payment-list.filter';
 
 @Component({
@@ -30,7 +30,7 @@ import { PaymentListFilter } from './payment-list.filter';
   ],
 })
 export class PaymentListComponent implements OnInit {
-  protected readonly isPaymentCompleted = isPaymentCompleted;
+  protected readonly isPaymentLocked = isPaymentLocked;
 
   payments: AppPayment[] = [];
 

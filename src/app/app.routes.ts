@@ -38,6 +38,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/admin/pages/payments/payments.routes').then(r => r.adminPaymentRoutes),
       },
+      {
+        path: 'receipts',
+        loadChildren: () =>
+          import('./features/admin/pages/receipts/receipts.routes').then(r => r.adminReceiptRoutes),
+      },
     ],
   },
 ];

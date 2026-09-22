@@ -86,6 +86,20 @@ export class AppClientAccount {
   public charges: AppClientCharge[] = [];
 }
 
+export class AppReceipt {
+  public hashId!: string;
+  public receiptNumber!: string;
+  public paymentHashId!: string;
+  public clientHashId!: string;
+  public clientName!: string;
+  public periodLabel!: string;
+  public amount!: number;
+  public issuedAt!: string;
+  public collectorName!: string | null;
+  public documentPath!: string | null;
+  public printedAt!: string | null;
+}
+
 export class AppClient {
   public id!: number;
   public hashId!: string;

@@ -3,7 +3,7 @@
     [backRoute]="['/payments']"
     description="Detalle del pago y meses cubiertos"
     [itemName]="payment.reference || 'Pago'"
-    [showEdit]="payment.hashId != null && !isPaymentCompleted(payment)"
+    [showEdit]="payment.hashId != null && !isPaymentLocked(payment)"
     [showDelete]="false"
     editText="Corregir"
     [editRoute]="['/payments', hashId, 'edit']"
@@ -24,9 +24,9 @@
           }
         </div>
 
-        @if (isPaymentCompleted(payment)) {
+        @if (isPaymentLocked(payment)) {
           <div class="np-payment-locked">
-            Este pago está completado y ya no se puede modificar.
+            Este pago no se puede modificar. Registra un pago nuevo con el monto correcto.
           </div>
         }
 

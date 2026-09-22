@@ -3,7 +3,7 @@
     [backRoute]="['/payments']"
     [itemName]="isEdit ? 'Editar pago' : 'Nuevo pago'"
     [description]="isLocked
-      ? 'El pago está completado y ya no se puede modificar'
+      ? 'El pago ya no se puede modificar'
       : isEdit
         ? 'Corrige los datos del pago; el estado de cuenta se recalcula'
         : 'Registra un pago y su aplicación a los meses pendientes'"
@@ -15,7 +15,8 @@
 
     @if (isLocked) {
       <div class="np-payment-hint">
-        Este pago ya está <strong>completado</strong>. Para corregirlo hay que registrar uno nuevo.
+        Este pago está <strong>pendiente</strong> y ya no se puede modificar.
+        Registra un pago nuevo con el monto correcto.
       </div>
     }
 
@@ -24,8 +25,7 @@
         <span class="np-detail-section-title">Datos del pago</span>
         @if (isLocked) {
           <span class="np-detail-section-count">Bloqueado</span>
-        }
-      </div>
+        }      </div>
 
       <div class="np-form-body">
         <div class="row g-3">
@@ -130,16 +130,21 @@
           </div>
 
           <div class="col-12 col-lg-6">
-            <label class="form-label">Estado del pago</label>
-            <div class="np-form-static">
-              @if (isLocked || derivedStatus) {
-                <app-typology-badge [typology]="isLocked ? payment.tpPaymentStatus : derivedStatus!" />
-              } @else {
-                <span class="np-detail-placeholder">Sin definir</span>
+            <label class="form-label required-field">Estado del pago</label>
+            <ng-select
+              placeholder="Seleccionar estado"
+              [(ngModel)]="payment.tpPaymentStatus"
+              [clearable]="false"
+              [disabled]="isLocked"
+              [compareWith]="compareTps"
+              appendTo="body"
+            >
+              @for (tp of tpsStatuses; track tp.internalId) {
+                <ng-option [value]="tp">{{ tp.description }}</ng-option>
               }
-            </div>
+            </ng-select>
             <div class="form-text">
-              Se calcula solo: queda pendiente si el monto no cubre el saldo.
+              Al completar se emite el recibo. Si el cobro no está seguro, déjalo pendiente.
             </div>
           </div>
 
