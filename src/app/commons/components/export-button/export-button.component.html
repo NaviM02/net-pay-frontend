@@ -3,10 +3,11 @@
     type="button"
     class="np-btn np-btn-sm np-btn-secondary"
     ngbDropdownToggle
+    [disabled]="loading"
     [title]="label"
   >
-    <app-material-icon [size]="16">download</app-material-icon>
-    {{ label }}
+    <app-material-icon [size]="16">{{ loading ? 'progress_activity' : 'download' }}</app-material-icon>
+    {{ loading ? 'Generando…' : label }}
   </button>
 
   <div ngbDropdownMenu>
@@ -15,13 +16,14 @@
         ngbDropdownItem
         type="button"
         class="np-export-option"
-        [disabled]="true"
         (click)="onSelect(format)"
       >
         {{ formatLabels[format] }}
       </button>
     }
 
-    <div class="np-export-hint">Exportación disponible próximamente</div>
+    @if (formats.length > 1) {
+      <div class="np-export-hint">CSV compatible con Excel</div>
+    }
   </div>
 </div>

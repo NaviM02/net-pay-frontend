@@ -7,9 +7,11 @@ export enum OverdueClientStatusEnum {
   SUSPENDED = 53,
 }
 
-/** Formats offered by the export dropdown on the reports. */
+/**
+ * Formats offered by the export dropdown on the reports. There is no Excel
+ * format: the CSV is UTF-8 with BOM, which Excel opens correctly.
+ */
 export enum ReportExportFormatEnum {
   CSV = 'csv',
-  EXCEL = 'excel',
   PDF = 'pdf',
 }

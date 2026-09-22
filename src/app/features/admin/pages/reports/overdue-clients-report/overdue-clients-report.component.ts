@@ -1,8 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 import { OverdueClientReport } from '../../../../../model/report.model';
+import { ReportExportFormatEnum } from '../../../../../model/report.enum';
 import { Pagination } from '../../../../../model/filter.model';
 import { ReportService } from '../../../../../services/core/report.service';
 import { ListStateService } from '../../../../../services/other/list-state.service';
@@ -12,11 +14,15 @@ import { FilterMenuComponent } from '../../../../../commons/components/filter-me
 import { PaginationComponent } from '../../../../../commons/components/pagination/pagination.component';
 import { TableRowActionComponent } from '../../../../../commons/components/table-row-action/table-row-action.component';
 import { MaterialIconComponent } from '../../../../../commons/components/material-icon/material-icon.component';
+import { downloadBlob, getFileNameFromDisposition } from '../../../../../commons/utils/blob.utils';
 import {
   formatOverduePeriod,
   getOverdueStatusClass,
 } from '../../../../../commons/utils/report.utils';
 import { OverdueClientsReportFilter } from './overdue-clients-report.filter';
+
+/** Base name used when the response does not advertise a `Content-Disposition`. */
+const EXPORT_FILE_BASENAME = 'reporte-clientes-en-mora';
 
 @Component({
   selector: 'app-overdue-clients-report',
@@ -36,6 +42,7 @@ export class OverdueClientsReportComponent implements OnInit {
   protected readonly formatOverduePeriod = formatOverduePeriod;
 
   overdueClients: OverdueClientReport[] = [];
+  exporting: boolean = false;
 
   constructor(
     private reportService: ReportService,
@@ -70,6 +77,45 @@ export class OverdueClientsReportComponent implements OnInit {
   periodsTooltip(client: OverdueClientReport): string {
     const periods = (client.overduePeriods ?? []).map(formatOverduePeriod);
     return periods.length ? periods.join(' · ') : 'Sin periodos vencidos';
+  }
+
+  /**
+   * The export always returns every row matching the filter, so pagination is
+   * left out and only the active filters travel with the request.
+   */
+  onExport(format: ReportExportFormatEnum): void {
+    const queryParams = new Map<string, string>();
+
+    for (const [key, value] of this.listStateService.queryParams) {
+      if (key === 'size' || key === 'offset') continue;
+      queryParams.set(key, value);
+    }
+
+    queryParams.set('format', format);
+    this.exporting = true;
+
+    this.reportService
+      .exportOverdueClients(queryParams)
+      // `complete` is not emitted on error, so the busy state is cleared here.
+      .pipe(finalize(() => (this.exporting = false)))
+      .subscribe({
+        next: (response) => {
+          if (!response.body) {
+            this.toastService.error('No se pudo exportar el reporte.');
+            return;
+          }
+
+          downloadBlob(
+            response.body,
+            getFileNameFromDisposition(
+              response.headers.get('Content-Disposition'),
+              `${EXPORT_FILE_BASENAME}.${format}`,
+            ),
+          );
+          this.toastService.success('Reporte exportado correctamente.');
+        },
+        error: () => this.toastService.error('No se pudo exportar el reporte.'),
+      });
   }
 
   viewClient(hashId: string): void {

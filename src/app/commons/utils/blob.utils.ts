@@ -24,3 +24,16 @@ export function downloadBlob(blob: Blob, fileName: string): void {
 
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
+
+/**
+ * File name advertised by a `Content-Disposition` response header, e.g.
+ * `attachment; filename="reporte-clientes-en-mora.csv"`. Falls back to the given
+ * name when the header is missing or malformed.
+ */
+export function getFileNameFromDisposition(
+  contentDisposition: string | null | undefined,
+  fallback: string,
+): string {
+  const match = contentDisposition?.match(/filename\*?=(?:UTF-8'')?([^";]+)"?/i);
+  return match?.[1]?.trim() || fallback;
+}
