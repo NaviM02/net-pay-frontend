@@ -8,6 +8,15 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
+$primary: #1E5CE6;
+$secondary: #64748B;
+$success: #15803D;
+$info: #E2E8F0;
+$warning: #B45309;
+$danger: #B91C1C;
+$light: #F8FAFC;
+$dark: #0F172A;
+
 @import 'bootstrap/scss/variables';
 @import 'bootstrap/scss/mixins';
 @import 'bootstrap/scss/maps';
@@ -650,4 +659,15 @@ p {
 
 .np-text-warning {
   color: var(--np-warning-text);
+}
+
+// Toggle icon remove
+.dropdown-toggle {
+  &::after {
+    display: none !important;
+  }
+
+  &::before {
+    display: none !important;
+  }
 }

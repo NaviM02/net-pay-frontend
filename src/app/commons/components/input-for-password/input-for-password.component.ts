@@ -57,7 +57,7 @@ export class InputForPasswordComponent implements ControlValueAccessor {
 
   get passwordError(): string | null {
     if (!this.validatePassword || !this.value) return null;
-    if (!this.passwordService.isValid(this.value)) return 'txt_password_invalid';
+    if (!this.passwordService.isValid(this.value)) return 'Tu contraseña debe tener 6 caracteres, un número y un símbolo (!@#$%^&*).';
     return null;
   }
 }

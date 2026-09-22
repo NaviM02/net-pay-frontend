@@ -1,0 +1,166 @@
+<div class="np-page">
+  <app-detail-page-header
+    [backRoute]="['/users']"
+    [itemName]="user.fullName"
+    [showEdit]="user.hashId != null"
+    [showDelete]="user.hashId != null"
+    [editRoute]="['/users/edit', hashId]"
+    (deleteAction)="onDelete()"
+  />
+
+  <div class="np-user-detail">
+
+    <div class="np-user-summary">
+
+      <div class="np-user-profile-card">
+
+        <div class="np-user-avatar">
+          {{ initials }}
+        </div>
+
+        <div class="np-user-name">
+          {{ user.fullName }}
+        </div>
+
+        <app-typology-badge
+          [typology]="user.tpRole"
+        />
+
+        <div class="np-user-info">
+
+          <div class="np-user-info-item">
+            <app-material-icon [size]="14">mail</app-material-icon>
+            <span>{{ user.email }}</span>
+          </div>
+
+          <div class="np-user-info-item">
+            <app-material-icon [size]="14">badge</app-material-icon>
+            <span>{{ user.hashId }}</span>
+          </div>
+
+          <div class="np-user-info-item">
+            <app-material-icon [size]="14">calendar_today</app-material-icon>
+            <span>Ingreso: {{ user.entryDate }}</span>
+          </div>
+
+        </div>
+
+        <div class="np-user-status">
+          <app-typology-badge
+            [typology]="user.tpStatus"
+          />
+        </div>
+
+      </div>
+
+      <div class="np-user-stats">
+
+        <div class="np-detail-card">
+          <span class="np-detail-label">CLIENTES ASIGNADOS</span>
+          <span class="np-detail-value">{{ assignedClients }}</span>
+          <span class="np-detail-description">cartera activa</span>
+        </div>
+
+        <div class="np-detail-card">
+          <span class="np-detail-label">COBROS REGISTRADOS</span>
+          <span class="np-detail-value">{{ registeredPayments }}</span>
+          <span class="np-detail-description">este período</span>
+        </div>
+
+        <div class="np-detail-card">
+          <span class="np-detail-label">PAGOS COMPLETADOS</span>
+          <span class="np-detail-value np-success">
+            {{ completedPayments }}
+          </span>
+          <span class="np-detail-description">
+            de {{ totalPayments }} totales
+          </span>
+        </div>
+
+        <div class="np-detail-card">
+          <span class="np-detail-label">ACCIONES EN SISTEMA</span>
+          <span class="np-detail-value">{{ auditCount }}</span>
+          <span class="np-detail-description">
+            en el log de auditoría
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="np-detail-section">
+      <div class="np-detail-section-header">
+        <div>
+          <span class="np-detail-section-title">Clientes asignados</span>
+          <span class="np-detail-section-count">
+            {{ assignedClients }} clientes
+          </span>
+        </div>
+      </div>
+
+      @if (assignedClients === 0) {
+        <div class="np-empty-state">
+          Este usuario no tiene clientes asignados.
+        </div>
+      }
+    </div>
+
+    <div class="np-detail-section">
+
+      <div class="np-detail-section-header">
+        <div>
+          <span class="np-detail-section-title">
+            Actividad en el sistema
+          </span>
+          <span class="np-detail-section-count">
+            {{ auditCount }} registros
+          </span>
+        </div>
+
+        <button type="button" class="btn np-export-button">
+          <app-material-icon [size]="14">download</app-material-icon>
+          Exportar
+        </button>
+      </div>
+
+      <div class="np-activity-list">
+
+        @for (activity of activities; track activity.id) {
+          <div class="np-activity-item">
+
+            <div
+              class="np-activity-icon"
+              [class.warning]="activity.type === 'warning'"
+            >
+              <app-material-icon [size]="15">{{ activity.icon }}</app-material-icon>
+            </div>
+
+            <div class="np-activity-content">
+              <div class="np-activity-title">
+                <span>{{ activity.title }}</span>
+
+                <span
+                  class="np-activity-badge"
+                  [class.warning]="activity.type === 'warning'"
+                >
+                  {{ activity.type === 'warning' ? 'Alerta' : 'Info' }}
+                </span>
+              </div>
+
+              <div class="np-activity-description">
+                {{ activity.description }}
+              </div>
+            </div>
+
+            <div class="np-activity-meta">
+              <span>{{ activity.date }}</span>
+              <span>{{ activity.ip }}</span>
+            </div>
+
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

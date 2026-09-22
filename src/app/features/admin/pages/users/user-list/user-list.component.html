@@ -1,13 +1,14 @@
-<div class="np-page">
+<div class="">
 
   <app-list-page-header
     title="Usuarios"
     description="Gestión de cuentas de acceso al sistema"
     saveText="Nuevo usuario"
+    (buttonClick)="add()"
   />
 
   <div class="np-list-card">
-    <div class="np-table-actions-bar">
+    <div class="np-table-actions-bar mb-4">
       <app-filter-menu
         [filterGroup]="listStateService.filter"
         (onFilterChange)="listStateService.onFilterChange($event)"
@@ -16,10 +17,8 @@
 
     <div class="table-responsive">
       <table class="table np-table mb-0">
-
         <thead>
         <tr>
-          <th>ID</th>
           <th>NOMBRE</th>
           <th>EMAIL</th>
           <th>ROL</th>
@@ -32,7 +31,6 @@
         <tbody>
           @for (user of users; track user.id) {
             <tr>
-              <td class="np-id">USR-{{ user.id }}</td>
               <td>
                 <span class="np-user-name">{{ user.fullName }}</span>
               </td>
@@ -41,7 +39,10 @@
               <td><app-typology-badge [typology]="user.tpStatus" /></td>
               <td class="np-date">{{ user.entryDate }}</td>
               <td>
-                <app-table-row-action (deleteAction)="delete(user.hashId)" />
+                <app-table-row-action
+                  [viewRoute]="['/users/', user.hashId]"
+                  (editAction)="edit(user.hashId)"
+                  (deleteAction)="delete(user.hashId)" />
               </td>
             </tr>
           }
@@ -55,3 +56,10 @@
     />
   </div>
 </div>
+
+@if (showModal) {
+  <app-user-form-modal
+    [hashId]="selectedHashId"
+    (close)="onModalClose($event)"
+  />
+}

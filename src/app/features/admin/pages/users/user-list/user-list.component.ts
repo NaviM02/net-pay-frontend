@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserListFilter } from './user-list.filter';
-import { AppUser } from '../../../../../model/app.model';
+import { AdmTypology, AppUser } from '../../../../../model/app.model';
 import { AppUserService } from '../../../../../services/core/app-user.service';
 import { Pagination } from '../../../../../model/filter.model';
 import { ListStateService } from '../../../../../services/other/list-state.service';
@@ -10,6 +10,7 @@ import { TypologyBadgeComponent } from '../../../../../commons/components/typolo
 import { TableRowActionComponent } from '../../../../../commons/components/table-row-action/table-row-action.component';
 import { PaginationComponent } from '../../../../../commons/components/pagination/pagination.component';
 import { ToastService } from '../../../../../services/other/toast.service';
+import { UserFormModalComponent } from '../user-form-modal/user-form-modal.component';
 
 @Component({
   selector: 'app-user-list',
@@ -21,10 +22,14 @@ import { ToastService } from '../../../../../services/other/toast.service';
     TypologyBadgeComponent,
     TableRowActionComponent,
     PaginationComponent,
+    UserFormModalComponent,
   ],
 })
 export class UserListComponent implements OnInit {
   users: AppUser[] = [];
+
+  showModal = false;
+  selectedHashId: string | null = null;
 
   constructor(
     private userService: AppUserService,
@@ -49,6 +54,25 @@ export class UserListComponent implements OnInit {
       },
       error: () => this.toastService.error('msg_error_server'),
     });
+  }
+
+  add(): void {
+    this.selectedHashId = null;
+    this.showModal = true;
+  }
+
+  edit(hashId: string): void {
+    this.selectedHashId = hashId;
+    this.showModal = true;
+  }
+
+  onModalClose(saved: boolean): void {
+    this.showModal = false;
+    this.selectedHashId = null;
+
+    if (saved) {
+      this.findAll();
+    }
   }
 
   delete(hashId: string): void {}

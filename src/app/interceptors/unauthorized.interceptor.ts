@@ -12,7 +12,7 @@ export const unauthorizedInterceptor: HttpInterceptorFn = (req, next) => {
     .pipe(
       catchError((err: HttpErrorResponse) => {
         // If the error is due to wrong credentials, rethrow it
-        if (err.status === 401 && err.error === 'wrong_credentials') throw err;
+        if (err.status === 401 && err.error === 'Credenciales inválidas') throw err;
 
         // If the error is due to a required password change, rethrow it
         if (err.status === 400 && err.error === 'require_change_password') throw err;
@@ -20,7 +20,7 @@ export const unauthorizedInterceptor: HttpInterceptorFn = (req, next) => {
         // For other 401 errors, log out the user and show a toast message
         if (err.status === 401) {
           currentUserService.logout();
-          toastService.error('msg_sign_in_to_continue');
+          toastService.error('Inicia sesion para conectarte');
           return EMPTY;
         }
 

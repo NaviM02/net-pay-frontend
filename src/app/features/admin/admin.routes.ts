@@ -12,24 +12,14 @@ export const adminRoutes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () => import('./pages/users/user-list/user-list.component').then(c => c.UserListComponent,),
-        data: { permissionType: TypologyEnum.ADMIN },
-      },
-/*      {
-        path: 'add',
-        loadComponent: () => import('./pages/clients/client-form/client-form.component').then((c) => c.ClientFormComponent,),
-        data: { permissionType: TypologyEnum.ADMIN },
-      },
-      {
-        path: 'edit/:hashId',
-        loadComponent: () => import('./pages/clients/client-form/client-form.component').then((c) => c.ClientFormComponent,),
+        loadComponent: () => import('./pages/users/user-list/user-list.component').then(c => c.UserListComponent),
         data: { permissionType: TypologyEnum.ADMIN },
       },
       {
         path: ':hashId',
-        loadComponent: () => import('./pages/clients/client-detail/client-detail.component').then((c) => c.ClientDetailComponent,),
+        loadComponent: () => import('./pages/users/user-detail/user-detail.component').then((c) => c.UserDetailComponent),
         data: { permissionType: TypologyEnum.ADMIN },
-      },*/
+      },
     ],
   },
 ];

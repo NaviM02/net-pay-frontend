@@ -1,0 +1,70 @@
+.np-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.np-modal-backdrop {
+  position: absolute;
+  inset: 0;
+
+  background-color: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.np-modal-content {
+  position: relative;
+
+  width: 560px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 48px);
+
+  overflow-y: auto;
+
+  background-color: #fff;
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-xl);
+  box-shadow: var(--np-shadow-modal);
+}
+
+.np-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid var(--np-border-light);
+}
+
+.np-modal-title {
+  color: var(--np-text);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.np-modal-body {
+  padding: 20px;
+}
+
+.np-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  margin-top: 24px;
+  padding-top: 20px;
+
+  border-top: 1px solid var(--np-border-light);
+}
+
+@media (max-width: 576px) {
+  .np-modal-content {
+    width: 100%;
+    max-width: calc(100vw - 20px);
+  }
+}

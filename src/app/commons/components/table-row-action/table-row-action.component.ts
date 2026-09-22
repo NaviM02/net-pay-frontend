@@ -15,10 +15,14 @@ export interface TableRowCustomAction {
 export class TableRowActionComponent {
   @Input() viewRoute: any[] | string | null | undefined;
   @Input() editRoute: any[] | string | null | undefined;
+  @Output() editAction = new EventEmitter<void>();
   @Output() deleteAction = new EventEmitter<void>();
 
   // Whether to show the "Edit" button. Defaults to false.
   @Input() showEdit: boolean = true;
+
+  // Whether to show the "Edit" button. Defaults to false.
+  @Input() showEditButton: boolean = true;
 
   // Whether to show the "Delete" button. Defaults to false.
   @Input() showDelete: boolean = true;
@@ -33,6 +37,7 @@ export class TableRowActionComponent {
     return (
       this.viewRoute !== undefined ||
       this.editRoute !== undefined ||
+      this.editAction.observed ||
       this.deleteAction.observed ||
       this.customActions.length > 0
     );

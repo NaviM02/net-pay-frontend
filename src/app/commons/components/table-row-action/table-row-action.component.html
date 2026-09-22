@@ -10,12 +10,12 @@
     </button>
   }
 
-  @if (editRoute && showEdit) {
+  @if (editAction.observed && showEdit) {
     <button
       type="button"
       class="np-action-button"
       title="Editar"
-      [routerLink]="editRoute"
+      (click)="editAction.emit()"
     >
       <span class="material-symbols-outlined">edit</span>
     </button>
