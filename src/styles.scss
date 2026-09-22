@@ -118,6 +118,8 @@ $dark: #0F172A;
 
   /* List table sizing (override per page when a list needs a taller/shorter body) */
   --np-table-min-height: 320px;
+  /* Upper bound of the scrollable body, so long lists scroll instead of stretching. */
+  --np-table-max-height: calc(100vh - 300px);
 
   /* Radius */
   --np-radius-sm: 5px;
@@ -308,14 +310,17 @@ p {
    Tables
    ============================================================ */
 
-/* Scroll container for the table body. It absorbs all the leftover height of the
-   card, so the table always reaches the bottom of the viewport. `min-height`
-   acts as the floor when the browser window is too short; the card then grows
-   and the layout scrolls instead of squashing the table. */
+/* Scroll container for the table body. `max-height` is what actually turns on the
+   scrollbar: the page/card have no height limit, so without it the container just
+   grows with the rows and `overflow: auto` never engages. It subtracts the app
+   header, the page header, the filter bar and the pagination, so the card ends up
+   filling the viewport. `min-height` acts as the floor when the window is too
+   short; then the card grows and the layout scrolls instead of squashing the table. */
 .np-table-scroll {
   flex: 1 1 auto;
 
   min-height: var(--np-table-min-height);
+  max-height: var(--np-table-max-height);
 
   overflow: auto;
   overscroll-behavior: contain;
@@ -408,6 +413,7 @@ p {
 @media (max-width: 767.98px) {
   .np-table-scroll {
     --np-table-min-height: 240px;
+    --np-table-max-height: calc(100vh - 260px);
   }
 }
 

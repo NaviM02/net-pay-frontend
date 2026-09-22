@@ -11,6 +11,8 @@ import { TypologyBadgeComponent } from '../../../../../commons/components/typolo
 import { TableRowActionComponent } from '../../../../../commons/components/table-row-action/table-row-action.component';
 import { PaginationComponent } from '../../../../../commons/components/pagination/pagination.component';
 import { ToastService } from '../../../../../services/other/toast.service';
+import { ConfirmActionService } from '../../../../../services/other/confirm-action.service';
+import { confirmAction } from '../../../../../commons/decorators/confirm.decorator';
 import { UserFormModalComponent } from '../user-form-modal/user-form-modal.component';
 
 @Component({
@@ -36,6 +38,8 @@ export class UserListComponent implements OnInit {
   constructor(
     private userService: AppUserService,
     private toastService: ToastService,
+    // Required by @confirmAction: it reads the instance registered by this injection.
+    private confirmActionService: ConfirmActionService,
     protected listStateService: ListStateService,
   ) {
     this.listStateService.init(UserListFilter, new Pagination('user-list-pagination'), () =>
@@ -77,5 +81,21 @@ export class UserListComponent implements OnInit {
     }
   }
 
-  delete(hashId: string): void {}
+  @confirmAction({
+    title: 'Eliminar usuario',
+    bodyQuestion: (_ctx, args) =>
+      args[1] ? `¿Eliminar el usuario ${args[1]}?` : '¿Eliminar este usuario?',
+    bodyText: 'Esta acción no se puede deshacer.',
+    confirmText: 'Eliminar',
+    cancelText: 'Cancelar',
+  })
+  delete(hashId: string, _fullName: string): void {
+    this.userService.delete(hashId).subscribe({
+      next: () => {
+        this.toastService.success('Usuario eliminado correctamente.');
+        this.findAll();
+      },
+      error: () => this.toastService.error('Error al eliminar el usuario.'),
+    });
+  }
 }
