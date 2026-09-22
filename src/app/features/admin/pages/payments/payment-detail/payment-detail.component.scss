@@ -1,0 +1,19 @@
+.np-payment-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 20px;
+}
+
+.np-payment-locked {
+  margin: 18px 22px 0;
+
+  padding: 10px 12px;
+
+  background-color: var(--np-neutral-background);
+  border: 1px solid var(--np-neutral-border);
+  border-radius: var(--np-radius-md);
+
+  color: var(--np-neutral-text);
+  font-size: 13px;
+}

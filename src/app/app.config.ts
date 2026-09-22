@@ -10,6 +10,7 @@ import { environment } from '../environments/environment';
 import { DYNAMIC_LIST_PROVIDERS } from './services/other/dynamic-provider-registry.service';
 import { AppUserService } from './services/core/app-user.service';
 import { AppServiceService } from './services/core/app-service.service';
+import { AppClientService } from './services/core/app-client.service';
 import { DynamicProviderKey } from './model/dynamic-provider-key.enum';
 import { TypologyEnum } from './model/typology.enum';
 
@@ -59,6 +60,15 @@ export const appConfig: ApplicationConfig = {
           params.set('role', `${TypologyEnum.COLLECTOR}`);
           return service.findAll(params, true);
         },
+      })
+    },
+    {
+      provide: DYNAMIC_LIST_PROVIDERS,
+      multi: true,
+      deps: [AppClientService],
+      useFactory: (service: AppClientService) => ({
+        key: DynamicProviderKey.APP_CLIENTS_FIND_ALL,
+        searchService: (params: Map<string, string>) => service.findAll(params, true),
       })
     },
   ],

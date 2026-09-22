@@ -33,6 +33,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/admin/pages/clients/clients.routes').then(r => r.adminClientRoutes),
       },
+      {
+        path: 'payments',
+        loadChildren: () =>
+          import('./features/admin/pages/payments/payments.routes').then(r => r.adminPaymentRoutes),
+      },
     ],
   },
 ];
