@@ -1,0 +1,176 @@
+<div class="np-page">
+
+  <app-detail-page-header
+    [backRoute]="['/audit']"
+    [itemName]="log.action"
+    [description]="log.detail"
+    [showEdit]="entityRoute !== undefined"
+    editText="Ver entidad afectada"
+    [editRoute]="entityRoute"
+  />
+
+  <div class="np-audit-detail">
+
+    <div class="np-detail-section">
+      <div class="np-detail-section-header">
+        <div>
+          <span class="np-detail-section-title">Datos de la auditoría</span>
+          <span class="np-detail-section-count">#{{ log.id }}</span>
+        </div>
+
+        <span class="np-badge {{ getAuditLevelClass(log.levelName) }}">
+          {{ log.levelName || '—' }}
+        </span>
+      </div>
+
+      <div class="np-detail-fields">
+        <div class="np-detail-field">
+          <span class="np-detail-field-label">Fecha</span>
+          <span class="np-detail-field-value">
+            {{ log.createdAt | date: 'dd/MM/yyyy HH:mm:ss' }}
+          </span>
+        </div>
+
+        <div class="np-detail-field">
+          <span class="np-detail-field-label">Usuario</span>
+          <span class="np-detail-field-value">
+            @if (log.userEmail) {
+              {{ log.userEmail }}
+            } @else {
+              <span class="np-detail-placeholder">sistema</span>
+            }
+          </span>
+        </div>
+
+        <div class="np-detail-field">
+          <span class="np-detail-field-label">Acción</span>
+          <span class="np-detail-field-value">{{ log.action }}</span>
+        </div>
+
+        <div class="np-detail-field">
+          <span class="np-detail-field-label">Entidad afectada</span>
+          <span class="np-detail-field-value">{{ log.entityType || '—' }}</span>
+        </div>
+
+        <div class="np-detail-field">
+          <span class="np-detail-field-label">Identificador</span>
+          <span class="np-detail-field-value np-mono">{{ log.entityHashId || '—' }}</span>
+        </div>
+
+        <div class="np-detail-field">
+          <span class="np-detail-field-label">Dirección IP</span>
+          <span class="np-detail-field-value np-mono">{{ log.ipAddress || '—' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="np-detail-section">
+      <div class="np-detail-section-header">
+        <div>
+          <span class="np-detail-section-title">Cambios</span>
+          <span class="np-detail-section-count">{{ changeRows.length }} campos</span>
+        </div>
+      </div>
+
+      @if (changeRows.length) {
+        <div class="np-table-scroll np-audit-table">
+          <table class="table np-table mb-0">
+            <thead>
+            <tr>
+              <th>CAMPO</th>
+              <th>ANTES</th>
+              <th>AHORA</th>
+              <th>ESTADO</th>
+            </tr>
+            </thead>
+
+            <tbody>
+              @for (row of changeRows; track row.field) {
+                <tr>
+                  <td class="np-table-primary">{{ row.field }}</td>
+                  <td class="np-table-mono np-audit-value">
+                    @if (row.before !== null) {
+                      {{ row.before }}
+                    } @else {
+                      <span class="np-detail-placeholder">—</span>
+                    }
+                  </td>
+                  <td class="np-table-mono np-audit-value">
+                    @if (row.after !== null) {
+                      {{ row.after }}
+                    } @else {
+                      <span class="np-detail-placeholder">—</span>
+                    }
+                  </td>
+                  <td>
+                    <span class="np-badge {{ changeStatusClass[row.status] }}">
+                      {{ changeStatusLabel[row.status] }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="np-empty-state">
+          Este registro no guarda cambios de campos.
+        </div>
+      }
+    </div>
+
+    <div class="np-detail-section">
+      <div class="np-detail-section-header">
+        <div>
+          <span class="np-detail-section-title">Historial de la entidad</span>
+          <span class="np-detail-section-count">
+            {{ otherHistory.length }} otros registros
+          </span>
+        </div>
+      </div>
+
+      <div class="np-table-scroll np-audit-table">
+        <table class="table np-table mb-0">
+          <thead>
+          <tr>
+            <th>FECHA</th>
+            <th>USUARIO</th>
+            <th>ACCIÓN</th>
+            <th>DETALLE</th>
+            <th>NIVEL</th>
+            <th class="np-table-actions-cell text-end">ACCIONES</th>
+          </tr>
+          </thead>
+
+          <tbody>
+            @for (item of otherHistory; track item.id) {
+              <tr>
+                <td class="np-table-mono">{{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td class="np-table-muted">{{ item.userEmail || 'sistema' }}</td>
+                <td><span class="np-table-primary">{{ item.action }}</span></td>
+                <td class="np-table-muted">{{ item.detail }}</td>
+                <td>
+                  <span class="np-badge {{ getAuditLevelClass(item.levelName) }}">
+                    {{ item.levelName || '—' }}
+                  </span>
+                </td>
+                <td class="np-table-actions-cell text-end">
+                  <app-table-row-action [customActions]="rowActions(item)" />
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6">
+                  <div class="np-empty-state">
+                    Es la única acción registrada sobre esta entidad.
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

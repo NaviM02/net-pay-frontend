@@ -1,4 +1,5 @@
 import { ChargeStatusEnum } from './payment.enum';
+import { AuditEntityTypeEnum } from './audit.enum';
 
 export class AuthRequestDto {
   public email!: string;
@@ -84,6 +85,27 @@ export class AppClientAccount {
   public credit!: number;
   public overdueCount!: number;
   public charges: AppClientCharge[] = [];
+}
+
+export interface AuditChangeEntry {
+  before?: Record<string, unknown> | null;
+  after?: Record<string, unknown> | null;
+}
+
+export class AppAuditLog {
+  // The log is append-only and ordered by date, so the numeric id can be shown.
+  public id!: number;
+  public userId!: number;
+  public userEmail!: string | null;
+  public action!: string;
+  public detail!: string;
+  public entityType!: AuditEntityTypeEnum | string;
+  public entityHashId!: string;
+  public changes: AuditChangeEntry | null = null;
+  public ipAddress!: string | null;
+  public level!: number;
+  public levelName!: string;
+  public createdAt!: string;
 }
 
 export class AppReceipt {

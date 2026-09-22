@@ -48,7 +48,7 @@
                 <app-table-row-action
                   [viewRoute]="['/users/', user.hashId]"
                   (editAction)="edit(user.hashId)"
-                  (deleteAction)="delete(user.hashId)" />
+                  (deleteAction)="delete(user.hashId, user.fullName)" />
               </td>
             </tr>
           } @empty {

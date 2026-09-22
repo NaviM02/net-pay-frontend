@@ -19,7 +19,7 @@ export enum TypologyEnum {
     PENDING = 92,
     FAILED = 93,
   AUDIT_LEVELS = 100,
-    INFO = 100,
-    WARNING = 100,
-    ERROR = 100,
+    INFO = 101,
+    WARNING = 102,
+    ERROR = 103,
 }
