@@ -101,21 +101,6 @@ export class DynamicListFilter extends BaseFilter {
    * @param size Page size used by infinite scroll. Defaults to 10.
    * @param curValue Initial selected values snapshot to persist and restore selection.
    *
-   * @Example
-   * ```ts
-   *  new DynamicListFilter (
-   *    'essayIds',
-   *    'txt_essays',
-   *    DynamicProviderKey.SIDAL_ESSAY_FIND_ALL,
-   *    'name',
-   *    'essayId',
-   *    'name',
-   *    {
-   *      status: `${TypologyEnum.ACTIVE},${TypologyEnum.LOCKED}`,
-   *      columnOrder: 'name'
-   *    },
-   *  )
-   * ```
    */
   constructor(
     id: string,

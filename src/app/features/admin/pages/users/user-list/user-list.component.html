@@ -1,4 +1,4 @@
-<div class="">
+<div class="np-page">
 
   <app-list-page-header
     title="Usuarios"
@@ -8,14 +8,14 @@
   />
 
   <div class="np-list-card">
-    <div class="np-table-actions-bar mb-4">
+    <div class="np-table-actions-bar">
       <app-filter-menu
         [filterGroup]="listStateService.filter"
         (onFilterChange)="listStateService.onFilterChange($event)"
       />
     </div>
 
-    <div class="table-responsive">
+    <div class="np-table-scroll">
       <table class="table np-table mb-0">
         <thead>
         <tr>
@@ -24,7 +24,7 @@
           <th>ROL</th>
           <th>ESTADO</th>
           <th>FECHA DE INGRESO</th>
-          <th class="text-end">ACCIONES</th>
+          <th class="np-table-actions-cell text-end">ACCIONES</th>
         </tr>
         </thead>
 
@@ -32,17 +32,23 @@
           @for (user of users; track user.id) {
             <tr>
               <td>
-                <span class="np-user-name">{{ user.fullName }}</span>
+                <span class="np-table-primary">{{ user.fullName }}</span>
               </td>
-              <td class="np-email">{{ user.email }}</td>
+              <td class="np-table-muted">{{ user.email }}</td>
               <td><app-typology-badge [typology]="user.tpRole" /></td>
               <td><app-typology-badge [typology]="user.tpStatus" /></td>
-              <td class="np-date">{{ user.entryDate }}</td>
-              <td>
+              <td class="np-table-muted">{{ user.entryDate }}</td>
+              <td class="np-table-actions-cell text-end">
                 <app-table-row-action
                   [viewRoute]="['/users/', user.hashId]"
                   (editAction)="edit(user.hashId)"
                   (deleteAction)="delete(user.hashId)" />
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6">
+                <div class="np-empty-state">No hay usuarios que coincidan con el filtro.</div>
               </td>
             </tr>
           }

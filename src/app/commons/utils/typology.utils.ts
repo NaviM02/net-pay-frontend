@@ -8,7 +8,10 @@ export function compareTps(tp1: AdmTypology | undefined, tp2: AdmTypology | unde
 const TYPOLOGY_CLASS_BY_INTERNAL_ID: Partial<Record<TypologyEnum, string>> = {
   [TypologyEnum.ACTIVE]: 'text-white bg-success',
   [TypologyEnum.INACTIVE]: 'text-dark bg-gray',
-  [TypologyEnum.LOCKED]: 'text-white bg-primary'
+  [TypologyEnum.LOCKED]: 'text-white bg-primary',
+  [TypologyEnum.RESIDENTIAL]: 'text-white bg-primary',
+  [TypologyEnum.EMPRESARIAL]: 'text-white bg-success',
+  [TypologyEnum.CORPORATE]: 'text-black bg-warning'
 };
 
 /**

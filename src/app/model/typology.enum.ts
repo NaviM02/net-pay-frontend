@@ -6,4 +6,8 @@ export enum TypologyEnum {
   USER_ROLES = 60,
     ADMIN = 61,
     COLLECTOR = 62,
+  SERVICE_TYPES = 70,
+    RESIDENTIAL = 71,
+    EMPRESARIAL = 72,
+    CORPORATE = 73,
 }
