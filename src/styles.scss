@@ -888,6 +888,230 @@ p {
 }
 
 /* ============================================================
+   Auth screens (forgot / reset password)
+   Shared by the recovery pages; the login keeps its own two column shell.
+   ============================================================ */
+
+.np-auth {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+
+  background-color: var(--np-dark-login);
+  font-family: var(--np-font-family);
+}
+
+.np-auth-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.np-auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.np-auth-logo {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+  background-color: var(--np-primary);
+
+  color: #fff;
+
+  .material-symbols-outlined {
+    font-size: 19px;
+  }
+}
+
+.np-auth-brand-name {
+  color: #F1F5F9;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.np-auth-brand-subtitle {
+  margin-top: 3px;
+  color: var(--np-blue);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.np-auth-heading {
+  margin-bottom: 24px;
+
+  h2 {
+    margin: 0 0 6px;
+    color: #F1F5F9;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin: 0;
+    color: #64748B;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+}
+
+.np-auth-group {
+  margin-bottom: 20px;
+}
+
+.np-auth-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #94A3B8;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.np-auth-required::after {
+  content: " *";
+  color: #EF4444;
+  font-weight: 600;
+}
+
+/* Inline feedback: error keys coming from the API, hints and success notes. */
+.np-auth-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 10px 12px;
+
+  border: 1px solid transparent;
+  border-radius: var(--np-radius-md);
+
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.np-auth-alert .material-symbols-outlined {
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.np-auth-alert-error {
+  background-color: var(--np-error-background);
+  border-color: var(--np-error-border);
+  color: var(--np-error-text);
+}
+
+.np-auth-alert-success {
+  background-color: var(--np-success-background);
+  border-color: var(--np-success-border);
+  color: var(--np-success-text);
+}
+
+.np-auth-alert-info {
+  background-color: var(--np-neutral-background);
+  border-color: var(--np-neutral-border);
+  color: var(--np-neutral-text);
+}
+
+.np-auth-hint {
+  margin-top: 6px;
+  color: #64748B;
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.np-auth-requirements {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #64748B;
+    font-size: 11.5px;
+    transition: color 0.15s ease;
+
+    .material-symbols-outlined {
+      font-size: 15px;
+    }
+
+    &.done {
+      color: var(--np-success-text);
+    }
+  }
+}
+
+.np-auth-hint-error {
+  margin-top: 6px;
+  color: #FCA5A5;
+  font-size: 11.5px;
+}
+
+.np-auth-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.np-auth-link {
+  color: var(--np-blue);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    color: #93C5FD;
+    text-decoration: underline;
+  }
+}
+
+.np-auth-submit {
+  width: 100%;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border-radius: 8px;
+  background-color: var(--np-primary);
+  border-color: var(--np-primary);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--np-primary-hover);
+    border-color: var(--np-primary-hover);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+/* ============================================================
    Dashboards (shared by the admin and the collector ones)
    ============================================================ */
 

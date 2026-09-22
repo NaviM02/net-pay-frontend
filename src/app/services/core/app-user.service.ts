@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { AppClient, AppUser } from '../../model/app.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { AppClient, AppUser, ForgotPasswordRequest, MessageResponseDto, ResetPasswordRequest, ResetTokenValidationDto } from '../../model/app.model';
 import { QueryParamService } from '../other/query-param.service';
 import { buildSkipGlobalLoadingContext } from '../../interceptors/loading-ui-context';
 
@@ -28,6 +28,28 @@ export class AppUserService {
 
   findByHashId(hashId: string) {
     return this.http.get<AppUser>(`${this.baseUrl}/${hashId}`);
+  }
+
+  /**
+   * Asks for the reset link. It answers `200` whether or not the email is
+   * registered, so the UI must never confirm that an account exists. A `400`
+   * only comes back when the email does exist but the delivery failed.
+   */
+  forgotPassword(email: string) {
+    return this.http.post<MessageResponseDto>(`${this.baseUrl}/forgot-password`, {
+      email,
+    } satisfies ForgotPasswordRequest);
+  }
+
+  /** Tells whether a reset token still exists, has not been used and has not expired. */
+  validateResetToken(token: string) {
+    const params = new HttpParams().set('token', token);
+    return this.http.get<ResetTokenValidationDto>(`${this.baseUrl}/reset-password/validate`, { params });
+  }
+
+  /** Sets the new password. The token is single use and is consumed on success. */
+  resetPassword(request: ResetPasswordRequest) {
+    return this.http.post<MessageResponseDto>(`${this.baseUrl}/reset-password`, request);
   }
 
   /**
