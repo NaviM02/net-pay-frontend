@@ -1,0 +1,42 @@
+.np-report-tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+
+  padding-top: 14px;
+}
+
+.np-report-tabs ::ng-deep .nav-tabs {
+  gap: 4px;
+  border-bottom: 1px solid var(--np-border);
+}
+
+.np-report-tabs ::ng-deep .nav-tabs .nav-link {
+  padding: 9px 16px;
+
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: var(--np-radius-md) var(--np-radius-md) 0 0;
+
+  color: var(--np-text-muted);
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.np-report-tabs ::ng-deep .nav-tabs .nav-link:hover {
+  border-color: var(--np-border);
+  background: var(--np-surface);
+  color: var(--np-text-secondary);
+}
+
+.np-report-tabs ::ng-deep .nav-tabs .nav-link.active {
+  border-color: var(--np-border);
+  background: var(--np-surface);
+  color: var(--np-primary);
+
+  font-weight: 600;
+}
+
+.np-report-outlet {
+  padding-top: 14px;
+}

@@ -1,0 +1,89 @@
+.np-dashboard-period {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+
+  padding: 16px 0 4px;
+}
+
+.np-dashboard-period-label {
+  padding-bottom: 9px;
+  color: var(--np-text-light);
+  font-size: 12.5px;
+}
+
+.np-dashboard-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+
+  padding-top: 14px;
+}
+
+.np-dashboard-kpis {
+  padding-top: 14px;
+}
+
+.np-dashboard-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+
+  padding-top: 14px;
+}
+
+.np-dashboard-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.np-dashboard-chart {
+  padding: 12px 8px 4px;
+}
+
+/* Method legend below the donut: dot, label, total and payment count. */
+.np-dashboard-chart-legend {
+  border-top: 1px solid var(--np-border-light);
+
+  td {
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+}
+
+.np-dashboard-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 7px;
+  border-radius: 50%;
+}
+
+.np-dashboard-tables {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+
+  padding: 14px 0;
+}
+
+/* Tables inside a dashboard panel are short, never the full list height. */
+.np-dashboard-table {
+  --np-table-min-height: 0;
+  --np-table-max-height: 320px;
+}
+
+@media (max-width: 991.98px) {
+  .np-dashboard-charts,
+  .np-dashboard-tables {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .np-dashboard-kpis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

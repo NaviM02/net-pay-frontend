@@ -1,0 +1,29 @@
+<div class="np-period-picker">
+  <div class="np-field">
+    <label class="np-field-label" for="np-period-month">Mes</label>
+    <select
+      id="np-period-month"
+      class="np-select"
+      [ngModel]="_month"
+      (ngModelChange)="onMonthChange($event)"
+    >
+      @for (name of months; track $index) {
+        <option [ngValue]="$index + 1">{{ name }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="np-field">
+    <label class="np-field-label" for="np-period-year">Año</label>
+    <select
+      id="np-period-year"
+      class="np-select"
+      [ngModel]="_year"
+      (ngModelChange)="onYearChange($event)"
+    >
+      @for (option of years; track option) {
+        <option [ngValue]="option">{{ option }}</option>
+      }
+    </select>
+  </div>
+</div>

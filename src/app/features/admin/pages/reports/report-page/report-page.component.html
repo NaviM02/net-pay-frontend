@@ -1,0 +1,33 @@
+<div class="np-page">
+
+  <app-list-page-header
+    title="Reportes"
+    description="Indicadores y detalle de la operación"
+  />
+
+  <div class="np-report-tabs">
+    <ul
+      ngbNav
+      #reportNav="ngbNav"
+      class="nav nav-tabs"
+      [activeId]="activeTab"
+      (activeIdChange)="activeTab = $event"
+    >
+      <li [ngbNavItem]="ReportTabEnum.COLLECTIONS">
+        <a ngbNavLink>Cobros por periodo</a>
+        <ng-template ngbNavContent>
+          <app-collections-report />
+        </ng-template>
+      </li>
+
+      <li [ngbNavItem]="ReportTabEnum.OVERDUE_CLIENTS">
+        <a ngbNavLink>Clientes en mora</a>
+        <ng-template ngbNavContent>
+          <app-overdue-clients-report />
+        </ng-template>
+      </li>
+    </ul>
+
+    <div [ngbNavOutlet]="reportNav" class="np-report-outlet"></div>
+  </div>
+</div>

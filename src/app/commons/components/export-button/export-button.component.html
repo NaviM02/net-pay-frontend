@@ -1,0 +1,27 @@
+<div class="np-export-dropdown" ngbDropdown placement="bottom-end">
+  <button
+    type="button"
+    class="np-btn np-btn-sm np-btn-secondary"
+    ngbDropdownToggle
+    [title]="label"
+  >
+    <app-material-icon [size]="16">download</app-material-icon>
+    {{ label }}
+  </button>
+
+  <div ngbDropdownMenu>
+    @for (format of formats; track format) {
+      <button
+        ngbDropdownItem
+        type="button"
+        class="np-export-option"
+        [disabled]="true"
+        (click)="onSelect(format)"
+      >
+        {{ formatLabels[format] }}
+      </button>
+    }
+
+    <div class="np-export-hint">Exportación disponible próximamente</div>
+  </div>
+</div>
