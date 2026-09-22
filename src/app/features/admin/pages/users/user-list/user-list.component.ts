@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { UserListFilter } from './user-list.filter';
 import { AdmTypology, AppUser } from '../../../../../model/app.model';
 import { AppUserService } from '../../../../../services/core/app-user.service';
@@ -17,6 +18,7 @@ import { UserFormModalComponent } from '../user-form-modal/user-form-modal.compo
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
   imports: [
+    DatePipe,
     ListPageHeaderComponent,
     FilterMenuComponent,
     TypologyBadgeComponent,

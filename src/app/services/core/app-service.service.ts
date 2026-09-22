@@ -1,8 +1,9 @@
- import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { AppService } from '../../model/app.model';
 import { QueryParamService } from '../other/query-param.service';
+import { buildSkipGlobalLoadingContext } from '../../interceptors/loading-ui-context';
 
 @Injectable({
   providedIn: 'root',
@@ -15,10 +16,12 @@ export class AppServiceService {
     private queryParamService: QueryParamService,
   ) {}
 
-  findAll(queryParams: Map<string, string> = new Map()) {
+  findAll(queryParams: Map<string, string> = new Map(), skipLoading: boolean = false) {
     const params = this.queryParamService.getParams(queryParams);
+    const context = skipLoading ? buildSkipGlobalLoadingContext() : undefined;
     return this.http.get<AppService[]>(this.baseUrl, {
       params,
+      context,
       observe: 'response',
     });
   }

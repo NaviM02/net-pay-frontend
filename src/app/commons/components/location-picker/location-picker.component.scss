@@ -1,0 +1,59 @@
+.np-location-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.np-location-search {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.np-location-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 240px;
+  min-width: 200px;
+
+  color: var(--np-text-light);
+}
+
+.np-location-input app-material-icon {
+  position: absolute;
+  left: 10px;
+  pointer-events: none;
+}
+
+.np-location-input .np-input {
+  padding-left: 34px;
+}
+
+.np-location-map {
+  position: relative;
+  z-index: 0;
+
+  width: 100%;
+
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-md);
+
+  overflow: hidden;
+}
+
+.np-location-coords {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  color: var(--np-text-muted);
+  font-family: var(--np-mono-family);
+  font-size: 12px;
+}
+
+.np-location-hint {
+  color: var(--np-text-light);
+  font-size: 12px;
+}

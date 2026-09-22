@@ -72,6 +72,21 @@ export class UserDetailComponent implements OnInit {
       .join('') ?? '';
   }
 
+  get lastLoginText(): string {
+    if (!this.user.lastLoginAt) return 'nunca';
+
+    const parsed = new Date(this.user.lastLoginAt);
+    if (Number.isNaN(parsed.getTime())) return this.user.lastLoginAt;
+
+    return parsed.toLocaleString('es-GT', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
   onDelete(): void {
     if (!this.hashId) return;
 

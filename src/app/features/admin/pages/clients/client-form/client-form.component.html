@@ -1,0 +1,195 @@
+<div class="np-page">
+  <app-detail-page-header
+    [backRoute]="['/clients']"
+    [itemName]="isEdit ? 'Editar cliente' : 'Nuevo cliente'"
+    description="Registra los datos del cliente, su servicio y su ubicación"
+    [showEdit]="false"
+    [showDelete]="false"
+  />
+
+  <div class="np-client-form">
+
+    <div class="np-detail-section">
+      <div class="np-detail-section-header">
+        <span class="np-detail-section-title">Información del negocio</span>
+      </div>
+
+      <div class="np-form-body">
+        <div class="row g-3">
+          <div class="col-12">
+            <label for="businessName" class="form-label required-field">Razón social</label>
+            <input
+              id="businessName"
+              type="text"
+              class="form-control"
+              [(ngModel)]="client.businessName"
+              placeholder="Ej. Comercial Los Altos"
+              autocomplete="off"
+              [maxLength]="150"
+              #businessName="ngModel"
+              [class.is-invalid]="businessName.touched && !(client.businessName && client.businessName.trim())"
+              [attr.aria-invalid]="businessName.touched && !(client.businessName && client.businessName.trim())"
+              aria-describedby="businessNameError"
+            />
+            <div id="businessNameError" class="invalid-feedback" role="alert">
+              Introduce la razón social del cliente.
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <label for="contactName" class="form-label">Nombre de contacto</label>
+            <input
+              id="contactName"
+              type="text"
+              class="form-control"
+              [(ngModel)]="client.contactName"
+              placeholder="Ej. Ana López"
+              autocomplete="off"
+              [maxLength]="120"
+            />
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <label for="contactPhone" class="form-label">Teléfono de contacto</label>
+            <input
+              id="contactPhone"
+              type="tel"
+              class="form-control"
+              [(ngModel)]="client.contactPhone"
+              placeholder="Ej. 5555 5555"
+              autocomplete="off"
+              [maxLength]="30"
+            />
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <label for="contactEmail" class="form-label">Correo de contacto</label>
+            <input
+              id="contactEmail"
+              type="email"
+              class="form-control"
+              [(ngModel)]="client.contactEmail"
+              placeholder="contacto@empresa.com"
+              autocomplete="off"
+              [maxLength]="120"
+            />
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <label for="customerSince" class="form-label">Cliente desde</label>
+            <input
+              id="customerSince"
+              type="date"
+              class="form-control"
+              [(ngModel)]="client.customerSince"
+            />
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <label class="form-label required-field">Estado</label>
+            <ng-select
+              placeholder="Seleccionar estado"
+              [(ngModel)]="client.tpStatus"
+              [clearable]="false"
+              [compareWith]="compareTps"
+              appendTo="body"
+            >
+              @if (tpActive) {
+                <ng-option [value]="tpActive">{{ tpActive.description }}</ng-option>
+              }
+              @if (tpInactive) {
+                <ng-option [value]="tpInactive">{{ tpInactive.description }}</ng-option>
+              }
+            </ng-select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="np-detail-section">
+      <div class="np-detail-section-header">
+        <span class="np-detail-section-title">Servicio y cobrador</span>
+      </div>
+
+      <div class="np-form-body">
+        <div class="row g-3">
+          <div class="col-12 col-lg-6">
+            <label class="form-label required-field">Servicio contratado</label>
+            <app-dynamic-select
+              [providerKey]="DynamicProviderKey.APP_SERVICES_FIND_ALL"
+              bindLabel="name"
+              queryParamName="name"
+              placeholder="Buscar servicio"
+              notFoundTExt="Sin servicios"
+              typeToSearchText="Escribe para buscar"
+              loadingText="Cargando..."
+              [(ngModel)]="client.service"
+            />
+            <div class="form-text">Obligatorio: el cliente debe tener un servicio contratado.</div>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <label class="form-label">Cobrador asignado</label>
+            <app-dynamic-select
+              [providerKey]="DynamicProviderKey.APP_COLLECTORS_FIND_ALL"
+              bindLabel="fullName"
+              queryParamName="fullName"
+              placeholder="Buscar cobrador"
+              notFoundTExt="Sin cobradores"
+              typeToSearchText="Escribe para buscar"
+              loadingText="Cargando..."
+              [clearable]="true"
+              [(ngModel)]="client.collector"
+            />
+            <div class="form-text">Opcional: puedes asignarlo más tarde.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="np-detail-section">
+      <div class="np-detail-section-header">
+        <span class="np-detail-section-title">Ubicación</span>
+        <span class="np-detail-section-count">Opcional</span>
+      </div>
+
+      <div class="np-form-body">
+        <div class="row g-3">
+          <div class="col-12">
+            <label for="address" class="form-label">Dirección</label>
+            <input
+              id="address"
+              type="text"
+              class="form-control"
+              [(ngModel)]="client.address"
+              placeholder="Dirección del cliente"
+              autocomplete="off"
+              [maxLength]="255"
+            />
+            <div class="form-text">
+              Se completa automáticamente al seleccionar un punto en el mapa.
+            </div>
+          </div>
+
+          <div class="col-12">
+            <app-location-picker
+              [(ngModel)]="location"
+              (addressResolved)="onAddressResolved($event)"
+              (addressCleared)="onAddressResolved($event)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="np-form-actions">
+      <button type="button" class="btn btn-light" (click)="cancel()">
+        Cancelar
+      </button>
+
+      <button type="button" class="btn btn-primary" (click)="save()">
+        {{ isEdit ? 'Guardar cambios' : 'Crear cliente' }}
+      </button>
+    </div>
+  </div>
+</div>

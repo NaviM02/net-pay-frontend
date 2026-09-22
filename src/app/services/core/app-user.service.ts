@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { AppUser } from '../../model/app.model';
 import { QueryParamService } from '../other/query-param.service';
+import { buildSkipGlobalLoadingContext } from '../../interceptors/loading-ui-context';
 
 @Injectable({
   providedIn: 'root',
@@ -19,9 +20,10 @@ export class AppUserService {
     return this.http.get<AppUser>(`${this.baseUrl}/me`);
   }
 
-  findAll(queryParams: Map<string, string> = new Map()) {
+  findAll(queryParams: Map<string, string> = new Map(), skipLoading: boolean = false) {
     const params = this.queryParamService.getParams(queryParams);
-    return this.http.get<AppUser[]>(this.baseUrl, { params, observe: 'response' });
+    const context = skipLoading ? buildSkipGlobalLoadingContext() : undefined;
+    return this.http.get<AppUser[]>(this.baseUrl, { params, context, observe: 'response' });
   }
 
   findByHashId(hashId: string) {

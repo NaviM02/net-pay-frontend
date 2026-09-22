@@ -23,6 +23,7 @@ export class AppUser {
   public tpStatus!: AdmTypology;
   public tpRole!: AdmTypology;
   public entryDate!: string;
+  public lastLoginAt!: string;
 }
 
 export class AppToken {
@@ -37,4 +38,22 @@ export class AppService {
   public monthlyPrice!: number;
   public tpType!: AdmTypology;
   public tpStatus!: AdmTypology;
+}
+
+export class AppClient {
+  public id!: number;
+  public hashId!: string;
+  public businessName!: string;
+  public contactName!: string;
+  public contactEmail!: string;
+  public contactPhone!: string;
+  public address!: string;
+  public latitude: number | null = null;
+  public longitude: number | null = null;
+  public customerSince!: string;
+  public tpStatus!: AdmTypology;
+  public service: AppService | null = null;
+  public collector: AppUser | null = null;
+  public createdAt!: string;
+  public updatedAt!: string;
 }

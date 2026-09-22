@@ -23,7 +23,7 @@
           <th>EMAIL</th>
           <th>ROL</th>
           <th>ESTADO</th>
-          <th>FECHA DE INGRESO</th>
+          <th>ÚLTIMO INGRESO</th>
           <th class="np-table-actions-cell text-end">ACCIONES</th>
         </tr>
         </thead>
@@ -37,7 +37,13 @@
               <td class="np-table-muted">{{ user.email }}</td>
               <td><app-typology-badge [typology]="user.tpRole" /></td>
               <td><app-typology-badge [typology]="user.tpStatus" /></td>
-              <td class="np-table-muted">{{ user.entryDate }}</td>
+              <td class="np-table-muted">
+                @if (user.lastLoginAt) {
+                  {{ user.lastLoginAt | date: 'dd/MM/yyyy HH:mm' }}
+                } @else {
+                  Nunca
+                }
+              </td>
               <td class="np-table-actions-cell text-end">
                 <app-table-row-action
                   [viewRoute]="['/users/', user.hashId]"
@@ -47,7 +53,7 @@
             </tr>
           } @empty {
             <tr>
-              <td colspan="6">
+              <td colspan="7">
                 <div class="np-empty-state">No hay usuarios que coincidan con el filtro.</div>
               </td>
             </tr>
