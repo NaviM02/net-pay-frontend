@@ -35,25 +35,13 @@ import {
 import { TypologyBadgeComponent } from '../../../commons/components/typology-badge/typology-badge.component';
 import { getAuditLevelClass } from '../../../commons/utils/audit.utils';
 import {
-  buildClientsByPlanSeries,
-  buildMonthlyCollectionSeries,
-  formatCurrency,
+  buildMethodChart,
+  buildMonthlyChart,
+  buildPlanChart,
   getPaymentMethodColor,
   getPaymentMethodLabel,
   orderCollectionsByMethod,
-} from '../../../commons/utils/report.utils';
-
-const CHART_FONT_FAMILY = 'Inter, system-ui, sans-serif';
-const CHART_HEIGHT = 300;
-const CHART_LEGEND: ApexLegend = {
-  position: 'bottom',
-  fontSize: '13px',
-  markers: { strokeWidth: 10 },
-};
-const CHART_NO_DATA_LABELS: ApexDataLabels = { enabled: false };
-const CHART_BORDERLESS: ApexStroke = { show: false };
-const CHART_GRID: ApexGrid = { borderColor: '#F1F5F9', strokeDashArray: 4 };
-const CHART_TOOLTIP_CURRENCY: ApexTooltip = { y: { formatter: value => formatCurrency(value) } };
+} from '../../../commons/utils/dashboard.utils';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -89,23 +77,27 @@ export class AdminDashboardComponent implements OnInit {
   // `apx-chart` takes one input per option group. They are plain fields on
   // purpose: a getter returning a new array on every change detection cycle
   // would make ApexCharts redraw the charts constantly.
-  protected methodChart: ApexChart = { type: 'donut', height: CHART_HEIGHT, fontFamily: CHART_FONT_FAMILY };
+  protected methodChart: ApexChart = {
+    type: 'donut',
+    height: 300,
+    fontFamily: 'Inter, system-ui, sans-serif',
+  };
   protected methodChartSeries: ApexNonAxisChartSeries = [];
   protected methodChartLabels: string[] = [];
   protected methodChartColors: string[] = [];
   protected methodChartStroke: ApexStroke = { width: 2, colors: ['#FFFFFF'] };
-  protected methodChartLegend: ApexLegend = CHART_LEGEND;
-  protected methodChartDataLabels: ApexDataLabels = CHART_NO_DATA_LABELS;
-  protected methodChartTooltip: ApexTooltip = CHART_TOOLTIP_CURRENCY;
-  protected methodChartNoData: ApexNoData = { text: 'Sin cobros en el periodo' };
+  protected methodChartLegend: ApexLegend = { position: 'bottom', markers: { strokeWidth: 10 } };
+  protected methodChartDataLabels: ApexDataLabels = { enabled: false };
   protected methodChartPlotOptions: ApexPlotOptions = {
     pie: { donut: { size: '68%', labels: { show: true } } },
   };
+  protected methodChartTooltip: ApexTooltip = { y: { formatter: value => `Q ${value}` } };
+  protected methodChartNoData: ApexNoData = { text: 'Sin cobros en el periodo' };
 
   protected monthlyChart: ApexChart = {
     type: 'bar',
-    height: CHART_HEIGHT,
-    fontFamily: CHART_FONT_FAMILY,
+    height: 300,
+    fontFamily: 'Inter, system-ui, sans-serif',
     stacked: true,
   };
   protected monthlyChartSeries: ApexAxisChartSeries = [];
@@ -113,12 +105,10 @@ export class AdminDashboardComponent implements OnInit {
   protected monthlyChartPlotOptions: ApexPlotOptions = {
     bar: { columnWidth: '45%', borderRadius: 3, borderRadiusApplication: 'end' },
   };
-  protected monthlyChartLegend: ApexLegend = CHART_LEGEND;
-  protected monthlyChartStroke: ApexStroke = CHART_BORDERLESS;
-  protected monthlyChartDataLabels: ApexDataLabels = CHART_NO_DATA_LABELS;
-  protected monthlyChartGrid: ApexGrid = CHART_GRID;
-  protected monthlyChartTooltip: ApexTooltip = CHART_TOOLTIP_CURRENCY;
-  protected monthlyChartNoData: ApexNoData = { text: 'Sin cobros registrados' };
+  protected monthlyChartLegend: ApexLegend = { position: 'bottom', markers: { strokeWidth: 10 } };
+  protected monthlyChartStroke: ApexStroke = { show: false };
+  protected monthlyChartDataLabels: ApexDataLabels = { enabled: false };
+  protected monthlyChartGrid: ApexGrid = { borderColor: '#F1F5F9', strokeDashArray: 4 };
   protected monthlyChartXaxis: ApexXAxis = {
     categories: [],
     axisBorder: { show: false },
@@ -127,17 +117,19 @@ export class AdminDashboardComponent implements OnInit {
   protected monthlyChartYaxis: ApexYAxis = {
     labels: { formatter: value => `Q ${Number(value).toLocaleString('es-GT')}` },
   };
+  protected monthlyChartTooltip: ApexTooltip = { y: { formatter: value => `Q ${value}` } };
+  protected monthlyChartNoData: ApexNoData = { text: 'Sin cobros registrados' };
 
-  protected planChart: ApexChart = { type: 'bar', height: CHART_HEIGHT, fontFamily: CHART_FONT_FAMILY };
+  protected planChart: ApexChart = { type: 'bar', height: 300, fontFamily: 'Inter, system-ui, sans-serif' };
   protected planChartSeries: ApexAxisChartSeries = [];
   protected planChartColors: string[] = [];
   protected planChartPlotOptions: ApexPlotOptions = {
     bar: { horizontal: true, barHeight: '55%', borderRadius: 3, distributed: true },
   };
   protected planChartLegend: ApexLegend = { show: false };
-  protected planChartStroke: ApexStroke = CHART_BORDERLESS;
-  protected planChartDataLabels: ApexDataLabels = CHART_NO_DATA_LABELS;
-  protected planChartGrid: ApexGrid = CHART_GRID;
+  protected planChartStroke: ApexStroke = { show: false };
+  protected planChartDataLabels: ApexDataLabels = { enabled: false };
+  protected planChartGrid: ApexGrid = { borderColor: '#F1F5F9', strokeDashArray: 4 };
   protected planChartXaxis: ApexXAxis = {
     categories: [],
     axisBorder: { show: false },
@@ -176,52 +168,61 @@ export class AdminDashboardComponent implements OnInit {
         this.recentActivities = dashboard.recentActivities ?? [];
         this.clientsByPlan = dashboard.clientsByPlan ?? [];
 
-        this.buildMethodChart(dashboard.collectionsByMethod ?? []);
-        this.buildMonthlyChart(dashboard.collectionsByMethodByMonth ?? []);
-        this.buildPlanChart(this.clientsByPlan);
+        this.applyMethodChart(dashboard.collectionsByMethod ?? []);
+        this.applyMonthlyChart(dashboard.collectionsByMethodByMonth ?? []);
+        this.applyPlanChart(this.clientsByPlan);
       },
       error: () => this.toastService.error('Error al cargar el dashboard.'),
     });
   }
 
-  /** Donut of the selected month. Always the three methods, even at zero. */
-  private buildMethodChart(collections: DashboardCollectionByMethod[]): void {
-    const ordered = orderCollectionsByMethod(collections);
+  private applyMethodChart(collections: DashboardCollectionByMethod[]): void {
+    const config = buildMethodChart(collections);
 
-    this.collectionsByMethod = ordered;
-    this.methodChartSeries = ordered.map(collection => collection.total);
-    this.methodChartLabels = ordered.map(collection => getPaymentMethodLabel(collection.methodName));
-    this.methodChartColors = ordered.map(collection => getPaymentMethodColor(collection.methodName));
+    this.collectionsByMethod = orderCollectionsByMethod(collections);
+    this.methodChart = config.chart;
+    this.methodChartSeries = config.series;
+    this.methodChartLabels = config.labels;
+    this.methodChartColors = config.colors;
+    this.methodChartStroke = config.stroke;
+    this.methodChartLegend = config.legend;
+    this.methodChartDataLabels = config.dataLabels;
+    this.methodChartPlotOptions = config.plotOptions;
+    this.methodChartTooltip = config.tooltip;
+    this.methodChartNoData = config.noData;
   }
 
-  /** Stacked bars: one serie per payment method, one point per month. */
-  private buildMonthlyChart(months: DashboardCollectionsByMonth[]): void {
-    const series = buildMonthlyCollectionSeries(months);
+  private applyMonthlyChart(months: DashboardCollectionsByMonth[]): void {
+    const config = buildMonthlyChart(months);
 
-    this.monthlyChartSeries = series.series;
-    this.monthlyChartColors = series.colors;
-    this.monthlyChartXaxis = {
-      categories: series.labels,
-      axisBorder: { show: false },
-      axisTicks: { show: false },
-    };
+    this.monthlyChart = config.chart;
+    this.monthlyChartSeries = config.series;
+    this.monthlyChartColors = config.colors;
+    this.monthlyChartPlotOptions = config.plotOptions;
+    this.monthlyChartStroke = config.stroke;
+    this.monthlyChartDataLabels = config.dataLabels;
+    this.monthlyChartLegend = config.legend;
+    this.monthlyChartXaxis = config.xaxis;
+    this.monthlyChartYaxis = config.yaxis;
+    this.monthlyChartGrid = config.grid;
+    this.monthlyChartTooltip = config.tooltip;
+    this.monthlyChartNoData = config.noData;
   }
 
-  /** Horizontal bars of active clients per plan, sorted descending. */
-  private buildPlanChart(plans: DashboardClientByPlan[]): void {
-    const series = buildClientsByPlanSeries(plans);
+  private applyPlanChart(plans: DashboardClientByPlan[]): void {
+    const config = buildPlanChart(plans);
 
-    this.planChartSeries = [{ name: 'Clientes activos', data: series.data }];
-    this.planChartColors = series.colors;
-    this.planChartXaxis = {
-      categories: series.labels,
-      axisBorder: { show: false },
-      axisTicks: { show: false },
-    };
-    this.planChartDataLabels = {
-      enabled: true,
-      formatter: value => String(value ?? 0),
-    };
+    this.planChart = config.chart;
+    this.planChartSeries = config.series;
+    this.planChartColors = config.colors;
+    this.planChartPlotOptions = config.plotOptions;
+    this.planChartStroke = config.stroke;
+    this.planChartDataLabels = config.dataLabels;
+    this.planChartLegend = config.legend;
+    this.planChartXaxis = config.xaxis;
+    this.planChartGrid = config.grid;
+    this.planChartTooltip = config.tooltip;
+    this.planChartNoData = config.noData;
   }
 
   /** Open the audit detail of the activity, when the entity is known. */

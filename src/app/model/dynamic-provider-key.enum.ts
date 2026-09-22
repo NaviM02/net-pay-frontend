@@ -3,4 +3,6 @@ export enum DynamicProviderKey {
   APP_SERVICES_FIND_ALL = 'APP_SERVICE_FIND_ALL',
   APP_COLLECTORS_FIND_ALL = 'APP_COLLECTOR_FIND_ALL',
   APP_CLIENTS_FIND_ALL = 'APP_CLIENT_FIND_ALL',
+  /** Only the clients assigned to the collector of the session. */
+  APP_COLLECTOR_CLIENTS_FIND_ALL = 'APP_COLLECTOR_CLIENT_FIND_ALL',
 }

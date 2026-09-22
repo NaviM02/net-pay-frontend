@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { AdminDashboard } from '../../model/dashboard.model';
+import { AdminDashboard, CollectorDashboard } from '../../model/dashboard.model';
 import { QueryParamService } from '../other/query-param.service';
 
 @Injectable({
@@ -25,5 +25,14 @@ export class DashboardService {
   findAdmin(queryParams: Map<string, string> = new Map()) {
     const params = this.queryParamService.getParams(queryParams);
     return this.http.get<AdminDashboard>(this.baseUrl, { params });
+  }
+
+  /**
+   * Dashboard of the collector of the token: no global activities and no client
+   * distribution by plan. Takes the same params as `findAdmin`.
+   */
+  findCollector(queryParams: Map<string, string> = new Map()) {
+    const params = this.queryParamService.getParams(queryParams);
+    return this.http.get<CollectorDashboard>(`${this.baseUrl}/collector`, { params });
   }
 }

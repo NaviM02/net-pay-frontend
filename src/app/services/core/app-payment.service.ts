@@ -37,4 +37,13 @@ export class AppPaymentService {
 
     return this.http.post<AppPayment>(this.baseUrl, payment);
   }
+
+  /**
+   * Registers a payment on behalf of the collector of the token. The backend
+   * takes the collector from its security context, so the body must not carry
+   * one: a collector can never register a payment in the name of someone else.
+   */
+  createAsCollector(payment: AppPayment) {
+    return this.http.post<AppPayment>(`${this.baseUrl}/collector`, payment);
+  }
 }

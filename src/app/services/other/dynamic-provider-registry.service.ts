@@ -30,9 +30,12 @@ export class DynamicProviderRegistryService implements DynamicListProviderRegist
   private providers = new Map<string, DynamicListProvider>();
 
   constructor(
-    @Optional() @Inject(DYNAMIC_LIST_PROVIDERS) providers: DynamicListProvider[] = [],
+    @Optional() @Inject(DYNAMIC_LIST_PROVIDERS) providers: DynamicListProvider[] | null,
   ) {
-    providers.forEach(provider => this.register(provider));
+    // `inject` returns `null` for an optional token that was not provided, so the
+    // list cannot be defaulted through the parameter: the registry has to work
+    // even when nothing registered a provider.
+    providers?.forEach(provider => this.register(provider));
   }
 
   has(key: string): boolean {

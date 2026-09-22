@@ -82,8 +82,12 @@ export class UserDetailComponent implements OnInit {
     if (!this.hashId) return;
 
     const { size, offset } = this.listStateService.pagination;
+    const queryParams = new Map<string, string>([
+      ['size', `${size}`],
+      ['offset', `${offset}`],
+    ]);
 
-    this.userService.findByCollectorHashId(this.hashId, size, offset).subscribe({
+    this.userService.findByCollectorHashId(this.hashId, queryParams).subscribe({
       next: (response) => {
         this.assignedClients = response.body ?? [];
         const total = Number(response.headers.get('X-Total-Count')) || this.assignedClients.length;

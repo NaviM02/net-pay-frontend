@@ -1,6 +1,7 @@
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withHashLocation } from '@angular/router';
-import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpResponse, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { of } from 'rxjs';
 import { routes } from './app.routes';
 import { loadingUiInterceptor } from './interceptors/loading-ui.interceptor';
 import { unauthorizedInterceptor } from './interceptors/unauthorized.interceptor';
@@ -9,8 +10,10 @@ import { AppStorageKeys } from './model/app-storage-keys.enum';
 import { environment } from '../environments/environment';
 import { DYNAMIC_LIST_PROVIDERS } from './services/other/dynamic-provider-registry.service';
 import { AppUserService } from './services/core/app-user.service';
+import { CurrentUserService } from './services/core/current-user.service';
 import { AppServiceService } from './services/core/app-service.service';
 import { AppClientService } from './services/core/app-client.service';
+import { AppClient } from './model/app.model';
 import { DynamicProviderKey } from './model/dynamic-provider-key.enum';
 import { TypologyEnum } from './model/typology.enum';
 
@@ -69,6 +72,22 @@ export const appConfig: ApplicationConfig = {
       useFactory: (service: AppClientService) => ({
         key: DynamicProviderKey.APP_CLIENTS_FIND_ALL,
         searchService: (params: Map<string, string>) => service.findAll(params, true),
+      })
+    },
+    {
+      provide: DYNAMIC_LIST_PROVIDERS,
+      multi: true,
+      deps: [AppUserService, CurrentUserService],
+      useFactory: (service: AppUserService, currentUserService: CurrentUserService) => ({
+        key: DynamicProviderKey.APP_COLLECTOR_CLIENTS_FIND_ALL,
+        searchService: (params: Map<string, string>) => {
+          // Always the collector of the session, so the select can never offer a
+          // client outside its portfolio.
+          const hashId = currentUserService.getCurrentHashId();
+          if (!hashId) return of(new HttpResponse<AppClient[]>({ body: [] }));
+
+          return service.findByCollectorHashId(hashId, params);
+        },
       })
     },
   ],

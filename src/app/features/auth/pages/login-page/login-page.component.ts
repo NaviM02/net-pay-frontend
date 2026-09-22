@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../../../services/other/toast.service';
 import { AuthService } from '../../../../services/core/auth.service';
+import { CurrentUserService } from '../../../../services/core/current-user.service';
 import { AuthRequestDto } from '../../../../model/app.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
@@ -29,6 +30,7 @@ export class LoginPageComponent {
     private authService: AuthService,
     private router: Router,
     private toastService: ToastService,
+    private currentUserService: CurrentUserService,
   ) {
     this.authReq = new AuthRequestDto();
   }
@@ -39,7 +41,8 @@ export class LoginPageComponent {
     this.authService.doLogin(this.authReq).subscribe({
       next: (_) => {
         this.toastService.success('Inicio de sesión exitoso');
-        void this.router.navigate(['dashboard']);
+        // Each role lands on its own home, never on the other role's area.
+        void this.router.navigateByUrl(this.currentUserService.getHomeRoute());
       },
       error: (e: HttpErrorResponse) => {
         if (e.error == 'wrong_credentials')
