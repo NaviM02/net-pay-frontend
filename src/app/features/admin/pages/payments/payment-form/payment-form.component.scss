@@ -1,0 +1,23 @@
+.np-payment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 20px;
+}
+
+.np-form-static {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+}
+
+.np-payment-hint {
+  padding: 10px 12px;
+
+  background-color: var(--np-primary-light);
+  border: 1px solid var(--np-primary-soft);
+  border-radius: var(--np-radius-md);
+
+  color: var(--np-text);
+  font-size: 13px;
+}

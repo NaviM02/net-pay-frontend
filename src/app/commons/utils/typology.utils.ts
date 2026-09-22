@@ -11,7 +11,13 @@ const TYPOLOGY_CLASS_BY_INTERNAL_ID: Partial<Record<TypologyEnum, string>> = {
   [TypologyEnum.LOCKED]: 'text-white bg-primary',
   [TypologyEnum.RESIDENTIAL]: 'text-white bg-primary',
   [TypologyEnum.EMPRESARIAL]: 'text-white bg-success',
-  [TypologyEnum.CORPORATE]: 'text-black bg-warning'
+  [TypologyEnum.CORPORATE]: 'text-black bg-warning',
+  [TypologyEnum.CASH]: 'text-white bg-success',
+  [TypologyEnum.TRANSFER]: 'text-white bg-primary',
+  [TypologyEnum.CAR]: 'text-black bg-warning',
+  [TypologyEnum.COMPLETED]: 'text-white bg-success',
+  [TypologyEnum.PENDING]: 'text-black bg-warning',
+  [TypologyEnum.FAILED]: 'text-white bg-danger'
 };
 
 /**

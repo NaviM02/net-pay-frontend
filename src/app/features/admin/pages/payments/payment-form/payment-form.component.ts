@@ -1,0 +1,237 @@
+import { CurrencyPipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgOptionComponent, NgSelectComponent } from '@ng-select/ng-select';
+import { concatMap, iif, Observable, of, tap } from 'rxjs';
+
+import { AdmTypology, AppClient, AppClientAccount, AppPayment } from '../../../../../model/app.model';
+import { DynamicProviderKey } from '../../../../../model/dynamic-provider-key.enum';
+import { ChargeStatusEnum } from '../../../../../model/payment.enum';
+import { TypologyEnum } from '../../../../../model/typology.enum';
+import { AppClientService } from '../../../../../services/core/app-client.service';
+import { AppPaymentService } from '../../../../../services/core/app-payment.service';
+import { AdmTypologyService } from '../../../../../services/core/adm-typology.service';
+import { ToastService } from '../../../../../services/other/toast.service';
+import { DetailPageHeaderComponent } from '../../../../../commons/components/detail-page-header/detail-page-header.component';
+import { DynamicSelectComponent } from '../../../../../commons/components/dynamic-select/dynamic-select.component';
+import { TypologyBadgeComponent } from '../../../../../commons/components/typology-badge/typology-badge.component';
+import { compareTps } from '../../../../../commons/utils/typology.utils';
+import { getChargeStatusClass, getChargeStatusLabel } from '../../../../../commons/utils/charge-status.utils';
+import { isPaymentCompleted, resolvePaymentStatusInternalId } from '../../../../../commons/utils/payment.utils';
+
+@Component({
+  selector: 'app-payment-form',
+  templateUrl: './payment-form.component.html',
+  styleUrl: './payment-form.component.scss',
+  imports: [
+    CurrencyPipe,
+    FormsModule,
+    NgSelectComponent,
+    NgOptionComponent,
+    DynamicSelectComponent,
+    TypologyBadgeComponent,
+    DetailPageHeaderComponent,
+  ],
+})
+export class PaymentFormComponent implements OnInit {
+  protected readonly compareTps = compareTps;
+  protected readonly DynamicProviderKey = DynamicProviderKey;
+  protected readonly getChargeStatusLabel = getChargeStatusLabel;
+  protected readonly getChargeStatusClass = getChargeStatusClass;
+  protected readonly isPaymentCompleted = isPaymentCompleted;
+
+  hashId: string | null = null;
+  payment: AppPayment = new AppPayment();
+
+  tpsMethods: AdmTypology[] = [];
+  tpPending!: AdmTypology;
+  tpCompleted!: AdmTypology;
+
+  // Statement of the selected client, used to suggest the amount.
+  account: AppClientAccount | null = null;
+
+  constructor(
+    private paymentService: AppPaymentService,
+    private clientService: AppClientService,
+    private typologyService: AdmTypologyService,
+    private toastService: ToastService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
+
+  ngOnInit(): void {
+    this.route.paramMap
+      .pipe(
+        tap((params) => (this.hashId = params.get('hashId'))),
+        concatMap(() =>
+          this.typologyService
+            .findByParentInternalId(TypologyEnum.PAYMENT_METHODS)
+            .pipe(tap((tps) => (this.tpsMethods = tps))),
+        ),
+        concatMap(() =>
+          this.typologyService
+            .findByInternalId(TypologyEnum.PENDING)
+            .pipe(tap((tp) => (this.tpPending = tp))),
+        ),
+        concatMap(() =>
+          this.typologyService
+            .findByInternalId(TypologyEnum.COMPLETED)
+            .pipe(tap((tp) => (this.tpCompleted = tp))),
+        ),
+        concatMap(() =>
+          iif(
+            () => !!this.hashId,
+            this.paymentService.findByHashId(this.hashId!).pipe(tap((p) => this.applyPayment(p))),
+            of(null).pipe(tap(() => this.applyDefaults())),
+          ),
+        ),
+        concatMap(() => this.loadAccount()),
+      )
+      .subscribe({
+        error: (e: HttpErrorResponse) => {
+          if (e.status === 404) {
+            this.toastService.error('Pago no encontrado.');
+            void this.router.navigate(['/payments']);
+            return;
+          }
+
+          this.toastService.error('Error al cargar el pago.');
+        },
+      });
+  }
+
+  get isEdit(): boolean {
+    return !!this.hashId;
+  }
+
+  /** A completed payment is settled, so the form becomes read-only. */
+  get isLocked(): boolean {
+    return this.isEdit && isPaymentCompleted(this.payment);
+  }
+
+  get isValid(): boolean {
+    if (this.isLocked) return false;
+
+    return (
+      !!this.payment.client &&
+      this.payment.amount !== null &&
+      this.payment.amount !== undefined &&
+      this.payment.amount > 0 &&
+      !!this.payment.paidAt &&
+      !!this.payment.tpPaymentMethod
+    );
+  }
+
+  /** Months still owed, oldest first, matching the backend cascade order. */
+  get pendingCharges() {
+    return this.account?.charges.filter(c => c.status !== ChargeStatusEnum.PAID) ?? [];
+  }
+
+  get suggestedAmount(): number {
+    return this.account?.balance ?? 0;
+  }
+
+  /**
+   * Status the payment will be saved with, derived from the amount against the
+   * balance. It is only a preview: the backend recalculates the allocations.
+   */
+  get derivedStatus(): AdmTypology | null {
+    const internalId = resolvePaymentStatusInternalId(
+      this.payment.amount,
+      this.account?.balance,
+      this.isEdit,
+    );
+
+    if (internalId === TypologyEnum.COMPLETED) return this.tpCompleted;
+    if (internalId === TypologyEnum.PENDING) return this.tpPending;
+
+    return this.payment.tpPaymentStatus ?? null;
+  }
+
+  onClientChange(): void {
+    this.loadAccount().subscribe();
+  }
+
+  /** Fills the amount with what the client owes. */
+  applySuggestedAmount(): void {
+    if (!this.suggestedAmount) return;
+    this.payment.amount = this.suggestedAmount;
+  }
+
+  save(): void {
+    if (this.isLocked) {
+      this.toastService.warning('El pago ya está completado y no se puede modificar.');
+      return;
+    }
+
+    if (!this.isValid) {
+      this.toastService.warning('Completa los campos obligatorios.');
+      return;
+    }
+
+    this.payment.tpPaymentStatus = this.derivedStatus ?? this.tpPending;
+
+    this.paymentService.save(this.payment).subscribe({
+      next: () => {
+        this.toastService.success('Pago guardado correctamente.');
+        void this.router.navigate(['/payments']);
+      },
+      error: (e: HttpErrorResponse) => {
+        if (e.error === 'payment_not_found' || e.error === 'payment_client_not_found') {
+          return this.toastService.error('Pago o cliente no encontrado.');
+        }
+
+        if (
+          e.error === 'payment_amount_invalid' ||
+          e.error === 'payment_amount_required' ||
+          e.error === 'payment_paid_at_required' ||
+          e.error === 'payment_method_required'
+        ) {
+          return this.toastService.warning('Revisa el monto, la fecha y el método de pago.');
+        }
+
+        this.toastService.error('Error al guardar el pago.');
+      },
+    });
+  }
+
+  cancel(): void {
+    void this.router.navigate(['/payments']);
+  }
+
+  private applyPayment(payment: AppPayment): void {
+    this.payment = payment;
+    this.payment.paidAt = this.toDateInput(payment.paidAt);
+  }
+
+  private applyDefaults(): void {
+    this.payment = new AppPayment();
+    this.payment.paidAt = this.today();
+    this.payment.tpPaymentMethod = this.tpsMethods.find(tp => tp.internalId === TypologyEnum.CASH)!;
+    this.payment.tpPaymentStatus = this.tpPending;
+  }
+
+  private loadAccount(): Observable<AppClientAccount | null> {
+    const clientHashId = this.payment.client?.hashId;
+
+    if (!clientHashId) {
+      this.account = null;
+      return of(null);
+    }
+
+    return this.clientService
+      .findAccountByHashId(clientHashId)
+      .pipe(tap((account) => (this.account = account)));
+  }
+
+  private toDateInput(value: string | null | undefined): string {
+    if (!value) return '';
+    return value.length > 10 ? value.substring(0, 10) : value;
+  }
+
+  private today(): string {
+    return new Date().toISOString().substring(0, 10);
+  }
+}
