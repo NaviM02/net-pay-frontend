@@ -5,11 +5,8 @@ import { ReportExportFormatEnum } from '../../../model/report.enum';
 import { MaterialIconComponent } from '../material-icon/material-icon.component';
 
 /**
- * Dropdown with the export formats of a report.
- *
- * The backend does not expose the download endpoints yet, so every format is
- * rendered as disabled. `exportAction` is already wired: once the endpoints
- * land, drop the `[disabled]` binding and call the service from the page.
+ * Dropdown with the export formats of a report. `exportAction` receives the
+ * chosen format; the page owns the request and the download.
  */
 @Component({
   selector: 'app-export-button',
@@ -22,15 +19,16 @@ export class ExportButtonComponent {
 
   @Input() formats: ReportExportFormatEnum[] = [
     ReportExportFormatEnum.CSV,
-    ReportExportFormatEnum.EXCEL,
     ReportExportFormatEnum.PDF,
   ];
+
+  /** Disables the toggle and shows a busy state while the file is generated. */
+  @Input() loading: boolean = false;
 
   @Output() exportAction = new EventEmitter<ReportExportFormatEnum>();
 
   protected readonly formatLabels: Record<ReportExportFormatEnum, string> = {
     [ReportExportFormatEnum.CSV]: 'CSV',
-    [ReportExportFormatEnum.EXCEL]: 'Excel',
     [ReportExportFormatEnum.PDF]: 'PDF',
   };
 

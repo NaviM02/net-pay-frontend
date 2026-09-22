@@ -1,19 +1,25 @@
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { finalize } from 'rxjs';
 
 import {
   CollectionsReportByCollector,
   CollectionsReportSummary,
 } from '../../../../../model/report.model';
+import { ReportExportFormatEnum } from '../../../../../model/report.enum';
 import { ReportService } from '../../../../../services/core/report.service';
 import { ToastService } from '../../../../../services/other/toast.service';
 import { ExportButtonComponent } from '../../../../../commons/components/export-button/export-button.component';
 import { Period, PeriodPickerComponent } from '../../../../../commons/components/period-picker/period-picker.component';
 import { TableRowActionComponent } from '../../../../../commons/components/table-row-action/table-row-action.component';
+import { downloadBlob, getFileNameFromDisposition } from '../../../../../commons/utils/blob.utils';
 import { getCollectorName } from '../../../../../commons/utils/report.utils';
 
 /** Top of the collectors ranking, matches the backend default. */
 const COLLECTOR_LIMIT = 10;
+
+/** Base name used when the response does not advertise a `Content-Disposition`. */
+const EXPORT_FILE_BASENAME = 'reporte-cobros-por-periodo';
 
 @Component({
   selector: 'app-collections-report',
@@ -37,6 +43,7 @@ export class CollectionsReportComponent implements OnInit {
   protected summary: CollectionsReportSummary | null = null;
   protected byCollector: CollectionsReportByCollector[] = [];
   protected totalCollected: number = 0;
+  protected exporting: boolean = false;
 
   constructor(
     private reportService: ReportService,
@@ -88,6 +95,41 @@ export class CollectionsReportComponent implements OnInit {
 
   collectorRoute(collector: CollectionsReportByCollector): string[] | undefined {
     return collector.collectorHashId ? ['/users', collector.collectorHashId] : undefined;
+  }
+
+  /** Same filters as the table, plus the requested format. */
+  onExport(format: ReportExportFormatEnum): void {
+    const queryParams = new Map<string, string>([
+      ['fromDate', this.fromDate],
+      ['toDate', this.toDate],
+      ['collectorLimit', `${COLLECTOR_LIMIT}`],
+      ['format', format],
+    ]);
+
+    this.exporting = true;
+
+    this.reportService
+      .exportCollections(queryParams)
+      // `complete` is not emitted on error, so the busy state is cleared here.
+      .pipe(finalize(() => (this.exporting = false)))
+      .subscribe({
+        next: (response) => {
+          if (!response.body) {
+            this.toastService.error('No se pudo exportar el reporte.');
+            return;
+          }
+
+          downloadBlob(
+            response.body,
+            getFileNameFromDisposition(
+              response.headers.get('Content-Disposition'),
+              `${EXPORT_FILE_BASENAME}.${format}`,
+            ),
+          );
+          this.toastService.success('Reporte exportado correctamente.');
+        },
+        error: () => this.toastService.error('No se pudo exportar el reporte.'),
+      });
   }
 
   /** Percentage of the period total collected by this collector. */

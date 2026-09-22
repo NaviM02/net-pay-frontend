@@ -8,7 +8,11 @@
 
     <div class="np-report-toolbar-actions">
       <app-period-picker [year]="pickerYear" [month]="pickerMonth" (periodChange)="onPeriodChange($event)" />
-      <app-export-button label="Exportar" />
+      <app-export-button
+        label="Exportar"
+        [loading]="exporting"
+        (exportAction)="onExport($event)"
+      />
     </div>
   </div>
 
