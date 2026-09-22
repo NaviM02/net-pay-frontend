@@ -1,0 +1,32 @@
+.np-table-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.np-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--np-text-muted);
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &:hover {
+    background: #f1f5f9;
+    color: var(--np-text);
+  }
+}
+
+.np-action-danger:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}

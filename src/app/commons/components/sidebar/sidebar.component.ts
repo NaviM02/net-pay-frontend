@@ -26,37 +26,37 @@ export class SidebarComponent {
     {
       name: 'Clientes',
       icon: 'people',
-      path: '/clientes',
+      path: '/clients',
     },
     {
       name: 'Servicios',
       icon: 'business_center',
-      path: '/servicios',
+      path: '/services',
     },
     {
       name: 'Pagos',
       icon: 'payments',
-      path: '/pagos',
+      path: '/payments',
     },
     {
       name: 'Recibos',
       icon: 'receipt_long',
-      path: '/recibos',
+      path: '/receipts',
     },
     {
       name: 'Reportes',
       icon: 'description',
-      path: '/reportes',
+      path: '/reports',
     },
     {
       name: 'Auditoría',
       icon: 'fact_check',
-      path: '/auditoria',
+      path: '/audit',
     },
     {
       name: 'Usuarios',
       icon: 'group',
-      path: '/usuarios',
+      path: '/users',
     },
   ];
 }

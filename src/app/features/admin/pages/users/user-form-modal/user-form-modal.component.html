@@ -1,0 +1,117 @@
+<div class="np-modal">
+  <div class="np-modal-backdrop" (click)="cancel()"></div>
+
+  <div class="np-modal-content">
+    <div class="np-modal-header">
+      <span class="np-modal-title">{{ isEdit ? 'Editar usuario' : 'Nuevo usuario' }}</span>
+
+      <button type="button" class="btn-close" aria-label="Cerrar" (click)="cancel()">
+      </button>
+    </div>
+
+    @if (initialized) {
+      <div class="np-modal-body">
+        <div class="row">
+          <div class="col-12 mb-3">
+            <label for="fullName" class="form-label required-field">Nombre completo</label>
+            <input
+              id="fullName"
+              type="text"
+              class="form-control"
+              [(ngModel)]="user.fullName"
+              placeholder="Ej. Juan Familia"
+              [maxLength]="100"
+              #fullName="ngModel"
+              [ngClass]="{ 'is-invalid': fullName.touched && !(user.fullName && user.fullName.trim()) }"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-lg-6 mb-3">
+            <label for="email" class="form-label required-field">Correo electrónico</label>
+
+            <input
+              id="email"
+              type="email"
+              class="form-control"
+              [(ngModel)]="user.email"
+              placeholder="usuario@netpay.do"
+              [maxLength]="120"
+              #email="ngModel"
+              [ngClass]="{ 'is-invalid': email.touched && !(user.email && user.email.trim()) }"
+            />
+          </div>
+
+          <div class="col-12 col-lg-6 mb-3">
+            <label class="form-label required-field">Rol</label>
+
+            <ng-select
+              placeholder="Seleccionar rol"
+              [(ngModel)]="user.tpRole"
+              [clearable]="false"
+              name="tpRole"
+              #roleSelect="ngModel"
+              [ngClass]="{ 'is-invalid': roleSelect.touched && !user.tpRole }"
+              [compareWith]="compareTps"
+            >
+              @for (tp of tpsRoles; track tp.internalId) {
+                <ng-option [value]="tp">{{ tp.description }}</ng-option>
+              }
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-lg-6 mb-3">
+            <label class="form-label required-field">Estado</label>
+
+            <ng-select
+              placeholder="Seleccionar estado"
+              [(ngModel)]="user.tpStatus"
+              [clearable]="false"
+              name="tpStatus"
+              [compareWith]="compareTps"
+            >
+              <ng-option [value]="tpActive">{{ tpActive.description }}</ng-option>
+              <ng-option [value]="tpInactive">{{ tpInactive.description }}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+
+        @if (!isEdit) {
+          <div class="row">
+            <div class="col-12">
+              <label for="userPassword" class="form-label">Contraseña <span class="text-danger">*</span></label>
+
+              <app-input-for-password
+                [(ngModel)]="user.password"
+                placeholder="Introduce tu contraseña"
+                [iconPosition]="'left'"
+                [validatePassword]="true"
+                [isDark]="false"
+              />
+              <div class="form-text">Mínimo 8 caracteres.</div>
+            </div>
+          </div>
+        }
+
+        <div class="np-modal-actions">
+          <button
+            type="button"
+            class="btn btn-light"
+            (click)="cancel()">
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="save()">
+            {{ isEdit ? 'Guardar cambios' : 'Crear usuario' }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

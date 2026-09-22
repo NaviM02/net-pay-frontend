@@ -1,0 +1,16 @@
+.pagination-content {
+  height: 100%;
+
+  .vl {
+    height: 100%;
+    border: 1px solid var(--bs-gray-300);
+  }
+}
+
+.ngb-custom-pages-item {
+  input.form-control {
+    width: 5rem;
+    padding: 0.5rem 1rem;
+    text-align: center;
+  }
+}

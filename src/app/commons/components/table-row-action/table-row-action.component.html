@@ -1,0 +1,42 @@
+<div class="np-table-actions">
+  @if (viewRoute) {
+    <button
+      type="button"
+      class="np-action-button"
+      title="Ver"
+      [routerLink]="viewRoute"
+    >
+      <span class="material-symbols-outlined">visibility</span>
+    </button>
+  }
+
+  @if (editAction.observed && showEdit) {
+    <button
+      type="button"
+      class="np-action-button"
+      title="Editar"
+      (click)="editAction.emit()"
+    >
+      <span class="material-symbols-outlined">edit</span>
+    </button>
+  }
+
+  @for (customAction of customActions; track customAction.label) {
+    <button
+      (click)="customAction.action()"
+    >
+      {{ customAction.label }}
+    </button>
+  }
+
+  @if (deleteAction.observed && showDelete) {
+    <button
+      type="button"
+      class="np-action-button np-action-danger"
+      title="Eliminar"
+      (click)="deleteAction.emit()"
+    >
+      <span class="material-symbols-outlined">delete</span>
+    </button>
+  }
+</div>

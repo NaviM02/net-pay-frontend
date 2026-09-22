@@ -14,12 +14,12 @@ export class AdmTypology {
 }
 
 export class AppUser {
-  public userId!: number;
+  public id!: number;
   public hashId!: string;
   public email!: string;
   public password!: string;
-  public fullName!: string;
-  public phoneNumber!: string;
+  public fullName!: string;/*
+  public phoneNumber!: string;*/
   public tpStatus!: AdmTypology;
   public tpRole!: AdmTypology;
   public entryDate!: string;

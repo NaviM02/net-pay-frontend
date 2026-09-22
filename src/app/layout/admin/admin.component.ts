@@ -10,9 +10,8 @@ import { SidebarComponent } from '../../commons/components/sidebar/sidebar.compo
   styleUrl: './admin.component.scss',
 })
 export class AdminComponent {
-  sidebarOpen = true;
+  sidebarStatus: boolean = true;
 
-  toggleSidebar(): void {
-    this.sidebarOpen = !this.sidebarOpen;
+  constructor() {
   }
 }

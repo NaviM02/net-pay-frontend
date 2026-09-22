@@ -1,0 +1,38 @@
+<div
+  class="d-flex flex-column justify-content-center align-items-start gap-2 flex-md-row justify-content-md-between align-items-md-start"
+>
+  <div>
+    <div class="d-flex justify-content-start align-items-center gap-2">
+      @if (backRoute) {
+        <app-material-icon role="button" [routerLink]="backRoute">arrow_back</app-material-icon>
+      }
+
+      @if (itemName) {
+        <h1 class="fw-normal h4 m-0">{{ itemName }}</h1>
+      }
+    </div>
+
+    @if (description) {
+      <p class="m-0 mt-1 fw-light">{{ description }}</p>
+    }
+  </div>
+  <div class="d-flex justify-content-end align-items-center gap-2">
+    @if (deleteAction.observed && showDelete) {
+      <button
+        class="btn btn-light text-danger fw-semibold px-4"
+        (click)="deleteAction.emit()"
+      >
+        {{ deleteText }}
+      </button>
+    }
+
+    @if (editRoute && showEdit) {
+      <button
+        class="btn btn-primary px-4"
+        [routerLink]="editRoute"
+      >
+        {{ editText }}
+      </button>
+    }
+  </div>
+</div>

@@ -34,17 +34,17 @@ export class LoginPageComponent {
   }
 
   doLogin() {
-    if (!this.isValid) return this.toastService.warning('msg_error_required_fields');
+    if (!this.isValid) return this.toastService.warning('Llenar los campos necesarios');
 
     this.authService.doLogin(this.authReq).subscribe({
       next: (_) => {
-        this.toastService.success('msg_success_login');
+        this.toastService.success('Inicio de sesión exitoso');
         void this.router.navigate(['dashboard']);
       },
       error: (e: HttpErrorResponse) => {
         if (e.error == 'wrong_credentials')
-          return this.toastService.error('msg_error_wrong_credentials');
-        this.toastService.error('msg_error_server');
+          return this.toastService.error('Credenciales incorrectas');
+        this.toastService.error('Error del servidor');
       },
     });
   }

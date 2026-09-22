@@ -1,0 +1,65 @@
+<div class="">
+
+  <app-list-page-header
+    title="Usuarios"
+    description="Gestión de cuentas de acceso al sistema"
+    saveText="Nuevo usuario"
+    (buttonClick)="add()"
+  />
+
+  <div class="np-list-card">
+    <div class="np-table-actions-bar mb-4">
+      <app-filter-menu
+        [filterGroup]="listStateService.filter"
+        (onFilterChange)="listStateService.onFilterChange($event)"
+      />
+    </div>
+
+    <div class="table-responsive">
+      <table class="table np-table mb-0">
+        <thead>
+        <tr>
+          <th>NOMBRE</th>
+          <th>EMAIL</th>
+          <th>ROL</th>
+          <th>ESTADO</th>
+          <th>FECHA DE INGRESO</th>
+          <th class="text-end">ACCIONES</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          @for (user of users; track user.id) {
+            <tr>
+              <td>
+                <span class="np-user-name">{{ user.fullName }}</span>
+              </td>
+              <td class="np-email">{{ user.email }}</td>
+              <td><app-typology-badge [typology]="user.tpRole" /></td>
+              <td><app-typology-badge [typology]="user.tpStatus" /></td>
+              <td class="np-date">{{ user.entryDate }}</td>
+              <td>
+                <app-table-row-action
+                  [viewRoute]="['/users/', user.hashId]"
+                  (editAction)="edit(user.hashId)"
+                  (deleteAction)="delete(user.hashId)" />
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pagination
+      [pagination]="listStateService.pagination"
+      (onPaginationChange)="listStateService.onPaginationChange($event)"
+    />
+  </div>
+</div>
+
+@if (showModal) {
+  <app-user-form-modal
+    [hashId]="selectedHashId"
+    (close)="onModalClose($event)"
+  />
+}
