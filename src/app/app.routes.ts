@@ -12,6 +12,23 @@ export const routes: Routes = [
     loadChildren: () => import('./features/auth/auth.routes').then((r) => r.authRoutes),
   },
   {
+    // Password recovery. Public on purpose: the endpoints accept no token and an
+    // authenticated user may still open an emailed link. `reset-password` is the
+    // exact path the backend builds with `FRONTEND_BASE_URL`.
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./features/auth/pages/forgot-password-page/forgot-password-page.component').then(
+        c => c.ForgotPasswordPageComponent,
+      ),
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./features/auth/pages/reset-password-page/reset-password-page.component').then(
+        c => c.ResetPasswordPageComponent,
+      ),
+  },
+  {
     path: '',
     component: AdminComponent,
     canActivate: [allowNavigationGuard], // the layout is open to every role; each area declares its own permission

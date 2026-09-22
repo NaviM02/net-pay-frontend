@@ -7,6 +7,26 @@ export class AuthRequestDto {
   public fingerprint!: string;
 }
 
+/** Body of every endpoint that only answers with a message. */
+export class MessageResponseDto {
+  public message!: string;
+}
+
+export class ForgotPasswordRequest {
+  public email!: string;
+}
+
+export class ResetPasswordRequest {
+  public token!: string;
+  public newPassword!: string;
+  public confirmPassword!: string;
+}
+
+/** Answer of `GET /api/users/reset-password/validate`. Never fails. */
+export class ResetTokenValidationDto {
+  public valid!: boolean;
+}
+
 export class AdmTypology {
   public typologyId!: number;
   public parentTypologyId!: number;
