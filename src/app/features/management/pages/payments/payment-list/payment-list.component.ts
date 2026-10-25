@@ -70,7 +70,7 @@ export class PaymentListComponent implements OnInit {
 
   rowActions(payment: AppPayment): TableRowCustomAction[] {
     return payment.attachmentUrl ? [{
-      label: 'Abrir comprobante',
+      label: 'Ver comprobante',
       icon: 'attach_file',
       action: () => this.paymentService.findAttachment(payment.hashId).subscribe({
         next: blob => openBlobInNewTab(blob),
