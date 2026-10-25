@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgOptionComponent, NgSelectComponent } from '@ng-select/ng-select';
-import { concatMap, iif, Observable, of, tap } from 'rxjs';
+import { concatMap, finalize, iif, Observable, of, switchMap, tap } from 'rxjs';
 
 import { AdmTypology, AppClientAccount, AppPayment, AppUser } from '../../../../../model/app.model';
 import { DynamicProviderKey } from '../../../../../model/dynamic-provider-key.enum';
@@ -20,6 +20,8 @@ import { DynamicSelectComponent } from '../../../../../commons/components/dynami
 import { getChargeStatusClass, getChargeStatusLabel } from '../../../../../commons/utils/charge-status.utils';
 import { isPaymentLocked } from '../../../../../commons/utils/payment.utils';
 import { compareTps } from '../../../../../commons/utils/typology.utils';
+import { FileDropzoneComponent } from '../../../../../commons/components/file-dropzone/file-dropzone.component';
+import { FileUploadService } from '../../../../../services/core/file-upload.service';
 
 /**
  * Register and correct payments of the collector.
@@ -39,6 +41,7 @@ import { compareTps } from '../../../../../commons/utils/typology.utils';
     NgOptionComponent,
     DynamicSelectComponent,
     DetailPageHeaderComponent,
+    FileDropzoneComponent,
   ],
 })
 export class MyPaymentFormComponent implements OnInit {
@@ -53,6 +56,9 @@ export class MyPaymentFormComponent implements OnInit {
   tpsMethods: AdmTypology[] = [];
 
   completedStatus: AdmTypology | null = null;
+  attachmentFile: File | null = null;
+  attachmentError = '';
+  saving = false;
 
   // Statement of the selected client, used to suggest the amount.
   account: AppClientAccount | null = null;
@@ -62,6 +68,7 @@ export class MyPaymentFormComponent implements OnInit {
     private clientService: AppClientService,
     private typologyService: AdmTypologyService,
     private currentUserService: CurrentUserService,
+    private fileUploadService: FileUploadService,
     private toastService: ToastService,
     private router: Router,
     private route: ActivatedRoute,
@@ -143,7 +150,22 @@ export class MyPaymentFormComponent implements OnInit {
     this.payment.amount = this.suggestedAmount;
   }
 
+  selectAttachment(file: File | null): void {
+    this.attachmentError = '';
+    this.attachmentFile = null;
+    this.payment.attachmentUrl = null;
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      this.attachmentError = 'El archivo no puede superar los 10 MB.';
+    } else if (!(file.type === 'application/pdf' || file.type.startsWith('image/'))) {
+      this.attachmentError = 'Adjunta una imagen o un archivo PDF.';
+    } else {
+      this.attachmentFile = file;
+    }
+  }
+
   save(): void {
+    if (this.saving) return;
     if (this.isLocked) {
       this.toastService.warning('El pago ya no se puede modificar.');
       return;
@@ -153,6 +175,10 @@ export class MyPaymentFormComponent implements OnInit {
       this.toastService.warning('Completa los campos obligatorios.');
       return;
     }
+    if (this.attachmentError) {
+      this.toastService.warning(this.attachmentError);
+      return;
+    }
 
     if (!this.completedStatus) {
       this.toastService.error('No se pudo cargar el estado completado del pago.');
@@ -160,13 +186,30 @@ export class MyPaymentFormComponent implements OnInit {
     }
     this.payment.tpPaymentStatus = this.completedStatus;
 
-    const request = this.isEdit ? this.update() : this.create();
-    request.subscribe({
+    const savePayment = () => this.isEdit ? this.update() : this.create();
+    const request = this.attachmentFile && !this.payment.attachmentUrl
+      ? this.fileUploadService.upload(this.attachmentFile).pipe(
+          tap(response => this.payment.attachmentUrl = response.url),
+          switchMap(() => savePayment()),
+        )
+      : savePayment();
+
+    this.saving = true;
+    request.pipe(finalize(() => this.saving = false)).subscribe({
       next: () => {
         this.toastService.success('Pago guardado correctamente.');
         void this.router.navigate(['/my-payments']);
       },
       error: (e: HttpErrorResponse) => {
+        if (e.error === 'file_storage_not_configured' || e.error === 'file_upload_failed' || e.error === 'file_read_failed') {
+          return this.toastService.error('No se pudo subir el archivo adjunto. Intenta de nuevo.');
+        }
+        if (e.error === 'file_too_large') {
+          return this.toastService.warning('El archivo no puede superar los 10 MB.');
+        }
+        if (e.error === 'payment_attachment_url_invalid') {
+          return this.toastService.error('La URL del comprobante adjunto no es válida.');
+        }
         if (e.error === 'payment_not_found' || e.error === 'payment_client_not_found') {
           return this.toastService.error('Pago o cliente no encontrado.');
         }

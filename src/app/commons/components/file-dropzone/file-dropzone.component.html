@@ -1,0 +1,33 @@
+<div
+  class="np-file-dropzone"
+  [class.np-file-dropzone-active]="dragActive"
+  [class.np-file-dropzone-disabled]="disabled"
+  [attr.role]="disabled ? null : 'button'"
+  [attr.tabindex]="disabled ? null : 0"
+  [attr.aria-label]="file ? 'Cambiar archivo: ' + file.name : prompt"
+  (click)="openPicker($event, picker)"
+  (keydown)="onKeydown($event, picker)"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
+  <input #picker type="file" class="visually-hidden" tabindex="-1" aria-hidden="true" [accept]="accept" [disabled]="disabled" (change)="select($event)" />
+
+  @if (file; as selectedFile) {
+    <span class="material-symbols-outlined np-file-dropzone-icon">{{ selectedFile.type.startsWith('image/') ? 'image' : 'description' }}</span>
+    <div class="np-file-dropzone-copy">
+      <span class="np-file-dropzone-name" [title]="selectedFile.name">{{ selectedFile.name }}</span>
+      <span class="np-file-dropzone-meta">{{ fileSize }}</span>
+    </div>
+    <div class="np-file-dropzone-actions">
+      <button type="button" class="btn btn-sm btn-light" [disabled]="disabled" (click)="clear($event)" aria-label="Quitar archivo">Quitar</button>
+    </div>
+  } @else {
+    <span class="material-symbols-outlined np-file-dropzone-icon">cloud_upload</span>
+    <div class="np-file-dropzone-copy">
+      <span class="np-file-dropzone-prompt">{{ prompt }}</span>
+      @if (description) { <span class="np-file-dropzone-meta">{{ description }}</span> }
+    </div>
+    <span class="np-file-dropzone-meta">Seleccionar archivo</span>
+  }
+</div>

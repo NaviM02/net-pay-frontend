@@ -73,6 +73,17 @@
             </span>
           </div>
 
+          @if (payment.attachmentUrl) {
+            <div class="np-detail-field">
+              <span class="np-detail-field-label">Comprobante adjunto</span>
+              <span class="np-detail-field-value">
+                <button type="button" class="btn btn-link p-0" (click)="openAttachment()">
+                  Abrir archivo <span class="material-symbols-outlined align-middle">open_in_new</span>
+                </button>
+              </span>
+            </div>
+          }
+
           <div class="np-detail-field">
             <span class="np-detail-field-label">Cobrador</span>
             <span class="np-detail-field-value">

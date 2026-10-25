@@ -10,9 +10,11 @@ import { ToastService } from '../../../../../services/other/toast.service';
 import { FilterMenuComponent } from '../../../../../commons/components/filter-menu/filter-menu.component';
 import { ListPageHeaderComponent } from '../../../../../commons/components/list-page-header/list-page-header.component';
 import { PaginationComponent } from '../../../../../commons/components/pagination/pagination.component';
-import { TableRowActionComponent } from '../../../../../commons/components/table-row-action/table-row-action.component';
+import { TableRowActionComponent, TableRowCustomAction } from '../../../../../commons/components/table-row-action/table-row-action.component';
 import { TypologyBadgeComponent } from '../../../../../commons/components/typology-badge/typology-badge.component';
 import { PaymentListFilter } from './payment-list.filter';
+import { DataImportComponent } from '../../../../../commons/components/data-import/data-import.component';
+import { openBlobInNewTab } from '../../../../../commons/utils/blob.utils';
 
 @Component({
   selector: 'app-payment-list',
@@ -26,6 +28,7 @@ import { PaymentListFilter } from './payment-list.filter';
     TypologyBadgeComponent,
     TableRowActionComponent,
     PaginationComponent,
+    DataImportComponent,
   ],
 })
 export class PaymentListComponent implements OnInit {
@@ -63,5 +66,16 @@ export class PaymentListComponent implements OnInit {
 
   edit(hashId: string): void {
     void this.router.navigate(['/payments', hashId, 'edit']);
+  }
+
+  rowActions(payment: AppPayment): TableRowCustomAction[] {
+    return payment.attachmentUrl ? [{
+      label: 'Abrir comprobante',
+      icon: 'attach_file',
+      action: () => this.paymentService.findAttachment(payment.hashId).subscribe({
+        next: blob => openBlobInNewTab(blob),
+        error: () => this.toastService.error('No se pudo abrir el archivo adjunto.'),
+      }),
+    }] : [];
   }
 }

@@ -1379,6 +1379,18 @@ a[href] {
   }
 }
 
+.np-payment-attachment-link {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.35rem;
+  color: var(--np-primary);
+  vertical-align: middle;
+
+  &:hover { color: #174dcc; }
+
+  .material-symbols-outlined { font-size: 17px; }
+}
+
 // ng-select menus appended to `body` need to sit above Bootstrap modal dialogs.
 .ng-dropdown-panel {
   z-index: 1065 !important;

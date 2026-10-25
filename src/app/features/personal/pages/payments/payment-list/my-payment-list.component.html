@@ -39,10 +39,13 @@
                 {{ payment.amount | currency: 'Q' : 'symbol' : '1.2-2' }}
               </td>
               <td><app-typology-badge [typology]="payment.tpPaymentMethod" /></td>
-              <td class="np-table-muted">{{ payment.reference || '—' }}</td>
+              <td class="np-table-muted">
+                {{ payment.reference || '—' }}
+              </td>
               <td class="np-table-actions-cell text-end">
                 <app-table-row-action
                   [viewRoute]="['/my-payments', payment.hashId]"
+                  [customActions]="rowActions(payment)"
                   [showDelete]="false"
                   [showEdit]="false"
                 />

@@ -11,6 +11,7 @@ import { ToastService } from '../../../../../services/other/toast.service';
 import { DetailPageHeaderComponent } from '../../../../../commons/components/detail-page-header/detail-page-header.component';
 import { TypologyBadgeComponent } from '../../../../../commons/components/typology-badge/typology-badge.component';
 import { isPaymentLocked } from '../../../../../commons/utils/payment.utils';
+import { openBlobInNewTab } from '../../../../../commons/utils/blob.utils';
 
 /**
  * Detail of a payment of the collector. The collector is never changed here, it
@@ -73,5 +74,13 @@ export class MyPaymentDetailComponent implements OnInit {
     }
 
     this.payment = payment;
+  }
+
+  openAttachment(): void {
+    if (!this.hashId) return;
+    this.paymentService.findAttachment(this.hashId).subscribe({
+      next: blob => openBlobInNewTab(blob),
+      error: () => this.toastService.error('No se pudo abrir el archivo adjunto.'),
+    });
   }
 }

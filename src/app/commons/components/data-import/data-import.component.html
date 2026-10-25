@@ -51,8 +51,8 @@
             <code>clientEmail</code> (máx. 150) o <code>clientPhone</code> (máx. 30).
             Si hay varias coincidencias, agrega más datos hasta identificar un solo cliente.</p>
           <p>Opcionales: <code>collectorName</code> y <code>collectorEmail</code> (máx. 150 cada uno, deben identificar
-            un único cobrador activo), <code>reference</code> (máx. 255), <code>comment</code> (máx. 500) y
-            <code>status</code>: <code>COMPLETED</code> (91, por defecto), <code>PENDING</code> (92) o <code>FAILED</code> (93).</p>
+            un único cobrador activo), <code>reference</code> (máx. 255) y <code>comment</code> (máx. 500).
+            Los pagos importados siempre se registran como completados.</p>
           <p>Conserva la misma <code>importKey</code> al reintentar un pago: el backend rechaza claves ya importadas
             para evitar duplicados. No uses una clave nueva para el mismo pago.</p>
         }
@@ -89,10 +89,15 @@
     </div>
     <a class="d-inline-block mb-3" [href]="templateUrl" [download]="resource + '-plantilla.csv'">Descargar plantilla CSV</a>
     <div class="mb-3">
-      <label for="import-file" class="form-label">Archivo CSV</label>
-      <input id="import-file" type="file" class="form-control" accept=".csv,text/csv" [disabled]="busy"
-        (change)="selectFile($event)" aria-describedby="import-file-help" />
-      <div id="import-file-help" class="form-text">{{ file?.name ?? 'Selecciona el archivo que deseas cargar.' }}</div>
+      <label class="form-label">Archivo CSV</label>
+      <app-file-dropzone
+        [file]="file"
+        accept=".csv,text/csv"
+        prompt="Arrastra el archivo CSV aquí o selecciónalo"
+        description="CSV en UTF-8 · Máximo 5 MB"
+        [disabled]="busy"
+        (fileChange)="selectFile($event)"
+      />
     </div>
 
     @if (errorMessage) {

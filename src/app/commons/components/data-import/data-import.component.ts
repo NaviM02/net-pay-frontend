@@ -10,10 +10,11 @@ import { PermissionDirective } from '../../directives/permission.directive';
 import { AppRole } from '../../../model/access-control.model';
 import { DynamicProviderKey } from '../../../model/dynamic-provider-key.enum';
 import { DynamicSelectComponent } from '../dynamic-select/dynamic-select.component';
+import { FileDropzoneComponent } from '../file-dropzone/file-dropzone.component';
 
 @Component({
   selector: 'app-data-import',
-  imports: [FormsModule, PermissionDirective, DynamicSelectComponent],
+  imports: [FormsModule, PermissionDirective, DynamicSelectComponent, FileDropzoneComponent],
   templateUrl: './data-import.component.html',
   styleUrl: './data-import.component.scss',
 })
@@ -58,23 +59,19 @@ export class DataImportComponent {
     });
   }
 
-  selectFile(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.file = input.files?.[0] ?? null;
+  selectFile(file: File | null): void {
+    this.file = file;
     this.resetResult();
 
-    if (this.file && !this.file.name.toLowerCase().endsWith('.csv')) {
+    if (file && !file.name.toLowerCase().endsWith('.csv')) {
       this.errorMessage = 'Selecciona un archivo con extensión .csv.';
-    } else if (this.file && this.file.size === 0) {
+    } else if (file && file.size === 0) {
       this.errorMessage = 'El archivo está vacío.';
-    } else if (this.file && this.file.size > 5 * 1024 * 1024) {
+    } else if (file && file.size > 5 * 1024 * 1024) {
       this.errorMessage = 'El archivo no puede superar los 5 MB.';
     }
 
-    if (this.errorMessage) {
-      this.file = null;
-      input.value = '';
-    }
+    if (this.errorMessage) this.file = null;
   }
 
   resetResult(): void {
@@ -120,7 +117,7 @@ export class DataImportComponent {
         'longitude', 'customerSince', 'serviceName', 'collectorHashId', 'collectorName', 'collectorEmail', 'status'],
       users: ['fullName', 'email', 'password', 'status'],
       payments: ['importKey', 'clientName', 'clientEmail', 'clientPhone', 'collectorName', 'collectorEmail',
-        'amount', 'paidAt', 'method', 'status', 'reference', 'comment'],
+        'amount', 'paidAt', 'method', 'reference', 'comment'],
     };
     return `data:text/csv;charset=utf-8,${encodeURIComponent('\uFEFF' + columns[this.resource].join(this.delimiter) + '\r\n')}`;
   }
@@ -128,6 +125,9 @@ export class DataImportComponent {
   describeError(code: string | null): string {
     if (code === 'import_unknown_columns' && this.resource === 'users') {
       return 'El CSV contiene columnas no permitidas. Usa fullName, email, password y status; no incluyas role ni roleHashId. El rol opcional se selecciona fuera del archivo.';
+    }
+    if (code === 'import_unknown_columns' && this.resource === 'payments') {
+      return 'El CSV contiene columnas no permitidas. No incluyas status: todos los pagos importados se guardan como completados.';
     }
 
     const messages: Record<string, string> = {

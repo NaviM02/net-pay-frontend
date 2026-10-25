@@ -13,6 +13,7 @@
         [filterGroup]="listStateService.filter"
         (onFilterChange)="listStateService.onFilterChange($event)"
       />
+      <app-data-import resource="payments" (imported)="findAll()" />
     </div>
 
     <div class="np-table-scroll">
@@ -41,10 +42,13 @@
               </td>
               <td><app-typology-badge [typology]="payment.tpPaymentMethod" /></td>
               <td class="np-table-muted">{{ payment.collector?.fullName ?? 'Sistema' }}</td>
-              <td class="np-table-muted">{{ payment.reference || '—' }}</td>
+              <td class="np-table-muted">
+                {{ payment.reference || '—' }}
+              </td>
               <td class="np-table-actions-cell text-end">
                 <app-table-row-action
                   [viewRoute]="['/payments', payment.hashId]"
+                  [customActions]="rowActions(payment)"
                   [showEdit]="false" />
               </td>
             </tr>

@@ -11,9 +11,10 @@ import { ToastService } from '../../../../../services/other/toast.service';
 import { FilterMenuComponent } from '../../../../../commons/components/filter-menu/filter-menu.component';
 import { ListPageHeaderComponent } from '../../../../../commons/components/list-page-header/list-page-header.component';
 import { PaginationComponent } from '../../../../../commons/components/pagination/pagination.component';
-import { TableRowActionComponent } from '../../../../../commons/components/table-row-action/table-row-action.component';
+import { TableRowActionComponent, TableRowCustomAction } from '../../../../../commons/components/table-row-action/table-row-action.component';
 import { TypologyBadgeComponent } from '../../../../../commons/components/typology-badge/typology-badge.component';
 import { MyPaymentListFilter } from './my-payment-list.filter';
+import { openBlobInNewTab } from '../../../../../commons/utils/blob.utils';
 
 /**
  * Payments of the signed-in user. The backend filters them by the
@@ -86,6 +87,17 @@ export class MyPaymentListComponent implements OnInit {
 
   add(): void {
     void this.router.navigate(['/my-payments', 'new']);
+  }
+
+  rowActions(payment: AppPayment): TableRowCustomAction[] {
+    return payment.attachmentUrl ? [{
+      label: 'Abrir comprobante',
+      icon: 'attach_file',
+      action: () => this.paymentService.findAttachment(payment.hashId).subscribe({
+        next: blob => openBlobInNewTab(blob),
+        error: () => this.toastService.error('No se pudo abrir el archivo adjunto.'),
+      }),
+    }] : [];
   }
 
 }

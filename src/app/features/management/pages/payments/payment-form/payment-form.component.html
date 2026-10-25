@@ -143,6 +143,20 @@
             <div class="form-text">Opcional: número de transferencia o conciliación.</div>
           </div>
 
+          <div class="col-12 col-lg-6">
+            <label class="form-label">Comprobante adjunto</label>
+            <app-file-dropzone
+              [file]="attachmentFile"
+              accept="image/*,application/pdf"
+              prompt="Arrastra una imagen o PDF aquí"
+              description="Comprobante o referencia · Máximo 10 MB"
+              [disabled]="isLocked || saving"
+              (fileChange)="selectAttachment($event)"
+            />
+            <div class="form-text">Opcional; el archivo se adjuntará al guardar el pago.</div>
+            @if (attachmentError) { <div class="text-danger small mt-1" role="alert">{{ attachmentError }}</div> }
+          </div>
+
           <div class="col-12">
             <label for="paymentComment" class="form-label">Comentario</label>
             <textarea
@@ -250,13 +264,13 @@
     }
 
     <div class="np-form-actions">
-      <button type="button" class="btn btn-light" (click)="cancel()">
+      <button type="button" class="btn btn-light" [disabled]="saving" (click)="cancel()">
         Cancelar
       </button>
 
       @if (!isLocked) {
-        <button type="button" class="btn btn-primary" [disabled]="!isValid" (click)="save()">
-          {{ isEdit ? 'Guardar cambios' : 'Registrar pago' }}
+        <button type="button" class="btn btn-primary" [disabled]="!isValid || !!attachmentError || saving" (click)="save()">
+          {{ saving ? 'Guardando…' : isEdit ? 'Guardar cambios' : 'Registrar pago' }}
         </button>
       }
     </div>

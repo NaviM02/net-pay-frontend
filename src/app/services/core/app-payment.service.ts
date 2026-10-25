@@ -30,6 +30,10 @@ export class AppPaymentService {
     return this.http.get<AppPayment>(`${this.baseUrl}/${hashId}`);
   }
 
+  findAttachment(hashId: string) {
+    return this.http.get(`${this.baseUrl}/${hashId}/attachment`, { responseType: 'blob' });
+  }
+
   save(payment: AppPayment) {
     if (payment.hashId) {
       return this.http.put<AppPayment>(`${this.baseUrl}/${payment.hashId}`, payment);
