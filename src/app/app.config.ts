@@ -16,6 +16,7 @@ import { AppClientService } from './services/core/app-client.service';
 import { AppClient } from './model/app.model';
 import { DynamicProviderKey } from './model/dynamic-provider-key.enum';
 import { TypologyEnum } from './model/typology.enum';
+import { AccessControlService } from './services/core/access-control.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -35,6 +36,15 @@ export const appConfig: ApplicationConfig = {
         },
       }),
     ),
+    {
+      provide: DYNAMIC_LIST_PROVIDERS,
+      multi: true,
+      deps: [AccessControlService],
+      useFactory: (service: AccessControlService) => ({
+        key: DynamicProviderKey.APP_ROLES_FIND_ALL,
+        searchService: (params: Map<string, string>) => service.roles(params),
+      }),
+    },
     {
       provide: DYNAMIC_LIST_PROVIDERS,
       multi: true,
@@ -60,7 +70,8 @@ export const appConfig: ApplicationConfig = {
       useFactory: (service: AppUserService) => ({
         key: DynamicProviderKey.APP_COLLECTORS_FIND_ALL,
         searchService: (params: Map<string, string>) => {
-          params.set('role', `${TypologyEnum.COLLECTOR}`);
+          params.delete('role');
+          params.set('status', `${TypologyEnum.ACTIVE}`);
           return service.findAll(params, true);
         },
       })
@@ -79,14 +90,14 @@ export const appConfig: ApplicationConfig = {
       multi: true,
       deps: [AppUserService, CurrentUserService],
       useFactory: (service: AppUserService, currentUserService: CurrentUserService) => ({
-        key: DynamicProviderKey.APP_COLLECTOR_CLIENTS_FIND_ALL,
+        key: DynamicProviderKey.APP_PERSONAL_CLIENTS_FIND_ALL,
         searchService: (params: Map<string, string>) => {
-          // Always the collector of the session, so the select can never offer a
+          // Always the current user, so the select can never offer a client outside their
           // client outside its portfolio.
           const hashId = currentUserService.getCurrentHashId();
           if (!hashId) return of(new HttpResponse<AppClient[]>({ body: [] }));
 
-          return service.findByCollectorHashId(hashId, params);
+          return service.findClientsByUserHashId(hashId, params);
         },
       })
     },

@@ -30,6 +30,10 @@ export class AppPaymentService {
     return this.http.get<AppPayment>(`${this.baseUrl}/${hashId}`);
   }
 
+  findAttachment(hashId: string) {
+    return this.http.get(`${this.baseUrl}/${hashId}/attachment`, { responseType: 'blob' });
+  }
+
   save(payment: AppPayment) {
     if (payment.hashId) {
       return this.http.put<AppPayment>(`${this.baseUrl}/${payment.hashId}`, payment);
@@ -43,7 +47,7 @@ export class AppPaymentService {
    * takes the collector from its security context, so the body must not carry
    * one: a collector can never register a payment in the name of someone else.
    */
-  createAsCollector(payment: AppPayment) {
+  createAsCurrentUser(payment: AppPayment) {
     return this.http.post<AppPayment>(`${this.baseUrl}/collector`, payment);
   }
 }

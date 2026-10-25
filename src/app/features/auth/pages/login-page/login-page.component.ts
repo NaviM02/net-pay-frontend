@@ -41,7 +41,7 @@ export class LoginPageComponent {
     this.authService.doLogin(this.authReq).subscribe({
       next: (_) => {
         this.toastService.success('Inicio de sesión exitoso');
-        // Each role lands on its own home, never on the other role's area.
+        // Choose the first page granted by the effective permissions.
         void this.router.navigateByUrl(this.currentUserService.getHomeRoute());
       },
       error: (e: HttpErrorResponse) => {

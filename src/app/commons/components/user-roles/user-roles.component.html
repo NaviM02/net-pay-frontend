@@ -1,0 +1,59 @@
+@if (loaded) {
+    <div class="np-table-scroll user-roles-table-scroll">
+      <table class="table np-table user-roles-table mb-0" [class.user-roles-table-editable]="editable && !readOnly">
+        <colgroup>
+          <col class="role-column">
+          <col class="date-column">
+          <col class="date-column">
+          <col class="status-column">
+          @if (editable && !readOnly) { <col class="actions-column"> }
+        </colgroup>
+        <thead>
+          <tr>
+            <th>ROL</th><th>INICIO</th><th>FIN</th><th>ESTADO</th>
+            @if (editable && !readOnly) { <th>ACCIONES</th> }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of persistedRows; track row.assignment.hashId; let i = $index) {
+            <tr>
+              <td>{{ row.assignment.role.name }}</td>
+              <td>
+                @if (editable && !readOnly) {
+                  <input type="datetime-local" class="form-control" [(ngModel)]="row.startsAt" [name]="'saved-start-' + i" (ngModelChange)="emitDrafts()" />
+                } @else { {{ row.assignment.startsAt | date: 'dd/MM/yyyy HH:mm' }} }
+              </td>
+              <td>
+                @if (editable && !readOnly) {
+                  <input type="datetime-local" class="form-control" [(ngModel)]="row.endsAt" [name]="'saved-end-' + i" (ngModelChange)="emitDrafts()" />
+                } @else { {{ row.assignment.endsAt ? (row.assignment.endsAt | date: 'dd/MM/yyyy HH:mm') : 'Sin vencimiento' }} }
+              </td>
+              <td>{{ row.assignment.effective ? 'Vigente' : 'Programado' }}</td>
+              @if (editable && !readOnly) {
+                <td class="text-end">
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="removePersistedRow(i)" aria-label="Quitar rol" title="Quitar rol">
+                    <span class="material-symbols-outlined">delete</span>
+                  </button>
+                </td>
+              }
+            </tr>
+          }
+          @for (row of drafts; track $index) {
+            <tr>
+              <td><app-dynamic-select [name]="'draft-role-' + $index" [providerKey]="providerKey" bindLabel="name" queryParamName="search" [(ngModel)]="row.role" (ngModelChange)="emitDrafts()" placeholder="Seleccionar rol" /></td>
+              <td><input type="datetime-local" class="form-control" [(ngModel)]="row.startsAt" [name]="'draft-start-' + $index" (ngModelChange)="emitDrafts()" /></td>
+              <td><input type="datetime-local" class="form-control" [(ngModel)]="row.endsAt" [name]="'draft-end-' + $index" (ngModelChange)="emitDrafts()" /></td>
+              <td>{{ row.role ? 'Pendiente' : 'Selecciona un rol' }}</td>
+              @if (editable && !readOnly) { <td class="text-end"><button type="button" class="btn btn-sm btn-outline-danger" (click)="removeDraft($index)" aria-label="Quitar rol" title="Quitar rol"><span class="material-symbols-outlined">delete</span></button></td> }
+            </tr>
+          }
+          @if (!persistedRows.length && !drafts.length) {
+            <tr><td [attr.colspan]="editable && !readOnly ? 5 : 4" class="text-body-secondary">El usuario no tiene roles asignados.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+}
+@if (editable && !readOnly) {
+    <button type="button" class="btn btn-outline-primary mt-3" (click)="addDraft()">＋ Agregar rol</button>
+}

@@ -6,10 +6,15 @@ import { finalize } from 'rxjs';
 import { ImportResource, ImportResult, ImportRowResult } from '../../../model/data-import.model';
 import { DataImportService } from '../../../services/core/data-import.service';
 import { ToastService } from '../../../services/other/toast.service';
+import { PermissionDirective } from '../../directives/permission.directive';
+import { AppRole } from '../../../model/access-control.model';
+import { DynamicProviderKey } from '../../../model/dynamic-provider-key.enum';
+import { DynamicSelectComponent } from '../dynamic-select/dynamic-select.component';
+import { FileDropzoneComponent } from '../file-dropzone/file-dropzone.component';
 
 @Component({
   selector: 'app-data-import',
-  imports: [FormsModule],
+  imports: [FormsModule, PermissionDirective, DynamicSelectComponent, FileDropzoneComponent],
   templateUrl: './data-import.component.html',
   styleUrl: './data-import.component.scss',
 })
@@ -24,6 +29,8 @@ export class DataImportComponent {
   errors: ImportRowResult[] = [];
   errorMessage = '';
   visibleErrors = 100;
+  selectedUserRole: AppRole | null = null;
+  readonly rolesProvider = DynamicProviderKey.APP_ROLES_FIND_ALL;
 
   readonly resourceNames: Record<ImportResource, string> = {
     clients: 'clientes',
@@ -41,6 +48,7 @@ export class DataImportComponent {
   open(content: TemplateRef<unknown>): void {
     this.file = null;
     this.delimiter = ',';
+    this.selectedUserRole = null;
     this.resetResult();
     this.modalService.open(content, {
       size: 'lg',
@@ -51,23 +59,19 @@ export class DataImportComponent {
     });
   }
 
-  selectFile(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.file = input.files?.[0] ?? null;
+  selectFile(file: File | null): void {
+    this.file = file;
     this.resetResult();
 
-    if (this.file && !this.file.name.toLowerCase().endsWith('.csv')) {
+    if (file && !file.name.toLowerCase().endsWith('.csv')) {
       this.errorMessage = 'Selecciona un archivo con extensión .csv.';
-    } else if (this.file && this.file.size === 0) {
+    } else if (file && file.size === 0) {
       this.errorMessage = 'El archivo está vacío.';
-    } else if (this.file && this.file.size > 5 * 1024 * 1024) {
+    } else if (file && file.size > 5 * 1024 * 1024) {
       this.errorMessage = 'El archivo no puede superar los 5 MB.';
     }
 
-    if (this.errorMessage) {
-      this.file = null;
-      input.value = '';
-    }
+    if (this.errorMessage) this.file = null;
   }
 
   resetResult(): void {
@@ -79,10 +83,14 @@ export class DataImportComponent {
 
   upload(dryRun: boolean): void {
     if (!this.file || this.busy || (this.result && !this.result.dryRun)) return;
+    if (this.resource === 'users' && this.selectedUserRole?.status === 'INACTIVE') {
+      this.toastService.warning('Selecciona un rol activo o de sistema.');
+      return;
+    }
 
     this.resetResult();
     this.busy = true;
-    this.importService.upload(this.resource, this.file, dryRun, this.delimiter)
+    this.importService.upload(this.resource, this.file, dryRun, this.delimiter, this.selectedUserRole?.hashId)
       .pipe(finalize(() => this.busy = false))
       .subscribe({
         next: result => {
@@ -107,14 +115,21 @@ export class DataImportComponent {
       services: ['name', 'speed', 'monthlyPrice', 'type', 'status'],
       clients: ['businessName', 'contactName', 'contactEmail', 'contactPhone', 'address', 'latitude',
         'longitude', 'customerSince', 'serviceName', 'collectorHashId', 'collectorName', 'collectorEmail', 'status'],
-      users: ['fullName', 'email', 'password', 'role', 'status'],
+      users: ['fullName', 'email', 'password', 'status'],
       payments: ['importKey', 'clientName', 'clientEmail', 'clientPhone', 'collectorName', 'collectorEmail',
-        'amount', 'paidAt', 'method', 'status', 'reference', 'comment'],
+        'amount', 'paidAt', 'method', 'reference', 'comment'],
     };
     return `data:text/csv;charset=utf-8,${encodeURIComponent('\uFEFF' + columns[this.resource].join(this.delimiter) + '\r\n')}`;
   }
 
   describeError(code: string | null): string {
+    if (code === 'import_unknown_columns' && this.resource === 'users') {
+      return 'El CSV contiene columnas no permitidas. Usa fullName, email, password y status; no incluyas role ni roleHashId. El rol opcional se selecciona fuera del archivo.';
+    }
+    if (code === 'import_unknown_columns' && this.resource === 'payments') {
+      return 'El CSV contiene columnas no permitidas. No incluyas status: todos los pagos importados se guardan como completados.';
+    }
+
     const messages: Record<string, string> = {
       import_empty_file: 'El archivo no contiene registros.',
       import_file_too_large: 'El archivo no puede superar los 5 MB.',
@@ -135,7 +150,11 @@ export class DataImportComponent {
       import_user_email_already_exists: 'Ya existe un usuario con este correo electrónico.',
       import_payment_already_imported: 'Ya se importó un pago con esta clave importKey.',
       import_password_too_long: 'La contraseña supera el máximo de 72 bytes en UTF-8.',
-      import_role_invalid: 'El rol debe ser ADMINISTRATOR (61) o COLLECTOR (62).',
+      import_roleHashId_too_long: 'El identificador del rol es demasiado largo.',
+      import_role_not_supported: 'No se puede asignar ese rol desde este tipo de importación.',
+      role_not_found: 'No se encontró el rol seleccionado.',
+      role_inactive: 'El rol seleccionado está inactivo. Selecciona un rol activo o de sistema.',
+      role_assignment_permission_denied: 'Se requiere el permiso roles:update para asignar roles durante la importación.',
       import_method_invalid: 'El método debe ser CASH (81), TRANSFER (82) o CARD (83).',
       import_client_reference_required: 'Indica al menos clientName, clientEmail o clientPhone para identificar al cliente.',
       import_client_not_found: 'No existe un cliente que coincida con los datos indicados.',
@@ -144,7 +163,7 @@ export class DataImportComponent {
       import_collector_not_found: 'No existe un cobrador que coincida con los datos indicados.',
       import_collector_ambiguous: 'Los datos coinciden con varios cobradores. Agrega el correo para identificar uno solo.',
       import_collector_reference_conflict: 'Usa collectorHashId o los datos collectorName/collectorEmail, sin combinarlos.',
-      import_collector_role_invalid: 'El usuario indicado no tiene el rol de cobrador.',
+      import_collector_role_invalid: 'El usuario indicado no tiene permiso para registrar pagos.',
       import_collector_inactive: 'El cobrador indicado no está activo.',
       import_constraint_violation: 'El registro incumple una restricción de datos o está duplicado.',
       service_name_must_be_unique: 'Ya existe un plan con este nombre.',

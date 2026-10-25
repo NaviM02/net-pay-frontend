@@ -1,0 +1,87 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.np-file-dropzone {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 92px;
+  padding: 1rem 1.25rem;
+  border: 2px dashed var(--np-border);
+  border-radius: var(--np-radius-md);
+  background: var(--np-surface);
+  transition: border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
+  cursor: pointer;
+}
+
+.np-file-dropzone:hover,
+.np-file-dropzone-active {
+  border-color: var(--np-primary);
+  background: var(--np-primary-light);
+}
+
+.np-file-dropzone-active {
+  box-shadow: 0 0 0 3px rgb(30 92 230 / 12%);
+}
+
+.np-file-dropzone-disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.np-file-dropzone-icon {
+  flex: 0 0 auto;
+  color: var(--np-primary);
+  font-size: 28px;
+}
+
+.np-file-dropzone-copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  gap: 0.2rem;
+}
+
+.np-file-dropzone-prompt,
+.np-file-dropzone-name {
+  overflow: hidden;
+  color: var(--np-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.np-file-dropzone-meta {
+  color: var(--np-text-muted);
+  font-size: 0.78rem;
+}
+
+.np-file-dropzone-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.5rem;
+}
+
+@media (max-width: 575.98px) {
+  .np-file-dropzone {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .np-file-dropzone-copy {
+    flex-basis: calc(100% - 3rem);
+  }
+
+  .np-file-dropzone > .btn,
+  .np-file-dropzone-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .np-file-dropzone-actions > .btn { flex: 1 1 50%; }
+}

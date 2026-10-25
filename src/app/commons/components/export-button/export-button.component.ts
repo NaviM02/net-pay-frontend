@@ -3,6 +3,7 @@ import { NgbDropdown, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/n
 
 import { ReportExportFormatEnum } from '../../../model/report.enum';
 import { MaterialIconComponent } from '../material-icon/material-icon.component';
+import { PermissionDirective } from '../../directives/permission.directive';
 
 /**
  * Dropdown with the export formats of a report. `exportAction` receives the
@@ -10,7 +11,7 @@ import { MaterialIconComponent } from '../material-icon/material-icon.component'
  */
 @Component({
   selector: 'app-export-button',
-  imports: [NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, MaterialIconComponent],
+  imports: [NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, MaterialIconComponent, PermissionDirective],
   templateUrl: './export-button.component.html',
   styleUrl: './export-button.component.scss',
 })

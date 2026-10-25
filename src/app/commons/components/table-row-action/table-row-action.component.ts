@@ -1,11 +1,14 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AccessControlService } from '../../../services/core/access-control.service';
+import { permissionForUrl } from '../../utils/access.utils';
 
 export interface TableRowCustomAction {
   label: string;
   action: () => void;
   icon?: string;
   danger?: boolean;
+  permission?: string;
 }
 
 @Component({
@@ -15,6 +18,24 @@ export interface TableRowCustomAction {
   imports: [RouterLink],
 })
 export class TableRowActionComponent {
+  constructor(private router: Router, private accessService: AccessControlService) {}
+
+  can(action: string): boolean {
+    const url = this.viewRoute ? (Array.isArray(this.viewRoute) ? this.viewRoute.join('/') : this.viewRoute) : this.router.url;
+    return this.accessService.hasPermission(permissionForUrl(url, action));
+  }
+
+  canRun(action: TableRowCustomAction): boolean {
+    if (action.permission) return this.accessService.hasPermission(action.permission);
+    // Receipt row actions request PDF documents and printing; personal receipts
+    // use their own export grant instead of the management permission.
+    const resource = this.router.url.split(/[/?#]/).filter(Boolean)[0];
+    if (resource === 'receipts' || resource === 'my-receipts') {
+      return this.accessService.hasPermission(permissionForUrl(this.router.url, 'export'));
+    }
+    return true;
+  }
+
   @Input() viewRoute: any[] | string | null | undefined;
   @Input() editRoute: any[] | string | null | undefined;
   @Output() editAction = new EventEmitter<void>();

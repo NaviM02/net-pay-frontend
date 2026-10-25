@@ -10,12 +10,15 @@ export class DataImportService {
 
   constructor(private http: HttpClient) {}
 
-  upload(resource: ImportResource, file: File, dryRun: boolean, delimiter: string): Observable<ImportResult> {
+  upload(resource: ImportResource, file: File, dryRun: boolean, delimiter: string, roleHashId?: string): Observable<ImportResult> {
     const body = new FormData();
     body.append('file', file);
 
+    const params: Record<string, string | boolean> = { dryRun, delimiter };
+    if (resource === 'users' && roleHashId) params['roleHashId'] = roleHashId;
+
     return this.http.post<ImportResult>(`${this.baseUrl}/${resource}`, body, {
-      params: { dryRun, delimiter },
+      params,
     });
   }
 }

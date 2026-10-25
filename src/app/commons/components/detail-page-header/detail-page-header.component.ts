@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AccessControlService } from '../../../services/core/access-control.service';
+import { permissionForUrl } from '../../utils/access.utils';
 import { MaterialIconComponent } from '../material-icon/material-icon.component';
 
 /**
@@ -31,6 +33,12 @@ import { MaterialIconComponent } from '../material-icon/material-icon.component'
   styleUrl: './detail-page-header.component.scss'
 })
 export class DetailPageHeaderComponent {
+  constructor(private router: Router, private accessService: AccessControlService) {}
+
+  can(action: string): boolean {
+    return this.accessService.hasPermission(permissionForUrl(this.router.url, action));
+  }
+
   // The route to navigate to when the "Back" button is clicked. If not provided, the button will be hidden.
   @Input() backRoute: any[] | string | null | undefined = undefined;
 
@@ -61,4 +69,8 @@ export class DetailPageHeaderComponent {
   // Event emitted when the "Edit" action is triggered and no editRoute is set,
   // so the page can open its own form (e.g. a modal).
   @Output() editAction = new EventEmitter<void>();
+
+  @Input() additionalActionText = '';
+  @Input() additionalActionEmphasis = false;
+  @Output() additionalAction = new EventEmitter<void>();
 }

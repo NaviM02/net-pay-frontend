@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AppClient, AppUser, ForgotPasswordRequest, MessageResponseDto, ResetPasswordRequest, ResetTokenValidationDto } from '../../model/app.model';
+import { AppClient, AppUser, ChangePasswordRequest, ForgotPasswordRequest, MessageResponseDto, ResetPasswordRequest, ResetTokenValidationDto } from '../../model/app.model';
 import { QueryParamService } from '../other/query-param.service';
 import { buildSkipGlobalLoadingContext } from '../../interceptors/loading-ui-context';
 
@@ -52,19 +52,32 @@ export class AppUserService {
     return this.http.post<MessageResponseDto>(`${this.baseUrl}/reset-password`, request);
   }
 
+  changePassword(hashId: string | null, request: ChangePasswordRequest) {
+    const endpoint = hashId
+      ? `${this.baseUrl}/${hashId}/password`
+      : `${this.baseUrl}/me/password`;
+    return this.http.put<MessageResponseDto>(endpoint, request);
+  }
+
   /**
-   * Clients assigned to a collector, server-paginated.
-   * `hashId` is always the collector of the session, never a value typed in the
+   * Clients assigned to a user, server-paginated.
+   * `hashId` is always the current user, never a value typed in the
    * UI. The endpoint reads the same query params as `/api/clients`.
    */
-  findByCollectorHashId(hashId: string, queryParams: Map<string, string> = new Map()) {
+  findClientsByUserHashId(hashId: string, queryParams: Map<string, string> = new Map()) {
     const params = this.queryParamService.getParams(queryParams);
     return this.http.get<AppClient[]>(`${this.baseUrl}/${hashId}/clients`, { params, observe: 'response' });
   }
 
   save(user: AppUser) {
-    if (user.hashId) return this.http.put(`${this.baseUrl}/${user.hashId}`, user);
-    return this.http.post(this.baseUrl, user);
+    const request = {
+      fullName: user.fullName,
+      email: user.email,
+      password: user.password || null,
+      status: user.tpStatus.internalId,
+    };
+    if (user.hashId) return this.http.put<AppUser>(`${this.baseUrl}/${user.hashId}`, request);
+    return this.http.post<AppUser>(this.baseUrl, request);
   }
 
   delete(hashId: string) {

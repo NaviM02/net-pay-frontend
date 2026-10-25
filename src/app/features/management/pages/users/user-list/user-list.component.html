@@ -1,0 +1,69 @@
+<div class="np-page">
+
+  <app-list-page-header
+    title="Usuarios"
+    description="Gestión de cuentas de acceso al sistema"
+    saveText="Nuevo usuario"
+    (buttonClick)="add()"
+  />
+
+  <div class="np-list-card">
+    <div class="np-table-actions-bar">
+      <app-filter-menu
+        [filterGroup]="listStateService.filter"
+        (onFilterChange)="listStateService.onFilterChange($event)"
+      />
+      <app-data-import resource="users" (imported)="findAll()" />
+    </div>
+
+    <div class="np-table-scroll">
+      <table class="table np-table mb-0">
+        <thead>
+        <tr>
+          <th>NOMBRE</th>
+          <th>EMAIL</th>
+          <th>ESTADO</th>
+          <th>ÚLTIMO INGRESO</th>
+          <th class="np-table-actions-cell text-end">ACCIONES</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          @for (user of users; track user.hashId) {
+            <tr>
+              <td>
+                <span class="np-table-primary">{{ user.fullName }}</span>
+              </td>
+              <td class="np-table-muted">{{ user.email }}</td>
+              <td><app-typology-badge [typology]="user.tpStatus" /></td>
+              <td class="np-table-muted">
+                @if (user.lastLoginAt) {
+                  {{ user.lastLoginAt | date: 'dd/MM/yyyy HH:mm' }}
+                } @else {
+                  Nunca
+                }
+              </td>
+              <td class="np-table-actions-cell text-end">
+                <app-table-row-action
+                  [viewRoute]="['/users/', user.hashId]"
+                  (editAction)="edit(user.hashId)"
+                  (deleteAction)="delete(user.hashId, user.fullName)" />
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5">
+                <div class="np-empty-state">No hay usuarios que coincidan con el filtro.</div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pagination
+      [pagination]="listStateService.pagination"
+      (onPaginationChange)="listStateService.onPaginationChange($event)"
+    />
+  </div>
+</div>
