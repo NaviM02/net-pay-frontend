@@ -14,6 +14,7 @@ import { PaginationComponent } from '../../../../../commons/components/paginatio
 import { TableRowActionComponent } from '../../../../../commons/components/table-row-action/table-row-action.component';
 import { TypologyBadgeComponent } from '../../../../../commons/components/typology-badge/typology-badge.component';
 import { ClientListFilter } from './client-list.filter';
+import { DataImportComponent } from '../../../../../commons/components/data-import/data-import.component';
 
 @Component({
   selector: 'app-client-list',
@@ -25,6 +26,7 @@ import { ClientListFilter } from './client-list.filter';
     TypologyBadgeComponent,
     TableRowActionComponent,
     PaginationComponent,
+    DataImportComponent,
   ],
 })
 export class ClientListComponent implements OnInit {

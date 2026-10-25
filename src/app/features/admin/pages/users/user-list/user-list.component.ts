@@ -14,6 +14,7 @@ import { ToastService } from '../../../../../services/other/toast.service';
 import { ConfirmActionService } from '../../../../../services/other/confirm-action.service';
 import { confirmAction } from '../../../../../commons/decorators/confirm.decorator';
 import { UserFormModalComponent } from '../user-form-modal/user-form-modal.component';
+import { DataImportComponent } from '../../../../../commons/components/data-import/data-import.component';
 
 @Component({
   selector: 'app-user-list',
@@ -27,6 +28,7 @@ import { UserFormModalComponent } from '../user-form-modal/user-form-modal.compo
     TableRowActionComponent,
     PaginationComponent,
     UserFormModalComponent,
+    DataImportComponent,
   ],
 })
 export class UserListComponent implements OnInit {

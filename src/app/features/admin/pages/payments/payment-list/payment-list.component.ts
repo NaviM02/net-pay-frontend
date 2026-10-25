@@ -14,6 +14,7 @@ import { TableRowActionComponent } from '../../../../../commons/components/table
 import { TypologyBadgeComponent } from '../../../../../commons/components/typology-badge/typology-badge.component';
 import { isPaymentLocked } from '../../../../../commons/utils/payment.utils';
 import { PaymentListFilter } from './payment-list.filter';
+import { DataImportComponent } from '../../../../../commons/components/data-import/data-import.component';
 
 @Component({
   selector: 'app-payment-list',
@@ -27,6 +28,7 @@ import { PaymentListFilter } from './payment-list.filter';
     TypologyBadgeComponent,
     TableRowActionComponent,
     PaginationComponent,
+    DataImportComponent,
   ],
 })
 export class PaymentListComponent implements OnInit {

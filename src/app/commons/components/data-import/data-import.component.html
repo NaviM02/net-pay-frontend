@@ -1,0 +1,120 @@
+<button type="button" class="btn btn-outline-primary" (click)="open(importModal)">
+  Importar CSV
+</button>
+
+<ng-template #importModal let-modal>
+  <div class="modal-header">
+    <h2 id="data-import-title" class="modal-title fs-5">
+      Importar {{ resourceNames[resource] }} desde CSV
+    </h2>
+    <button type="button" class="btn-close" aria-label="Cerrar" [disabled]="busy" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body" [attr.aria-busy]="busy">
+    <p>Selecciona un CSV en UTF-8 con encabezados. Máximo 5 MB y 5000 registros.</p>
+    <p class="small text-body-secondary">
+      Se crean registros nuevos; no se actualizan los existentes. Las filas válidas se guardan aunque otras tengan errores.
+      Puedes validar primero sin guardar datos.
+    </p>
+
+    <details class="mb-3">
+      <summary>Formato y campos del archivo</summary>
+      <div class="small mt-2">
+        @if (resource === 'services') {
+          <p>Obligatorios: <code>name</code> (máx. 150), <code>speed</code> (máx. 50) y
+            <code>monthlyPrice</code> (0 a 99999999.99, hasta 2 decimales).</p>
+          <p>Opcionales: <code>type</code> (identificador del tipo; por defecto 71, residencial)
+            y <code>status</code> (por defecto 49, activo). El nombre del plan debe ser único.</p>
+        } @else if (resource === 'clients') {
+          <p>Obligatorios: <code>businessName</code>, <code>contactName</code> y <code>serviceName</code>
+            (máx. 150 caracteres cada uno). El plan de <code>serviceName</code> debe existir: importa los servicios primero.</p>
+          <p>Opcionales: <code>contactEmail</code> (máx. 150), <code>contactPhone</code> (máx. 30),
+            <code>address</code> (máx. 255), <code>latitude</code> (-90 a 90), <code>longitude</code> (-180 a 180),
+            <code>customerSince</code> (AAAA-MM-DD), <code>collectorHashId</code> (identificador público del cobrador),
+            <code>collectorName</code>, <code>collectorEmail</code>
+            y <code>status</code> (por defecto 49, activo). Coordenadas: hasta 7 decimales.</p>
+          <p>Para asignar un cobrador, usa <code>collectorHashId</code> o su nombre/correo, sin combinar ambas formas.
+            Debe ser un cobrador activo y la búsqueda debe encontrar una sola coincidencia.</p>
+        } @else if (resource === 'users') {
+          <p>Obligatorios: <code>fullName</code> y <code>email</code> (máx. 150 caracteres cada uno).
+            El correo debe ser válido y único; se guarda en minúsculas.</p>
+          <p>Opcionales: <code>password</code> (máx. 72 bytes en UTF-8), <code>role</code> y <code>status</code>.
+            Si dejas la contraseña vacía, el backend genera una aleatoria; el usuario podrá establecerla mediante recuperación de contraseña.</p>
+          <p>Roles: <code>ADMINISTRATOR</code> (61) o <code>COLLECTOR</code> (62, por defecto).
+            Estados: <code>ACTIVE</code> (49, por defecto), <code>INACTIVE</code> (50),
+            <code>LOCKED</code> (52) o <code>SUSPENDED</code> (53).</p>
+        } @else if (resource === 'payments') {
+          <p>Obligatorios: <code>importKey</code> (clave única del pago, máx. 150 caracteres),
+            <code>amount</code> (0.01 a 9999999999.99, hasta 2 decimales), <code>paidAt</code> (AAAA-MM-DD)
+            y <code>method</code>: <code>CASH</code> (81), <code>TRANSFER</code> (82) o <code>CARD</code> (83).</p>
+          <p>Identifica al cliente existente con al menos uno de estos campos: <code>clientName</code> (máx. 150),
+            <code>clientEmail</code> (máx. 150) o <code>clientPhone</code> (máx. 30).
+            Si hay varias coincidencias, agrega más datos hasta identificar un solo cliente.</p>
+          <p>Opcionales: <code>collectorName</code> y <code>collectorEmail</code> (máx. 150 cada uno, deben identificar
+            un único cobrador activo), <code>reference</code> (máx. 255), <code>comment</code> (máx. 500) y
+            <code>status</code>: <code>COMPLETED</code> (91, por defecto), <code>PENDING</code> (92) o <code>FAILED</code> (93).</p>
+          <p>Conserva la misma <code>importKey</code> al reintentar un pago: el backend rechaza claves ya importadas
+            para evitar duplicados. No uses una clave nueva para el mismo pago.</p>
+        }
+        <p class="mb-0">Usa punto para los decimales. Deja vacíos los campos opcionales sin valor.
+          Conserva los nombres de los encabezados exactamente como aparecen en la plantilla.</p>
+      </div>
+    </details>
+
+    <div class="mb-3">
+      <label for="import-delimiter" class="form-label">Separador</label>
+      <select id="import-delimiter" class="form-select" [(ngModel)]="delimiter"
+        (ngModelChange)="resetResult()" [disabled]="busy || (result !== null && !result.dryRun)">
+        <option value=",">Coma (,)</option>
+        <option value=";">Punto y coma (;)</option>
+        <option [value]="'\t'">Tabulación</option>
+      </select>
+    </div>
+    <a class="d-inline-block mb-3" [href]="templateUrl" [download]="resource + '-plantilla.csv'">Descargar plantilla CSV</a>
+    <div class="mb-3">
+      <label for="import-file" class="form-label">Archivo CSV</label>
+      <input id="import-file" type="file" class="form-control" accept=".csv,text/csv" [disabled]="busy"
+        (change)="selectFile($event)" aria-describedby="import-file-help" />
+      <div id="import-file-help" class="form-text">{{ file?.name ?? 'Selecciona el archivo que deseas cargar.' }}</div>
+    </div>
+
+    @if (errorMessage) {
+      <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+    }
+    @if (busy) {
+      <p role="status">Procesando archivo…</p>
+    }
+    @if (result) {
+      <div class="alert" [class.alert-success]="result.failed === 0" [class.alert-warning]="result.failed > 0" role="status">
+        <strong>{{ result.dryRun ? 'Validación sin guardar' : 'Importación finalizada' }}</strong>
+        <div>Total: {{ result.total }} · {{ result.dryRun ? 'Válidos' : 'Creados' }}: {{ result.successful }} · Errores: {{ result.failed }}</div>
+      </div>
+      @if (!result.dryRun) {
+        <p class="small">Para volver a cargar, selecciona otro archivo. Si hubo errores, incluye únicamente las filas
+          fallidas para evitar duplicar los registros ya creados.</p>
+      }
+      @if (errors.length) {
+        <div class="np-table-scroll import-errors">
+          <table class="table np-table mb-0">
+            <caption class="visually-hidden">Errores por fila del archivo</caption>
+            <thead><tr><th scope="col">Fila</th><th scope="col">Error</th></tr></thead>
+            <tbody>
+              @for (row of errors.slice(0, visibleErrors); track row.row) {
+                <tr><td>{{ row.row }}</td><td>{{ describeError(row.error) }}</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        @if (errors.length > visibleErrors) {
+          <button type="button" class="btn btn-link" (click)="visibleErrors = visibleErrors + 100">Mostrar más errores ({{ visibleErrors }} de {{ errors.length }})</button>
+        }
+      }
+    }
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" [disabled]="busy" (click)="modal.dismiss()">Cerrar</button>
+    <button type="button" class="btn btn-outline-primary" (click)="upload(true)"
+      [disabled]="!file || busy || (result !== null && !result.dryRun)">Validar sin guardar</button>
+    <button type="button" class="btn btn-primary" (click)="upload(false)"
+      [disabled]="!file || busy || (result !== null && !result.dryRun)">Importar</button>
+  </div>
+</ng-template>

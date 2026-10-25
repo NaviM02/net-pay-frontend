@@ -13,6 +13,7 @@
         [filterGroup]="listStateService.filter"
         (onFilterChange)="listStateService.onFilterChange($event)"
       />
+      <app-data-import resource="users" (imported)="findAll()" />
     </div>
 
     <div class="np-table-scroll">
