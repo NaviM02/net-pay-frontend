@@ -1,0 +1,40 @@
+<div class="role-permission-table np-table-scroll">
+  <table class="table np-table mb-0">
+    <caption class="visually-hidden">Permisos por área y acción</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="permission-resource-heading">Área</th>
+        <th scope="col" class="text-center permission-check-heading">Todos</th>
+        @for (action of actions; track action.key) {
+          <th scope="col" class="text-center permission-check-heading">{{ action.shortLabel }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (group of groups; track group.resource) {
+        <tr>
+          <th scope="row" class="resource-name">{{ group.resource }}</th>
+          <td class="text-center">
+            <input type="checkbox" class="form-check-input" [checked]="isAllChecked(group)" [disabled]="readonly"
+              [attr.aria-label]="'Seleccionar todos los permisos de ' + group.resource"
+              (change)="toggleAll(group, $any($event.target).checked)" />
+          </td>
+          @for (action of actions; track action.key) {
+            <td class="text-center">
+              @if (permission(group, action.key); as item) {
+                <input type="checkbox" class="form-check-input" [checked]="isChecked(group, action.key)" [disabled]="readonly"
+                  [attr.aria-label]="item.authority"
+                  (change)="toggle(group, action.key, $any($event.target).checked)" />
+              } @else {
+                <span class="permission-not-available" aria-hidden="true">—</span>
+                <span class="visually-hidden">No disponible</span>
+              }
+            </td>
+          }
+        </tr>
+      } @empty {
+        <tr><td colspan="8"><div class="np-empty-state">No hay permisos disponibles.</div></td></tr>
+      }
+    </tbody>
+  </table>
+</div>

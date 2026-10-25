@@ -1,12 +1,14 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, EMPTY } from 'rxjs';
+import { catchError, EMPTY, of, switchMap, throwError } from 'rxjs';
 import { ToastService } from '../services/other/toast.service';
 import { CurrentUserService } from '../services/core/current-user.service';
+import { AccessControlService } from '../services/core/access-control.service';
 
 export const unauthorizedInterceptor: HttpInterceptorFn = (req, next) => {
   const currentUserService = inject(CurrentUserService);
   const toastService = inject(ToastService);
+  const accessService = inject(AccessControlService);
 
   return next(req)
     .pipe(
@@ -22,6 +24,14 @@ export const unauthorizedInterceptor: HttpInterceptorFn = (req, next) => {
           currentUserService.logout();
           toastService.error('Inicia sesion para conectarte');
           return EMPTY;
+        }
+
+        if (err.status === 403 && !req.url.endsWith('/auth/access')) {
+          toastService.warning('No tienes permiso para realizar esta acción.');
+          return accessService.loadAccess(true).pipe(
+            catchError(() => of(null)),
+            switchMap(() => throwError(() => err)),
+          );
         }
 
         // Rethrow other errors

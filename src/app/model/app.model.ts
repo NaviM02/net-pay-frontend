@@ -22,6 +22,12 @@ export class ResetPasswordRequest {
   public confirmPassword!: string;
 }
 
+export class ChangePasswordRequest {
+  public currentPassword!: string;
+  public newPassword!: string;
+  public confirmPassword!: string;
+}
+
 /** Answer of `GET /api/users/reset-password/validate`. Never fails. */
 export class ResetTokenValidationDto {
   public valid!: boolean;
@@ -37,14 +43,12 @@ export class AdmTypology {
 }
 
 export class AppUser {
-  public id!: number;
   public hashId!: string;
   public email!: string;
   public password!: string;
   public fullName!: string;/*
   public phoneNumber!: string;*/
   public tpStatus!: AdmTypology;
-  public tpRole!: AdmTypology;
   public entryDate!: string;
   public lastLoginAt!: string;
 }

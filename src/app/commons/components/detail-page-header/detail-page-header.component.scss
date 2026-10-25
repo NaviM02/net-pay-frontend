@@ -1,0 +1,18 @@
+:host {
+  display: block;
+}
+
+.np-header-action-emphasis {
+  border: 0 !important;
+  background-color: #1451d8 !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 0 #0b358f, 0 4px 10px rgb(20 81 216 / 28%);
+
+  &:hover,
+  &:focus-visible {
+    border-color: #08296f !important;
+    background-color: #0e3fae !important;
+    color: #fff !important;
+  }
+}

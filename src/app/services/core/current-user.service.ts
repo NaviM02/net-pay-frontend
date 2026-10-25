@@ -6,8 +6,7 @@ import { Router } from '@angular/router';
 import { AppStorageKeys } from '../../model/app-storage-keys.enum';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { AppUserService } from './app-user.service';
-import { TypologyEnum } from '../../model/typology.enum';
-import { getHomeRouteForRole } from '../../commons/utils/role.utils';
+import { AccessControlService } from './access-control.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +19,7 @@ export class CurrentUserService {
     private clientMeService: AppUserService,
     private toastService: ToastService,
     private router: Router,
+    private accessService: AccessControlService,
   ) {}
 
   getCurrentUser(): Observable<AppUser> {
@@ -61,41 +61,30 @@ export class CurrentUserService {
     return !helper.isTokenExpired(authToken);
   }
 
-  /**
-   * `internalId` of the role of the cached user, or `undefined` while the
-   * profile has not been loaded yet. Always read it through `getCurrentUser()`
-   * when the value is needed to build something; only the helpers below may
-   * rely on the synchronous cache.
-   */
-  get role(): number | undefined {
-    return this.currentUser()?.tpRole?.internalId;
-  }
-
-  hasRole(role: TypologyEnum): boolean {
-    const current = this.role;
-    return current !== undefined && current === role;
-  }
-
-/** `hashId` of the cached user, or `undefined` while the profile is unknown. */
-getCurrentHashId(): string | undefined {
+  /** Public identifier; users/me no longer exposes a numeric id. */
+  getCurrentHashId(): string | undefined {
     return this.currentUser()?.hashId;
   }
 
-  /** Numeric internal id of the cached user, used by the endpoints that take ids. */
-getCurrentId(): number | undefined {
-  return this.currentUser()?.id;
-}
+  /** Legacy collector filters still accept the userId claim from the session token. */
+  getCurrentId(): number | undefined {
+    const token = localStorage.getItem(AppStorageKeys.AUTH);
+    if (!token) return undefined;
+    try {
+      const claims = new JwtHelperService().decodeToken<{ userId?: number }>(token);
+      return typeof claims?.userId === 'number' ? claims.userId : undefined;
+    } catch {
+      return undefined;
+    }
+  }
 
-  /**
-   * First page of the current role. Reads the profile from `localStorage` when
-   * it is not in memory yet, and falls back to the not-found route while the
-   * role is still unknown.
-   */
+  /** First accessible page according to the effective permissions from the API. */
   getHomeRoute(): string {
-    return getHomeRouteForRole(this.currentUser()?.tpRole?.internalId);
+    return this.accessService.getHomeRoute();
   }
 
   logout() {
+    this.accessService.clear();
     localStorage.clear();
     this.cachedUser = undefined;
     this.inFlightCurrentUser$ = undefined;

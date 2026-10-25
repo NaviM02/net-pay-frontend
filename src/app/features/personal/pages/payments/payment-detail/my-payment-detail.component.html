@@ -1,0 +1,142 @@
+<div class="np-page">
+  <app-detail-page-header
+    [backRoute]="['/my-payments']"
+    description="Detalle del pago y meses cubiertos"
+    [itemName]="payment.reference || 'Pago'"
+    [showEdit]="false"
+    [showDelete]="false"
+  />
+
+  <div class="np-payment-detail">
+
+    @if (payment.hashId) {
+      <div class="np-detail-section">
+        <div class="np-detail-section-header">
+          <div>
+            <span class="np-detail-section-title">Detalle del pago</span>
+            <span class="np-detail-section-count">{{ payment.hashId }}</span>
+          </div>
+
+        </div>
+
+        @if (isPaymentLocked(payment)) {
+          <div class="np-payment-locked">
+            Este pago no se puede modificar. Registra un pago nuevo con el monto correcto.
+          </div>
+        }
+
+        <div class="np-detail-fields">
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Cliente</span>
+            <span class="np-detail-field-value">
+              @if (payment.client; as client) {
+                @if (client.hashId) {
+                  <a [routerLink]="['/my-clients', client.hashId]">{{ client.businessName }}</a>
+                } @else {
+                  {{ client.businessName }}
+                }
+              } @else {
+                <span class="np-detail-placeholder">Sin cliente asignado</span>
+              }
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Monto</span>
+            <span class="np-detail-field-value">
+              {{ payment.amount | currency: 'Q' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Fecha de pago</span>
+            <span class="np-detail-field-value">
+              {{ payment.paidAt ? (payment.paidAt | date: 'dd/MM/yyyy') : 'Sin definir' }}
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Método de pago</span>
+            <span class="np-detail-field-value">
+              @if (payment.tpPaymentMethod) {
+                <app-typology-badge [typology]="payment.tpPaymentMethod" />
+              } @else {
+                <span class="np-detail-placeholder">Sin definir</span>
+              }
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Referencia</span>
+            <span class="np-detail-field-value">
+              {{ payment.reference || 'Sin referencia' }}
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Registrado</span>
+            <span class="np-detail-field-value">
+              {{ payment.createdAt ? (payment.createdAt | date: 'dd/MM/yyyy HH:mm') : '—' }}
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Comentario</span>
+            <span class="np-detail-field-value">
+              {{ payment.comment || 'Sin comentario' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="np-detail-section">
+        <div class="np-detail-section-header">
+          <div>
+            <span class="np-detail-section-title">Aplicación del pago</span>
+            <span class="np-detail-section-count">
+              {{ payment.allocations.length }} periodo(s) cubierto(s)
+            </span>
+          </div>
+        </div>
+
+        <div class="np-table-scroll">
+          <table class="table np-table mb-0">
+            <thead>
+            <tr>
+              <th>PERIODO</th>
+              <th>AÑO</th>
+              <th>MES</th>
+              <th class="text-end">APLICADO</th>
+            </tr>
+            </thead>
+
+            <tbody>
+              @for (allocation of payment.allocations; track allocation.chargeHashId) {
+                <tr>
+                  <td><span class="np-table-primary">{{ allocation.periodLabel }}</span></td>
+                  <td class="np-table-mono">{{ allocation.year }}</td>
+                  <td class="np-table-mono">{{ allocation.month }}</td>
+                  <td class="np-table-mono text-end">
+                    {{ allocation.amount | currency: 'Q' : 'symbol' : '1.2-2' }}
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="4">
+                    <div class="np-empty-state">
+                      Este pago no cubrió ningún mes; quedó como saldo a favor.
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    } @else {
+      <div class="np-detail-section">
+        <div class="np-empty-state">No se encontró el pago solicitado.</div>
+      </div>
+    }
+  </div>
+</div>

@@ -43,8 +43,8 @@ export class DashboardClientByPlan {
   public activeClients!: number;
 }
 
-/** Payload of `GET /api/dashboard`. */
-export class AdminDashboard {
+/** Payload of the global `GET /api/dashboard` overview. */
+export class OperationsDashboard {
   public summary!: DashboardSummary;
   public recentPayments: AppPayment[] = [];
   public recentActivities: AppAuditLog[] = [];
@@ -55,7 +55,7 @@ export class AdminDashboard {
   public collectionsByMethodByMonth: DashboardCollectionsByMonth[] = [];
 }
 
-export class CollectorDashboardSummary {
+export class MyDashboardSummary {
   public assignedClients!: number;
   public monthCollection!: number;
   public overdueClients!: number;
@@ -65,11 +65,11 @@ export class CollectorDashboardSummary {
   public monthLabel!: string;
 }
 
-/** Payload of `GET /api/dashboard/collector`, scoped to the collector of the token. */
-export class CollectorDashboard {
-  public summary!: CollectorDashboardSummary;
+/** Payload of `GET /api/dashboard/collector`, scoped to the authenticated user. */
+export class MyDashboard {
+  public summary!: MyDashboardSummary;
   public recentPayments: AppPayment[] = [];
-  /** Only the overdue clients assigned to the collector. */
+  /** Only the overdue clients assigned to the authenticated user. */
   public overdueClients: OverdueClientReport[] = [];
   public collectionsByMethod: DashboardCollectionByMethod[] = [];
   public collectionsByMethodByMonth: DashboardCollectionsByMonth[] = [];

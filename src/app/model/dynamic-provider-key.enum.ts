@@ -1,8 +1,9 @@
 export enum DynamicProviderKey {
+  APP_ROLES_FIND_ALL = 'APP_ROLES_FIND_ALL',
   APP_USERS_FIND_ALL = 'APP_USER_FIND_ALL',
   APP_SERVICES_FIND_ALL = 'APP_SERVICE_FIND_ALL',
   APP_COLLECTORS_FIND_ALL = 'APP_COLLECTOR_FIND_ALL',
   APP_CLIENTS_FIND_ALL = 'APP_CLIENT_FIND_ALL',
-  /** Only the clients assigned to the collector of the session. */
-  APP_COLLECTOR_CLIENTS_FIND_ALL = 'APP_COLLECTOR_CLIENT_FIND_ALL',
+  /** Only the clients assigned to the authenticated user. */
+  APP_PERSONAL_CLIENTS_FIND_ALL = 'APP_PERSONAL_CLIENT_FIND_ALL',
 }

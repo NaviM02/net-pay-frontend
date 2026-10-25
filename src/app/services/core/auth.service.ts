@@ -7,6 +7,7 @@ import { switchMap, tap } from 'rxjs';
 import { CurrentUserService } from './current-user.service';
 import { AppStorageKeys } from '../../model/app-storage-keys.enum';
 import { AppUserService } from './app-user.service';
+import { AccessControlService } from './access-control.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class AuthService {
     private http: HttpClient,
     private currentClientService: CurrentUserService,
     private userService: AppUserService,
+    private accessService: AccessControlService,
   ) {
     // Initialize FingerprintJS and get the visitor identifier.
     FingerprintJS.load()
@@ -31,10 +33,14 @@ export class AuthService {
     authReq = { ...authReq, fingerprint: this.fingerprint };
     return this.http.post<AppToken>(`${this.baseUrl}/login`, authReq)
       .pipe(
-        tap(token => this.storeToken(token.authc)),
+        tap(token => {
+          this.accessService.clear();
+          this.storeToken(token.authc);
+        }),
         switchMap(_ => this.userService.findMe()
           .pipe(tap(client => this.currentClientService.updateCurrentUser(client)))
-        )
+        ),
+        switchMap(() => this.accessService.loadAccess(true)),
       );
   }
 

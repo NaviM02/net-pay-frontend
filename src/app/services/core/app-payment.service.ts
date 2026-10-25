@@ -43,7 +43,7 @@ export class AppPaymentService {
    * takes the collector from its security context, so the body must not carry
    * one: a collector can never register a payment in the name of someone else.
    */
-  createAsCollector(payment: AppPayment) {
+  createAsCurrentUser(payment: AppPayment) {
     return this.http.post<AppPayment>(`${this.baseUrl}/collector`, payment);
   }
 }

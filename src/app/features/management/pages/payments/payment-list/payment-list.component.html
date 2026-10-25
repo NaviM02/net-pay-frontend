@@ -1,0 +1,67 @@
+<div class="np-page">
+
+  <app-list-page-header
+    title="Pagos"
+    description="Registro y aplicación de pagos de los clientes"
+    saveText="Nuevo pago"
+    (buttonClick)="add()"
+  />
+
+  <div class="np-list-card">
+    <div class="np-table-actions-bar">
+      <app-filter-menu
+        [filterGroup]="listStateService.filter"
+        (onFilterChange)="listStateService.onFilterChange($event)"
+      />
+    </div>
+
+    <div class="np-table-scroll">
+      <table class="table np-table mb-0">
+        <thead>
+        <tr>
+          <th>FECHA</th>
+          <th>CLIENTE</th>
+          <th>MONTO</th>
+          <th>MÉTODO</th>
+          <th>COBRADOR</th>
+          <th>REFERENCIA</th>
+          <th class="np-table-actions-cell text-end">ACCIONES</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          @for (payment of payments; track payment.hashId) {
+            <tr>
+              <td class="np-table-mono">{{ payment.paidAt | date: 'dd/MM/yyyy' }}</td>
+              <td>
+                <span class="np-table-primary">{{ payment.client?.businessName ?? '—' }}</span>
+              </td>
+              <td class="np-table-mono">
+                {{ payment.amount | currency: 'Q' : 'symbol' : '1.2-2' }}
+              </td>
+              <td><app-typology-badge [typology]="payment.tpPaymentMethod" /></td>
+              <td class="np-table-muted">{{ payment.collector?.fullName ?? 'Sistema' }}</td>
+              <td class="np-table-muted">{{ payment.reference || '—' }}</td>
+              <td class="np-table-actions-cell text-end">
+                <app-table-row-action
+                  [viewRoute]="['/payments', payment.hashId]"
+                  [showEdit]="false" />
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7">
+                <div class="np-empty-state">No hay pagos que coincidan con el filtro.</div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pagination
+      [pagination]="listStateService.pagination"
+      (onPaginationChange)="listStateService.onPaginationChange($event)"
+    />
+  </div>
+</div>

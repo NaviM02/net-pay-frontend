@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+
+.user-form-roles-heading {
+  margin: 1.5rem 0 0.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--np-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.user-form-roles-heading h2 {
+  margin: 0 0 0.25rem;
+  color: var(--np-text);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.user-form-roles-heading p {
+  margin: 0;
+  color: var(--np-text-muted);
+  font-size: 0.8125rem;
+}
+
+.user-change-password-button {
+  flex: 0 0 auto;
+  border: 0;
+  background: #1451d8;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 0 #0b358f, 0 4px 10px rgb(20 81 216 / 28%);
+
+  &:hover,
+  &:focus-visible {
+    border-color: #08296f;
+    background: #0e3fae;
+    color: #fff;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .user-form-roles-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

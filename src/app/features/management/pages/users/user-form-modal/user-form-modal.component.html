@@ -1,0 +1,104 @@
+<div class="np-page">
+  <app-detail-page-header
+    [backRoute]="['/users']"
+    [itemName]="isEdit ? 'Editar usuario' : 'Crear usuario'"
+    description="Configura la cuenta y sus roles de acceso"
+    [showEdit]="false"
+  />
+
+    @if (initialized) {
+      <section class="np-list-card p-4">
+        <div class="row">
+          <div class="col-12 mb-3">
+            <label for="fullName" class="form-label required-field">Nombre completo</label>
+            <input
+              id="fullName"
+              type="text"
+              class="form-control"
+              [(ngModel)]="user.fullName"
+              placeholder="Ej. Juan Familia"
+              [maxLength]="100"
+              #fullName="ngModel"
+              [ngClass]="{ 'is-invalid': fullName.touched && !(user.fullName && user.fullName.trim()) }"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-lg-6 mb-3">
+            <label for="email" class="form-label required-field">Correo electrónico</label>
+
+            <input
+              id="email"
+              type="email"
+              class="form-control"
+              [(ngModel)]="user.email"
+              placeholder="usuario@netpay.do"
+              [maxLength]="120"
+              #email="ngModel"
+              [ngClass]="{ 'is-invalid': email.touched && !(user.email && user.email.trim()) }"
+            />
+          </div>
+
+          <div class="col-12 col-lg-6 mb-3">
+            <label class="form-label required-field">Estado</label>
+
+            <ng-select
+              placeholder="Seleccionar estado"
+              [(ngModel)]="user.tpStatus"
+              [clearable]="false"
+              name="tpStatus"
+              [compareWith]="compareTps"
+            >
+              <ng-option [value]="tpActive">{{ tpActive.description }}</ng-option>
+              <ng-option [value]="tpInactive">{{ tpInactive.description }}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+
+        @if (!isEdit) {
+          <div class="row">
+            <div class="col-12">
+              <label for="userPassword" class="form-label">Contraseña <span class="text-danger">*</span></label>
+
+              <app-input-for-password
+                [(ngModel)]="user.password"
+                placeholder="Introduce tu contraseña"
+                [iconPosition]="'left'"
+                [validatePassword]="true"
+                [isDark]="false"
+              />
+              <div class="form-text">Mínimo 8 caracteres.</div>
+            </div>
+          </div>
+        }
+
+        <div class="user-form-roles-heading">
+          <div>
+            <h2>Roles y vigencia</h2>
+            <p>Un usuario puede tener varios roles. Sus permisos se suman mientras las asignaciones estén vigentes.</p>
+          </div>
+          @if (isEdit) {
+            <button type="button" class="btn user-change-password-button" (click)="changePassword()">Cambiar contraseña</button>
+          }
+        </div>
+        <app-user-roles [userHashId]="hashId ?? ''" [editable]="true" (changesChange)="roleChanges = $event" />
+
+        <div class="d-flex justify-content-end gap-2 mt-3">
+          <button
+            type="button"
+            class="btn btn-light"
+            (click)="cancel()">
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="save()">
+            {{ isEdit ? 'Guardar cambios' : 'Crear usuario' }}
+          </button>
+        </div>
+      </section>
+    }
+</div>

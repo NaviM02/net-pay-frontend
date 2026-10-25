@@ -1,19 +1,18 @@
 import { Routes } from '@angular/router';
 import { allowNavigationGuard } from '../../security/allow-navigation.guard';
-import { TypologyEnum } from '../../model/typology.enum';
 
-/** Administrator dashboard. */
+/** Operations dashboard. */
 export const dashboardRoutes: Routes = [
   {
     path: '',
     canActivate: [allowNavigationGuard],
     canActivateChild: [allowNavigationGuard],
-    data: { permission: TypologyEnum.ADMIN },
+    data: { permission: 'dashboard:read' },
     children: [
       {
         path: '',
         loadComponent: () =>
-          import('./admin-dashboard/admin-dashboard.component').then(c => c.AdminDashboardComponent),
+          import('./overview/dashboard-overview.component').then(c => c.DashboardOverviewComponent),
       },
     ]
   }

@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+
+.user-roles-table-scroll { min-height: 0; max-height: none; }
+
+.user-roles-table {
+  table-layout: fixed;
+  min-width: 680px;
+}
+
+.user-roles-table .role-column { width: 34%; }
+.user-roles-table .date-column { width: 24%; }
+.user-roles-table .status-column { width: 18%; }
+.user-roles-table .actions-column { width: 10%; }
+
+.user-roles-table-editable .role-column { width: 29%; }
+.user-roles-table-editable .date-column { width: 23%; }
+.user-roles-table-editable .status-column { width: 15%; }
+.user-roles-table-editable .actions-column { width: 10%; }
+
+.user-roles-table td { vertical-align: middle; }
+.user-roles-table input,
+.user-roles-table app-dynamic-select { width: 100%; min-width: 0; }
+.user-roles-table app-dynamic-select { display: block; }
+.user-roles-table .material-symbols-outlined { display: block; font-size: 18px; }

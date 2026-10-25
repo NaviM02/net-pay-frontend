@@ -1,0 +1,40 @@
+<div class="np-page">
+  <app-list-page-header
+    title="Roles y permisos"
+    description="Administra los roles y las acciones permitidas en cada área"
+    saveText="Nuevo rol"
+    (buttonClick)="create()"
+  />
+
+  <div class="np-list-card">
+    <div class="np-table-actions-bar">
+      <app-filter-menu [filterGroup]="listStateService.filter" (onFilterChange)="listStateService.onFilterChange($event)" />
+    </div>
+
+    <div class="np-table-scroll">
+      <table class="table np-table mb-0">
+        <thead><tr><th class="role-name-column">ROL</th><th>DESCRIPCIÓN</th><th class="role-actions-column text-end">ACCIONES</th></tr></thead>
+        <tbody>
+          @for (role of roles; track role.hashId) {
+            <tr>
+              <td class="role-name-column"><span class="np-table-primary">{{ role.name }}</span></td>
+              <td class="np-table-muted role-description-column">{{ role.description || '—' }}</td>
+              <td class="np-table-actions-cell text-end">
+                <app-table-row-action
+                  [viewRoute]="['/roles', role.hashId]"
+                  [showEdit]="role.status !== 'LOCKED'"
+                  [showDelete]="role.status !== 'LOCKED'"
+                  (editAction)="edit(role.hashId)"
+                  (deleteAction)="delete(role.hashId, role.name)"
+                />
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="3"><div class="np-empty-state">No hay roles que coincidan con el filtro.</div></td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-pagination [pagination]="listStateService.pagination" (onPaginationChange)="listStateService.onPaginationChange($event)" />
+  </div>
+</div>

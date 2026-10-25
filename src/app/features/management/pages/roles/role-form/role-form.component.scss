@@ -1,0 +1,52 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.np-page {
+  width: 100%;
+}
+
+.role-form-card {
+  width: 100%;
+  min-width: 0;
+  gap: 1.5rem;
+  margin-top: 20px;
+  padding: clamp(1rem, 2vw, 1.5rem);
+}
+
+.role-form-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.role-permissions-section {
+  min-width: 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--np-border-light);
+}
+
+.role-section-heading h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.role-section-heading p {
+  margin: 0.35rem 0 1rem;
+  color: var(--np-text-muted);
+}
+
+.role-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--np-border-light);
+}
+
+@media (max-width: 768px) {
+  .role-form-fields {
+    grid-template-columns: 1fr;
+  }
+}

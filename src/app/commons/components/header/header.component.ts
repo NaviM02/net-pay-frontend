@@ -10,6 +10,7 @@ import {
   NgbDropdownToggle,
 } from '@ng-bootstrap/ng-bootstrap';
 import { MaterialIconComponent } from '../material-icon/material-icon.component';
+import { AccessControlService } from '../../../services/core/access-control.service';
 
 @Component({
   selector: 'app-header',
@@ -35,9 +36,13 @@ export class HeaderComponent implements OnInit {
   constructor(
     private currentUserService: CurrentUserService,
     private readonly destroyRef: DestroyRef,
+    private accessService: AccessControlService,
   ) {}
 
   ngOnInit(): void {
+    this.accessService.access$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(access => {
+      this.roleName = [...new Set(access?.roles.filter(assignment => assignment.effective).map(assignment => assignment.role.name))].join(', ') || 'Sin roles vigentes';
+    });
     this.currentUserService
       .getCurrentUser()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -46,7 +51,6 @@ export class HeaderComponent implements OnInit {
           if (!user) return;
 
           this.currentUser = user;
-          this.roleName = user.tpRole.description;
           this.initials =
             this.currentUser.fullName
               .split(' ')

@@ -4,7 +4,7 @@
     <p>{{ description }}</p>
   </div>
 
-  @if (saveText) {
+  @if (saveText && canCreate) {
     <button
       type="button"
       class="btn np-primary-button"

@@ -1,0 +1,46 @@
+<div class="np-page">
+  <app-detail-page-header
+    [backRoute]="['/roles']"
+    [itemName]="hashId ? 'Editar rol' : 'Crear rol'"
+    [description]="role?.name ?? 'Configura el nombre, estado y permisos del rol'"
+  />
+
+    <form #roleForm="ngForm" (ngSubmit)="save()" class="np-list-card role-form-card">
+      <div class="role-form-fields">
+        <div>
+          <label for="role-name" class="form-label required-field">Nombre</label>
+          <input id="role-name" name="name" class="form-control" [(ngModel)]="request.name" required maxlength="150" [disabled]="busy" />
+        </div>
+        <div>
+          <label for="role-description" class="form-label">Descripción</label>
+          <input id="role-description" name="description" type="text" class="form-control" [(ngModel)]="request.description" maxlength="500" [disabled]="busy" />
+        </div>
+        <div>
+          <label for="role-status" class="form-label">Estado</label>
+          <select id="role-status" name="status" class="form-select" [(ngModel)]="request.status" [disabled]="busy">
+            <option value="ACTIVE">Activo</option>
+            <option value="INACTIVE">Inactivo</option>
+          </select>
+          <div class="form-text">Los roles inactivos no aportan permisos y no se pueden asignar.</div>
+        </div>
+      </div>
+
+      <section class="role-permissions-section" aria-labelledby="role-permissions-title">
+        <div class="role-section-heading">
+          <div>
+            <h2 id="role-permissions-title">Permisos</h2>
+            <p>Marca las acciones que este rol puede realizar. Cada acción es independiente.</p>
+          </div>
+        </div>
+        <app-role-permission-table [permissions]="permissions" [(selectedPermissionHashIds)]="request.permissionHashIds" [readonly]="busy" />
+      </section>
+
+      <div class="role-form-actions">
+        <a class="btn btn-light" [routerLink]="['/roles']">Cancelar</a>
+        <button *appPermission="hashId ? 'roles:update' : 'roles:create'" type="submit" class="btn btn-primary"
+          [disabled]="busy || roleForm.invalid || !isValid">
+          {{ hashId ? 'Guardar cambios' : 'Crear rol' }}
+        </button>
+      </div>
+    </form>
+</div>

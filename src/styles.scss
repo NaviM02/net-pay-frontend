@@ -1378,3 +1378,8 @@ a[href] {
     display: none !important;
   }
 }
+
+// ng-select menus appended to `body` need to sit above Bootstrap modal dialogs.
+.ng-dropdown-panel {
+  z-index: 1065 !important;
+}

@@ -1,0 +1,35 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.np-dashboard-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
+  padding-top: 14px;
+}
+
+.np-dashboard-panel {
+  min-width: 0;
+}
+
+.np-dashboard-chart {
+  min-width: 0;
+}
+
+.np-dashboard-chart apx-chart {
+  display: block;
+  width: 100%;
+}
+
+.np-dashboard-tables {
+  min-width: 0;
+}
+
+@media (max-width: 991.98px) {
+  .np-dashboard-charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
