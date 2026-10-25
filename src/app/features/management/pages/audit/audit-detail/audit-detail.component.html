@@ -2,7 +2,7 @@
 
   <app-detail-page-header
     [backRoute]="['/audit']"
-    [itemName]="log.action"
+    [itemName]="getAuditActionLabel(log.action)"
     [description]="log.detail"
     [showEdit]="entityRoute !== undefined"
     editText="Ver entidad afectada"
@@ -19,7 +19,7 @@
         </div>
 
         <span class="np-badge {{ getAuditLevelClass(log.levelName) }}">
-          {{ log.levelName || '—' }}
+          {{ getAuditLevelLabel(log.levelName) }}
         </span>
       </div>
 
@@ -44,12 +44,12 @@
 
         <div class="np-detail-field">
           <span class="np-detail-field-label">Acción</span>
-          <span class="np-detail-field-value">{{ log.action }}</span>
+          <span class="np-detail-field-value">{{ getAuditActionLabel(log.action) }}</span>
         </div>
 
         <div class="np-detail-field">
           <span class="np-detail-field-label">Entidad afectada</span>
-          <span class="np-detail-field-value">{{ log.entityType || '—' }}</span>
+          <span class="np-detail-field-value">{{ getAuditEntityLabel(log.entityType) }}</span>
         </div>
 
         <div class="np-detail-field">
@@ -87,7 +87,7 @@
             <tbody>
               @for (row of changeRows; track row.field) {
                 <tr>
-                  <td class="np-table-primary">{{ row.field }}</td>
+                  <td class="np-table-primary">{{ getAuditFieldLabel(row.field) }}</td>
                   <td class="np-table-mono np-audit-value">
                     @if (row.before !== null) {
                       {{ row.before }}
@@ -147,11 +147,11 @@
               <tr>
                 <td class="np-table-mono">{{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
                 <td class="np-table-muted">{{ item.userEmail || 'sistema' }}</td>
-                <td><span class="np-table-primary">{{ item.action }}</span></td>
+                <td><span class="np-table-primary">{{ getAuditActionLabel(item.action) }}</span></td>
                 <td class="np-table-muted">{{ item.detail }}</td>
                 <td>
                   <span class="np-badge {{ getAuditLevelClass(item.levelName) }}">
-                    {{ item.levelName || '—' }}
+                    {{ getAuditLevelLabel(item.levelName) }}
                   </span>
                 </td>
                 <td class="np-table-actions-cell text-end">

@@ -153,61 +153,35 @@
       />
     </div>
 
-    <div class="np-detail-section">
+    <div class="np-detail-section" *appPermission="'audit-logs:read'">
 
       <div class="np-detail-section-header">
         <div>
           <span class="np-detail-section-title">
             Actividad en el sistema
           </span>
-          <span class="np-detail-section-count">
-            {{ auditCount }} registros
-          </span>
+          <span class="np-detail-section-count">{{ auditCount }} registros</span>
         </div>
-
-        <button type="button" class="btn np-export-button">
-          <app-material-icon [size]="14">download</app-material-icon>
-          Exportar
-        </button>
       </div>
-
-      <div class="np-activity-list">
-
-        @for (activity of activities; track activity.id) {
-          <div class="np-activity-item">
-
-            <div
-              class="np-activity-icon"
-              [class.warning]="activity.type === 'warning'"
-            >
-              <app-material-icon [size]="15">{{ activity.icon }}</app-material-icon>
-            </div>
-
-            <div class="np-activity-content">
-              <div class="np-activity-title">
-                <span>{{ activity.title }}</span>
-
-                <span
-                  class="np-activity-badge"
-                  [class.warning]="activity.type === 'warning'"
-                >
-                  {{ activity.type === 'warning' ? 'Alerta' : 'Info' }}
-                </span>
-              </div>
-
-              <div class="np-activity-description">
-                {{ activity.description }}
-              </div>
-            </div>
-
-            <div class="np-activity-meta">
-              <span>{{ activity.date }}</span>
-              <span>{{ activity.ip }}</span>
-            </div>
-
-          </div>
-        }
+      <div class="np-table-scroll">
+        <table class="table np-table mb-0">
+          <thead><tr><th>FECHA</th><th>ACCIÓN</th><th>DETALLE</th><th>ENTIDAD</th><th>NIVEL</th></tr></thead>
+          <tbody>
+            @for (log of auditLogs; track log.id) {
+              <tr>
+                <td class="np-table-mono">{{ log.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td class="np-table-primary">{{ getAuditActionLabel(log.action) }}</td>
+                <td class="np-table-muted">{{ log.detail }}</td>
+                <td class="np-table-muted">{{ getAuditEntityLabel(log.entityType) }}</td>
+                <td><span class="np-badge {{ getAuditLevelClass(log.levelName) }}">{{ getAuditLevelLabel(log.levelName) }}</span></td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5"><div class="np-empty-state">No hay actividad registrada para este usuario.</div></td></tr>
+            }
+          </tbody>
+        </table>
       </div>
+      <app-pagination [pagination]="auditPagination" (onPaginationChange)="auditPageChanged()" />
     </div>
   </div>
 </div>

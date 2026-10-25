@@ -33,7 +33,7 @@ import {
   TableRowCustomAction,
 } from '../../../commons/components/table-row-action/table-row-action.component';
 import { TypologyBadgeComponent } from '../../../commons/components/typology-badge/typology-badge.component';
-import { getAuditLevelClass } from '../../../commons/utils/audit.utils';
+import { getAuditActionLabel, getAuditEntityLabel, getAuditLevelClass, getAuditLevelLabel } from '../../../commons/utils/audit.utils';
 import {
   buildMethodChart,
   buildMonthlyChart,
@@ -60,6 +60,9 @@ import {
 })
 export class DashboardOverviewComponent implements OnInit {
   protected readonly getAuditLevelClass = getAuditLevelClass;
+  protected readonly getAuditLevelLabel = getAuditLevelLabel;
+  protected readonly getAuditEntityLabel = getAuditEntityLabel;
+  protected readonly getAuditActionLabel = getAuditActionLabel;
   protected readonly getPaymentMethodLabel = getPaymentMethodLabel;
   protected readonly getPaymentMethodColor = getPaymentMethodColor;
 

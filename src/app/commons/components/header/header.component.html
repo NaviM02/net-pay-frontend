@@ -15,9 +15,30 @@
   </div>
 
   <div class="header-actions">
-    <button class="header-button" type="button">
+    <div ngbDropdown class="notification-dropdown" placement="bottom-end" (openChange)="$event && loadNotifications()">
+    <button class="header-button notification-button" type="button" ngbDropdownToggle aria-label="Notificaciones" aria-haspopup="true">
       <app-material-icon [size]="18">notifications</app-material-icon>
+      @if (notificationCount > 0) {
+        <span class="notification-count">{{ notificationCount > 99 ? '99+' : notificationCount }}</span>
+      }
     </button>
+    <div ngbDropdownMenu class="notification-menu">
+      <div class="notification-heading">Notificaciones @if (notificationCount > 0) { <span>{{ notificationCount }}</span> }</div>
+      @if (!notificationsLoaded) {
+        <p class="notification-empty">Cargando notificaciones...</p>
+      } @else if (notifications.length === 0) {
+        <p class="notification-empty">No tienes notificaciones pendientes.</p>
+      } @else {
+        @for (notification of notifications; track notification.id) {
+          <div class="notification-item">
+            <strong>{{ notification.title }}</strong>
+            <p>{{ notification.message }}</p>
+            <small>Deuda: {{ notification.totalDebt | currency:'GTQ':'Q ':'1.2-2' }}</small>
+          </div>
+        }
+      }
+    </div>
+    </div>
 
     <div ngbDropdown class="user-dropdown" placement="bottom-end">
       <button type="button" class="user-button" ngbDropdownToggle>

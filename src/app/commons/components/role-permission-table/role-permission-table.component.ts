@@ -18,6 +18,12 @@ export class RolePermissionTableComponent {
   @Input() selectedPermissionHashIds: string[] = [];
   @Output() selectedPermissionHashIdsChange = new EventEmitter<string[]>();
   groups: PermissionResourceGroup[] = [];
+  private readonly resourceLabels: Record<string, string> = {
+    'audit-logs': 'Auditoría', 'my-dashboard': 'Mi panel', 'my-clients': 'Mis clientes',
+    'my-payments': 'Mis pagos', 'my-receipts': 'Mis recibos', clients: 'Clientes',
+    services: 'Servicios', payments: 'Pagos', receipts: 'Recibos', users: 'Usuarios',
+    roles: 'Perfiles y permisos', reports: 'Reportes', dashboard: 'Dashboard',
+  };
   readonly actions: { key: PermissionAction; shortLabel: string }[] = [
     { key: 'read', shortLabel: 'Ver' },
     { key: 'create', shortLabel: 'Crear' },
@@ -37,9 +43,13 @@ export class RolePermissionTableComponent {
     this.groups = [...grouped.entries()]
       .sort(([left], [right]) => left.localeCompare(right))
       .map(([resource, items]) => ({
-        resource,
+        resource: this.resourceLabels[resource] ?? this.humanize(resource),
         permissions: items.sort((left, right) => this.actionOrder(left.action) - this.actionOrder(right.action)),
       }));
+  }
+
+  private humanize(value: string): string {
+    return value.replace(/[-_]+/g, ' ').replace(/\b\w/g, letter => letter.toLocaleUpperCase());
   }
 
   permission(group: PermissionResourceGroup, action: PermissionAction): AppPermission | undefined {

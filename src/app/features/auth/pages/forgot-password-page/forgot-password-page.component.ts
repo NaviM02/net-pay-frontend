@@ -44,7 +44,7 @@ export class ForgotPasswordPageComponent {
   ) {}
 
   get isValid(): boolean {
-    return !!this.email.trim();
+    return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(this.email.trim());
   }
 
   sendLink(): void {

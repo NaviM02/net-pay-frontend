@@ -38,11 +38,10 @@
           <p>Obligatorios: <code>fullName</code> y <code>email</code> (máx. 150 caracteres cada uno).
             El correo debe ser válido y único; se guarda en minúsculas.</p>
           <p>Opcionales: <code>password</code> (máx. 72 bytes en UTF-8) y <code>status</code>.
-            Si dejas la contraseña vacía, el backend genera una aleatoria; el usuario podrá establecerla mediante recuperación de contraseña.</p>
-          <p>Se asigna por defecto el rol bloqueado Cobrador. Si tienes el permiso <code>roles:update</code>, puedes elegir
-            un rol alternativo para todas las filas de esta importación. Estados: <code>ACTIVE</code> (49, por defecto), <code>INACTIVE</code> (50),
-            <code>LOCKED</code> (52) o <code>SUSPENDED</code> (53).</p>
-          <p>No incluyas la antigua columna <code>role</code>; el backend la rechaza.</p>
+             Si dejas la contraseña vacía, se generará una contraseña temporal y el usuario podrá establecer una nueva mediante la recuperación de contraseña.</p>
+          <p>Se asignará automáticamente el perfil Cobrador. Si tienes permiso para administrar perfiles, puedes elegir
+            otro perfil para todas las filas de esta importación. Estados disponibles: Activo (predeterminado), Inactivo, Bloqueado o Suspendido.</p>
+          <p>No incluyas la columna <code>role</code> en el archivo.</p>
         } @else if (resource === 'payments') {
           <p>Obligatorios: <code>importKey</code> (clave única del pago, máx. 150 caracteres),
             <code>amount</code> (0.01 a 9999999999.99, hasta 2 decimales), <code>paidAt</code> (AAAA-MM-DD)
@@ -53,8 +52,8 @@
           <p>Opcionales: <code>collectorName</code> y <code>collectorEmail</code> (máx. 150 cada uno, deben identificar
             un único cobrador activo), <code>reference</code> (máx. 255) y <code>comment</code> (máx. 500).
             Los pagos importados siempre se registran como completados.</p>
-          <p>Conserva la misma <code>importKey</code> al reintentar un pago: el backend rechaza claves ya importadas
-            para evitar duplicados. No uses una clave nueva para el mismo pago.</p>
+          <p>Conserva el mismo valor de <code>importKey</code> al volver a cargar un pago para evitar duplicados.
+            No uses una clave nueva para el mismo pago.</p>
         }
         <p class="mb-0">Usa punto para los decimales. Deja vacíos los campos opcionales sin valor.
           Conserva los nombres de los encabezados exactamente como aparecen en la plantilla.</p>
@@ -73,9 +72,9 @@
           [clearable]="true"
           [(ngModel)]="selectedUserRole"
         />
-        <div class="form-text">Si no seleccionas otro rol, se asignará el rol Cobrador.</div>
+        <div class="form-text">Si no seleccionas otro perfil, se asignará automáticamente Cobrador.</div>
       </div>
-      <p *appPermission="'users:import'" class="small text-body-secondary">A cada usuario se le asignará el rol Cobrador predeterminado.</p>
+      <p *appPermission="'users:import'" class="small text-body-secondary">A cada usuario se le asignará automáticamente el perfil Cobrador.</p>
     }
 
     <div class="mb-3">
@@ -115,20 +114,24 @@
         <p class="small">Para volver a cargar, selecciona otro archivo. Si hubo errores, incluye únicamente las filas
           fallidas para evitar duplicar los registros ya creados.</p>
       }
-      @if (errors.length) {
+      @if (result.rows.length) {
         <div class="np-table-scroll import-errors">
           <table class="table np-table mb-0">
-            <caption class="visually-hidden">Errores por fila del archivo</caption>
-            <thead><tr><th scope="col">Fila</th><th scope="col">Error</th></tr></thead>
+            <caption class="visually-hidden">Resultado de cada fila del archivo</caption>
+            <thead><tr><th scope="col">Fila</th><th scope="col">Resultado</th><th scope="col">Detalle</th></tr></thead>
             <tbody>
-              @for (row of errors.slice(0, visibleErrors); track row.row) {
-                <tr><td>{{ row.row }}</td><td>{{ describeError(row.error) }}</td></tr>
+              @for (row of result.rows.slice(0, visibleErrors); track row.row) {
+                <tr>
+                  <td>{{ row.row }}</td>
+                  <td><span class="np-badge" [class.np-badge-success]="row.status !== 'ERROR'" [class.np-badge-error]="row.status === 'ERROR'">{{ describeRowStatus(row.status) }}</span></td>
+                  <td>{{ describeRowResult(row) }}</td>
+                </tr>
               }
             </tbody>
           </table>
         </div>
-        @if (errors.length > visibleErrors) {
-          <button type="button" class="btn btn-link" (click)="visibleErrors = visibleErrors + 100">Mostrar más errores ({{ visibleErrors }} de {{ errors.length }})</button>
+        @if (result.rows.length > visibleErrors) {
+          <button type="button" class="btn btn-link" (click)="visibleErrors = visibleErrors + 100">Mostrar más filas ({{ visibleErrors }} de {{ result.rows.length }})</button>
         }
       }
     }

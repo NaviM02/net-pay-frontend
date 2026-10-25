@@ -141,6 +141,7 @@ export class ServiceFormModalComponent implements OnChanges {
       && !!this.service.speed
       && this.service.monthlyPrice !== null
       && this.service.monthlyPrice !== undefined
+      && Number.isFinite(this.service.monthlyPrice)
       && this.service.monthlyPrice >= 0
       && !!this.service.tpType
       && !!this.service.tpStatus

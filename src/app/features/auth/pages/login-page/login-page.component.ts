@@ -57,6 +57,7 @@ export class LoginPageComponent {
       !!this.authReq.email &&
       !!this.authReq.password &&
       !!this.authReq.email.trim() &&
+      /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(this.authReq.email.trim()) &&
       !!this.authReq.password.trim()
     );
   }

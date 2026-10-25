@@ -34,7 +34,7 @@ export function hasPermission(permissions: readonly string[], required: string):
 
 export function getHomeRoute(permissions: readonly string[]): string {
   return ACCESS_MENU_ITEMS.map(item => menuPathForPermissions(item, permissions)).find(path => path !== undefined)
-    ?? NOT_FOUND_ROUTE;
+    ?? '/profile';
 }
 
 export function menuPathForPermissions(item: AccessMenuItem, permissions: readonly string[]): string | undefined {

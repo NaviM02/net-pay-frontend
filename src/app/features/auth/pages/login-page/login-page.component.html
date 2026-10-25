@@ -57,7 +57,7 @@
         <label class="np-form-label required-field">Correo electrónico</label>
         <app-input-with-icon
           [(model)]="authReq.email"
-          [inputType]="'text'"
+          [inputType]="'email'"
           placeholder="admin@netpay.com"
           icon="account_circle"
           [iconPosition]="'left'"
@@ -81,7 +81,7 @@
         </a>
       </div>
 
-      <button type="submit" class="btn btn-primary np-login-submit" (click)="doLogin()">Iniciar Sesión</button>
+      <button type="submit" class="btn btn-primary np-login-submit" [disabled]="!isValid" (click)="doLogin()">Iniciar Sesión</button>
     </div>
 
   </section>

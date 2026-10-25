@@ -115,6 +115,7 @@ export class PaymentFormComponent implements OnInit {
       !!this.payment.client &&
       this.payment.amount !== null &&
       this.payment.amount !== undefined &&
+      Number.isFinite(this.payment.amount) &&
       this.payment.amount > 0 &&
       !!this.payment.paidAt &&
       !!this.payment.tpPaymentMethod &&

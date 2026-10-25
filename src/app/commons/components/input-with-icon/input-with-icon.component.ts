@@ -14,7 +14,7 @@ export class InputWithIconComponent {
   @Input() placeholder: string = '';
   @Input() icon: string = '';
   @Input() iconPosition: 'left' | 'right' = 'left';
-  @Input() inputType: 'text' | 'number' | 'password' = 'text';
+  @Input() inputType: 'text' | 'email' | 'number' | 'password' = 'text';
   @Input() model: string | undefined;
   @Output() modelChange: EventEmitter<string | undefined> = new EventEmitter();
 

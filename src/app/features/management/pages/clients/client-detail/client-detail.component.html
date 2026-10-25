@@ -129,6 +129,69 @@
           </div>
         </div>
       </div>
+
+      <div class="np-detail-section">
+        <div class="np-detail-section-header">
+          <div>
+            <span class="np-detail-section-title">Estado de cuenta</span>
+            <span class="np-detail-section-count">{{ chargePagination.total }} períodos</span>
+          </div>
+        </div>
+        @if (account) {
+          <div class="np-detail-fields mb-3">
+            <div class="np-detail-field"><span class="np-detail-field-label">Total esperado</span><span class="np-detail-field-value">{{ account.totalExpected | currency: 'Q' : 'symbol' : '1.2-2' }}</span></div>
+            <div class="np-detail-field"><span class="np-detail-field-label">Total pagado</span><span class="np-detail-field-value">{{ account.totalPaid | currency: 'Q' : 'symbol' : '1.2-2' }}</span></div>
+            <div class="np-detail-field"><span class="np-detail-field-label">Saldo pendiente</span><span class="np-detail-field-value">{{ account.balance | currency: 'Q' : 'symbol' : '1.2-2' }}</span></div>
+            <div class="np-detail-field"><span class="np-detail-field-label">Saldo a favor</span><span class="np-detail-field-value">{{ account.credit | currency: 'Q' : 'symbol' : '1.2-2' }}</span></div>
+            <div class="np-detail-field"><span class="np-detail-field-label">Períodos vencidos</span><span class="np-detail-field-value">{{ account.overdueCount }}</span></div>
+          </div>
+        }
+        <div class="np-table-scroll">
+          <table class="table np-table mb-0">
+            <thead><tr><th>PERÍODO</th><th>MONTO ESPERADO</th><th>PAGADO</th><th>SALDO</th><th>ESTADO</th></tr></thead>
+            <tbody>
+              @for (charge of charges; track charge.hashId) {
+                <tr>
+                  <td>{{ charge.periodLabel }}</td>
+                  <td class="np-table-mono">{{ charge.expectedAmount | currency: 'Q' : 'symbol' : '1.2-2' }}</td>
+                  <td class="np-table-mono">{{ charge.paidAmount | currency: 'Q' : 'symbol' : '1.2-2' }}</td>
+                  <td class="np-table-mono">{{ charge.balance | currency: 'Q' : 'symbol' : '1.2-2' }}</td>
+                  <td><span class="np-badge" [class.np-badge-success]="charge.status === chargeStatus.PAID" [class.np-badge-warning]="charge.status === chargeStatus.PARTIAL || charge.status === chargeStatus.PENDING" [class.np-badge-error]="charge.status === chargeStatus.OVERDUE">{{ charge.status === chargeStatus.PAID ? 'Pagado' : charge.status === chargeStatus.PARTIAL ? 'Parcial' : charge.status === chargeStatus.OVERDUE ? 'Vencido' : 'Pendiente' }}</span></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="5"><div class="np-empty-state">No hay cargos para mostrar.</div></td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <app-pagination [pagination]="chargePagination" (onPaginationChange)="chargesPageChanged()" />
+      </div>
+
+      <div class="np-detail-section">
+        <div class="np-detail-section-header">
+          <div><span class="np-detail-section-title">Pagos registrados</span><span class="np-detail-section-count">{{ paymentPagination.total }} pagos</span></div>
+        </div>
+        <div class="np-table-scroll">
+          <table class="table np-table mb-0">
+            <thead><tr><th>FECHA</th><th>MONTO</th><th>MÉTODO</th><th>ESTADO</th><th>COBRADOR</th><th class="np-table-actions-cell text-end">ACCIONES</th></tr></thead>
+            <tbody>
+              @for (payment of payments; track payment.hashId) {
+                <tr>
+                  <td class="np-table-mono">{{ payment.paidAt | date: 'dd/MM/yyyy' }}</td>
+                  <td class="np-table-mono">{{ payment.amount | currency: 'Q' : 'symbol' : '1.2-2' }}</td>
+                  <td><app-typology-badge [typology]="payment.tpPaymentMethod" /></td>
+                  <td><app-typology-badge [typology]="payment.tpPaymentStatus" /></td>
+                  <td class="np-table-muted">{{ payment.collector?.fullName || 'Sistema' }}</td>
+                  <td class="np-table-actions-cell text-end"><app-table-row-action [viewRoute]="['/payments', payment.hashId]" /></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="6"><div class="np-empty-state">No hay pagos registrados para este cliente.</div></td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <app-pagination [pagination]="paymentPagination" (onPaginationChange)="paymentsPageChanged()" />
+      </div>
     } @else {
       <div class="np-detail-section">
         <div class="np-empty-state">No se encontró el cliente solicitado.</div>

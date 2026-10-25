@@ -27,18 +27,6 @@
 
 .user-change-password-button {
   flex: 0 0 auto;
-  border: 0;
-  background: #1451d8;
-  color: #fff;
-  font-weight: 600;
-  box-shadow: 0 2px 0 #0b358f, 0 4px 10px rgb(20 81 216 / 28%);
-
-  &:hover,
-  &:focus-visible {
-    border-color: #08296f;
-    background: #0e3fae;
-    color: #fff;
-  }
 }
 
 @media (max-width: 575.98px) {

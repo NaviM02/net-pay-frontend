@@ -1,6 +1,7 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AppClient, AppUser } from '../../../../../model/app.model';
+import { AppAuditLog, AppClient, AppUser } from '../../../../../model/app.model';
 import { Pagination } from '../../../../../model/filter.model';
 import { AppUserService } from '../../../../../services/core/app-user.service';
 import { ListStateService } from '../../../../../services/other/list-state.service';
@@ -19,6 +20,8 @@ import { UserRolesComponent } from '../../../../../commons/components/user-roles
 import { PermissionDirective } from '../../../../../commons/directives/permission.directive';
 import { AccessControlService } from '../../../../../services/core/access-control.service';
 import { ChangePasswordModalComponent } from '../../../../../commons/components/change-password-modal/change-password-modal.component';
+import { AppAuditLogService } from '../../../../../services/core/app-audit-log.service';
+import { getAuditActionLabel, getAuditEntityLabel, getAuditLevelClass, getAuditLevelLabel } from '../../../../../commons/utils/audit.utils';
 
 @Component({
   selector: 'app-user-detail',
@@ -30,6 +33,7 @@ import { ChangePasswordModalComponent } from '../../../../../commons/components/
     TypologyBadgeComponent,
     UserRolesComponent,
     PermissionDirective,
+    DatePipe,
   ],
   templateUrl: './user-detail.component.html',
   styleUrl: './user-detail.component.scss'
@@ -46,6 +50,12 @@ export class UserDetailComponent implements OnInit {
   auditCount = 0;
 
   activities: any[] = [];
+  auditLogs: AppAuditLog[] = [];
+  readonly auditPagination = new Pagination('user-detail-audit-pagination');
+  protected readonly getAuditActionLabel = getAuditActionLabel;
+  protected readonly getAuditEntityLabel = getAuditEntityLabel;
+  protected readonly getAuditLevelClass = getAuditLevelClass;
+  protected readonly getAuditLevelLabel = getAuditLevelLabel;
 
   constructor(
     private userService: AppUserService,
@@ -55,6 +65,7 @@ export class UserDetailComponent implements OnInit {
     protected listStateService: ListStateService,
     private accessService: AccessControlService,
     private modalService: NgbModal,
+    private auditLogService: AppAuditLogService,
   ) {
     // This table has no filters, only pagination.
     this.listStateService.init(
@@ -73,6 +84,7 @@ export class UserDetailComponent implements OnInit {
         ),
         tap(user => this.user = user),
         tap(() => this.findAll()),
+        tap(() => this.loadAuditLogs()),
       )
       .subscribe({
         error: (e: HttpErrorResponse) => {
@@ -86,6 +98,25 @@ export class UserDetailComponent implements OnInit {
         }
       });
   }
+
+  loadAuditLogs(): void {
+    if (!this.hashId || !this.accessService.hasPermission('audit-logs:read')) return;
+    const params = new Map<string, string>([
+      ['size', `${this.auditPagination.size}`],
+      ['offset', `${this.auditPagination.offset}`],
+    ]);
+    this.auditLogService.findByUserHashId(this.hashId, params).subscribe({
+      next: response => {
+        this.auditLogs = response.body ?? [];
+        this.auditCount = Number(response.headers.get('X-Total-Count')) || this.auditLogs.length;
+        this.auditPagination.total = this.auditCount;
+        this.auditPagination.currentLength = this.auditLogs.length;
+      },
+      error: () => this.toastService.error('No se pudo cargar la actividad del usuario.'),
+    });
+  }
+
+  auditPageChanged(): void { this.loadAuditLogs(); }
 
   findAll(): void {
     if (!this.hashId || !this.accessService.hasPermission('clients:read')) return;

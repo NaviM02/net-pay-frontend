@@ -58,8 +58,14 @@
               [(ngModel)]="client.contactPhone"
               placeholder="Ej. 5555 5555"
               autocomplete="off"
-              [maxLength]="30"
+              maxlength="8"
+              inputmode="numeric"
+              pattern="[0-9]{1,8}"
+              #contactPhone="ngModel"
+              [class.is-invalid]="contactPhone.touched && contactPhone.value && !contactPhone.valid"
             />
+            <div class="form-text">Ingresa hasta 8 dígitos, sin espacios ni símbolos.</div>
+            <div class="invalid-feedback">El teléfono debe contener únicamente números y tener hasta 8 dígitos.</div>
           </div>
 
           <div class="col-12 col-lg-6">
@@ -71,8 +77,11 @@
               [(ngModel)]="client.contactEmail"
               placeholder="contacto@empresa.com"
               autocomplete="off"
-              [maxLength]="120"
+              [maxLength]="150"
+              #contactEmail="ngModel"
+              [class.is-invalid]="contactEmail.touched && contactEmail.value && !contactEmail.valid"
             />
+            <div class="invalid-feedback">Introduce un correo electrónico válido.</div>
           </div>
 
           <div class="col-12 col-lg-6">
@@ -187,7 +196,7 @@
         Cancelar
       </button>
 
-      <button type="button" class="btn btn-primary" (click)="save()">
+      <button type="button" class="btn btn-primary" [disabled]="!isValid" (click)="save()">
         {{ isEdit ? 'Guardar cambios' : 'Crear cliente' }}
       </button>
     </div>

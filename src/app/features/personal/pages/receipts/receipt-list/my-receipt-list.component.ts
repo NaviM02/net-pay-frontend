@@ -16,6 +16,7 @@ import {
 } from '../../../../../commons/components/table-row-action/table-row-action.component';
 import { downloadBlob, openBlobInNewTab } from '../../../../../commons/utils/blob.utils';
 import { MyReceiptListFilter } from './my-receipt-list.filter';
+import { AccessControlService } from '../../../../../services/core/access-control.service';
 
 /**
  * Receipts issued by the signed-in user. The backend filters them by
@@ -45,6 +46,7 @@ export class MyReceiptListComponent implements OnInit {
   constructor(
     private receiptService: AppReceiptService,
     private currentUserService: CurrentUserService,
+    private accessControlService: AccessControlService,
     private toastService: ToastService,
     protected listStateService: ListStateService,
   ) {
@@ -53,6 +55,10 @@ export class MyReceiptListComponent implements OnInit {
       new Pagination('my-receipt-list-pagination'),
       () => this.findAll(),
     );
+  }
+
+  get canExport(): boolean {
+    return this.accessControlService.hasPermission('receipts:export');
   }
 
   ngOnInit(): void {

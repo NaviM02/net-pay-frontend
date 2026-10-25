@@ -7,6 +7,47 @@ const AUDIT_LEVEL_CLASS: Record<string, string> = {
   ERROR: 'np-badge-error',
 };
 
+const AUDIT_LEVEL_LABEL: Record<string, string> = { INFO: 'Información', WARNING: 'Advertencia', ERROR: 'Error' };
+const ENTITY_LABEL: Record<string, string> = {
+  PAYMENT: 'Pago', RECEIPT: 'Recibo', CLIENT: 'Cliente', SERVICE: 'Servicio', USER: 'Usuario', ROLE: 'Perfil',
+};
+const AUDIT_FIELD_LABEL: Record<string, string> = {
+  fullName: 'Nombre completo', businessName: 'Nombre comercial', contactName: 'Nombre de contacto',
+  contactEmail: 'Correo de contacto', contactPhone: 'Teléfono de contacto', customerSince: 'Cliente desde',
+  monthlyPrice: 'Precio mensual', paymentMethod: 'Método de pago', paymentStatus: 'Estado del pago',
+  tpStatus: 'Estado', status: 'Estado', tpType: 'Tipo', type: 'Tipo', createdAt: 'Fecha de creación',
+  updatedAt: 'Fecha de actualización', paidAt: 'Fecha de pago', amount: 'Monto', email: 'Correo electrónico',
+  name: 'Nombre', address: 'Dirección', description: 'Descripción', speed: 'Velocidad',
+};
+
+export function getAuditLevelLabel(levelName: string | null | undefined): string {
+  return levelName ? AUDIT_LEVEL_LABEL[levelName.toUpperCase()] ?? humanize(levelName) : '—';
+}
+
+export function getAuditEntityLabel(entityType: string | null | undefined): string {
+  return entityType ? ENTITY_LABEL[entityType.toUpperCase()] ?? humanize(entityType) : '—';
+}
+
+export function getAuditActionLabel(action: string | null | undefined): string {
+  if (!action) return '—';
+  const key = action.toUpperCase();
+  const labels: Record<string, string> = {
+    CREATE: 'Creación', CREATED: 'Creación', UPDATE: 'Actualización', UPDATED: 'Actualización',
+    DELETE: 'Eliminación', DELETED: 'Eliminación', LOGIN: 'Inicio de sesión', LOGOUT: 'Cierre de sesión',
+    IMPORT: 'Importación', EXPORT: 'Exportación', ASSIGN: 'Asignación', CANCEL: 'Cancelación',
+    PRINT: 'Impresión', PAYMENT: 'Pago registrado',
+  };
+  return labels[key] ?? humanize(action);
+}
+
+export function getAuditFieldLabel(field: string): string {
+  return AUDIT_FIELD_LABEL[field] ?? humanize(field);
+}
+
+function humanize(value: string): string {
+  return value.replace(/[-_]+/g, ' ').toLocaleLowerCase().replace(/\b\p{L}/gu, letter => letter.toLocaleUpperCase());
+}
+
 /** Only the entities that already have a detail route can be linked. */
 const AUDIT_ENTITY_ROUTE_BY_TYPE: Partial<Record<AuditEntityTypeEnum, string>> = {
   [AuditEntityTypeEnum.CLIENT]: '/clients',
