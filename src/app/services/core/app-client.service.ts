@@ -32,13 +32,19 @@ export class AppClientService {
   }
 
   /** Month by month statement, the status is derived server-side. */
-  findChargesByHashId(hashId: string) {
-    return this.http.get<AppClientCharge[]>(`${this.baseUrl}/${hashId}/charges`);
+  findChargesByHashId(hashId: string, queryParams: Map<string, string> = new Map()) {
+    const params = this.queryParamService.getParams(queryParams);
+    return this.http.get<AppClientCharge[]>(`${this.baseUrl}/${hashId}/charges`, { params, observe: 'response' });
   }
 
   /** Totals, balance, credit and overdue months. */
   findAccountByHashId(hashId: string) {
     return this.http.get<AppClientAccount>(`${this.baseUrl}/${hashId}/account`);
+  }
+
+  findAccountPageByHashId(hashId: string, queryParams: Map<string, string> = new Map()) {
+    const params = this.queryParamService.getParams(queryParams);
+    return this.http.get<AppClientAccount>(`${this.baseUrl}/${hashId}/account`, { params, observe: 'response' });
   }
 
   assignCollector(hashId: string, collectorId: number) {

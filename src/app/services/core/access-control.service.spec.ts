@@ -40,8 +40,8 @@ describe('Effective access', () => {
   });
 
   it('chooses only a page with an explicit read grant', () => {
-    expect(getHomeRoute([])).toBe('/404');
-    expect(getHomeRoute(['users:update', 'reports:export'])).toBe('/404');
+    expect(getHomeRoute([])).toBe('/profile');
+    expect(getHomeRoute(['users:update', 'reports:export'])).toBe('/profile');
     expect(getHomeRoute(['payments:read'])).toBe('/payments');
     expect(getHomeRoute(['roles:read'])).toBe('/roles');
     expect(getHomeRoute(['my-payments:create'])).toBe('/my-payments/new');

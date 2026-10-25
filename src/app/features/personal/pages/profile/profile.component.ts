@@ -44,8 +44,8 @@ export class ProfileComponent implements OnInit {
   }
 
   save(): void {
-    if (!this.user.fullName?.trim() || !this.user.email?.trim()) {
-      this.toastService.warning('Completa el nombre y el correo electrónico.');
+    if (!this.user.fullName?.trim() || !this.isValidEmail(this.user.email)) {
+      this.toastService.warning('Introduce un nombre y un correo electrónico válido.');
       return;
     }
     this.userService.updateMe({ fullName: this.user.fullName.trim(), email: this.user.email.trim() }).subscribe({
@@ -58,6 +58,10 @@ export class ProfileComponent implements OnInit {
         ? 'Este correo electrónico ya está registrado.'
         : 'No se pudo actualizar tu perfil.'),
     });
+  }
+
+  isValidEmail(value: string | null | undefined): boolean {
+    return !!value && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value.trim());
   }
 
   changePassword(): void {

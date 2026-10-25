@@ -66,6 +66,7 @@
             <input
               id="servicePrice"
               type="number"
+              required
               class="form-control"
               [(ngModel)]="service.monthlyPrice"
               placeholder="Ej. 9800"
@@ -138,6 +139,7 @@
           <button
             type="button"
             class="btn btn-primary"
+            [disabled]="!isValid"
             (click)="save()">
             {{ isEdit ? 'Guardar cambios' : 'Crear plan' }}
           </button>

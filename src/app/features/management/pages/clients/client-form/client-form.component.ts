@@ -93,10 +93,14 @@ export class ClientFormComponent implements OnInit {
   }
 
   get isValid(): boolean {
+    const phone = this.client.contactPhone?.trim() ?? '';
+    const email = this.client.contactEmail?.trim() ?? '';
     return (
       !!this.client.businessName?.trim() &&
       !!this.client.service &&
-      !!this.client.tpStatus
+      !!this.client.tpStatus &&
+      (!phone || /^\d{1,8}$/.test(phone)) &&
+      (!email || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
     );
   }
 
@@ -106,7 +110,7 @@ export class ClientFormComponent implements OnInit {
 
   save(): void {
     if (!this.isValid) {
-      this.toastService.warning('Completa los campos obligatorios.');
+      this.toastService.warning('Revisa los campos obligatorios, el teléfono y el correo electrónico.');
       return;
     }
 

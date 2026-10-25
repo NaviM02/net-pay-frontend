@@ -26,7 +26,6 @@ export class DataImportComponent {
   delimiter = ',';
   busy = false;
   result: ImportResult | null = null;
-  errors: ImportRowResult[] = [];
   errorMessage = '';
   visibleErrors = 100;
   selectedUserRole: AppRole | null = null;
@@ -76,7 +75,6 @@ export class DataImportComponent {
 
   resetResult(): void {
     this.result = null;
-    this.errors = [];
     this.errorMessage = '';
     this.visibleErrors = 100;
   }
@@ -95,7 +93,6 @@ export class DataImportComponent {
       .subscribe({
         next: result => {
           this.result = result;
-          this.errors = result.rows.filter(row => row.status === 'ERROR');
           if (!result.dryRun && result.successful > 0) {
             this.imported.emit();
             this.toastService.success(`Se importaron ${result.successful} registros correctamente.`);
@@ -145,9 +142,11 @@ export class DataImportComponent {
       import_too_many_columns: 'El archivo supera el límite de 30 columnas.',
       import_row_limit_exceeded: 'El archivo supera el límite de 5000 registros.',
       import_duplicate_service_in_file: 'El nombre del plan está repetido en el archivo.',
+      import_duplicate_client_in_file: 'El cliente está repetido en el archivo.',
       import_duplicate_user_in_file: 'El correo del usuario está repetido en el archivo.',
       import_duplicate_payment_in_file: 'La clave importKey del pago está repetida en el archivo.',
       import_user_email_already_exists: 'Ya existe un usuario con este correo electrónico.',
+      client_business_name_already_exists: 'Ya existe un cliente con esta razón social.',
       import_payment_already_imported: 'Ya se importó un pago con esta clave importKey.',
       import_password_too_long: 'La contraseña supera el máximo de 72 bytes en UTF-8.',
       import_roleHashId_too_long: 'El identificador del rol es demasiado largo.',
@@ -193,5 +192,17 @@ export class DataImportComponent {
     return code
       ? `No se pudo procesar el registro o archivo (${code}).`
       : 'No se pudo completar la importación. Revisa la conexión e inténtalo de nuevo.';
+  }
+
+  describeRowStatus(status: ImportRowResult['status']): string {
+    if (status === 'ERROR') return 'Con error';
+    if (status === 'CREATED') return 'Creado';
+    return 'Válido, sin guardar';
+  }
+
+  describeRowResult(row: ImportRowResult): string {
+    if (row.status === 'ERROR') return this.describeError(row.error);
+    if (row.status === 'CREATED') return 'Registro creado correctamente.';
+    return 'La fila pasó la validación.';
   }
 }

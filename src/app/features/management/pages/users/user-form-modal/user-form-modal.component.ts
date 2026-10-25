@@ -211,6 +211,7 @@ export class UserFormModalComponent implements OnInit {
       && !!this.user.tpStatus
       && this.user.fullName.trim() !== ''
       && this.user.email.trim() !== ''
+      && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(this.user.email.trim())
       && (this.isEdit || (!!this.user.password && this.user.password.trim() !== ''));
   }
 }

@@ -79,7 +79,7 @@
             <p>Un usuario puede tener varios roles. Sus permisos se suman mientras las asignaciones estén vigentes.</p>
           </div>
           @if (isEdit) {
-            <button type="button" class="btn user-change-password-button" (click)="changePassword()">Cambiar contraseña</button>
+            <button type="button" class="btn btn-light user-change-password-button" (click)="changePassword()">Cambiar contraseña</button>
           }
         </div>
         <app-user-roles [userHashId]="hashId ?? ''" [editable]="true" (changesChange)="roleChanges = $event" />
@@ -95,6 +95,7 @@
           <button
             type="button"
             class="btn btn-primary"
+            [disabled]="!isValid"
             (click)="save()">
             {{ isEdit ? 'Guardar cambios' : 'Crear usuario' }}
           </button>

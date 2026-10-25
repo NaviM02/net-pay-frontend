@@ -18,6 +18,9 @@ import {
   getAuditDetailRoute,
   getAuditEntityRoute,
   getAuditLevelClass,
+  getAuditLevelLabel,
+  getAuditEntityLabel,
+  getAuditActionLabel,
 } from '../../../../../commons/utils/audit.utils';
 import { AuditListFilter } from './audit-list.filter';
 
@@ -34,6 +37,9 @@ import { AuditListFilter } from './audit-list.filter';
   ],
 })
 export class AuditListComponent implements OnInit {
+  protected readonly getAuditLevelLabel = getAuditLevelLabel;
+  protected readonly getAuditEntityLabel = getAuditEntityLabel;
+  protected readonly getAuditActionLabel = getAuditActionLabel;
   protected readonly getAuditLevelClass = getAuditLevelClass;
 
   auditLogs: AppAuditLog[] = [];

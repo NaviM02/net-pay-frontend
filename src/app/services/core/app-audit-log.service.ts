@@ -30,4 +30,12 @@ export class AppAuditLogService {
   findByEntity(entityType: string, entityHashId: string) {
     return this.http.get<AppAuditLog[]>(`${this.baseUrl}/entity/${entityType}/${entityHashId}`);
   }
+
+  findByUserHashId(userHashId: string, queryParams: Map<string, string> = new Map()) {
+    const params = this.queryParamService.getParams(queryParams);
+    return this.http.get<AppAuditLog[]>(`${environment.baseUrl}/users/${userHashId}/audit-logs`, {
+      params,
+      observe: 'response',
+    });
+  }
 }

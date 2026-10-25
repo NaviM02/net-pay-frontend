@@ -17,6 +17,10 @@ import {
   getAuditDetailRoute,
   getAuditEntityRoute,
   getAuditLevelClass,
+  getAuditLevelLabel,
+  getAuditEntityLabel,
+  getAuditActionLabel,
+  getAuditFieldLabel,
 } from '../../../../../commons/utils/audit.utils';
 
 @Component({
@@ -31,6 +35,10 @@ import {
 })
 export class AuditDetailComponent implements OnInit {
   protected readonly getAuditLevelClass = getAuditLevelClass;
+  protected readonly getAuditLevelLabel = getAuditLevelLabel;
+  protected readonly getAuditEntityLabel = getAuditEntityLabel;
+  protected readonly getAuditActionLabel = getAuditActionLabel;
+  protected readonly getAuditFieldLabel = getAuditFieldLabel;
 
   protected readonly changeRows: AuditChangeRow[] = [];
 

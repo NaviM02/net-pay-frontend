@@ -214,11 +214,11 @@
               <tr>
                 <td class="np-table-mono">{{ log.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
                 <td class="np-table-muted">{{ log.userEmail || 'sistema' }}</td>
-                <td><span class="np-table-primary">{{ log.action }}</span></td>
-                <td class="np-table-muted">{{ log.entityType }}</td>
+                <td><span class="np-table-primary">{{ getAuditActionLabel(log.action) }}</span></td>
+                <td class="np-table-muted">{{ getAuditEntityLabel(log.entityType) }}</td>
                 <td>
                   <span class="np-badge {{ getAuditLevelClass(log.levelName) }}">
-                    {{ log.levelName || '—' }}
+                    {{ getAuditLevelLabel(log.levelName) }}
                   </span>
                 </td>
                 <td class="np-table-actions-cell text-end">
