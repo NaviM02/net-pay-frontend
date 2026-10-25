@@ -14,6 +14,7 @@ import { TypologyBadgeComponent } from '../../../../../commons/components/typolo
 import { AppServiceService } from '../../../../../services/core/app-service.service';
 import { ServiceFormModalComponent } from '../service-form-modal/service-form-modal.component';
 import { ServiceListFilter } from './service-list.filter';
+import { DataImportComponent } from '../../../../../commons/components/data-import/data-import.component';
 
 @Component({
   selector: 'app-service-list',
@@ -27,6 +28,7 @@ import { ServiceListFilter } from './service-list.filter';
     TableRowActionComponent,
     PaginationComponent,
     ServiceFormModalComponent,
+    DataImportComponent,
   ],
 })
 export class ServiceListComponent implements OnInit {
