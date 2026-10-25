@@ -104,6 +104,10 @@ export const routes: Routes = [
         ],
       },
       {
+        path: 'profile',
+        loadComponent: () => import('./features/personal/pages/profile/profile.component').then(c => c.ProfileComponent),
+      },
+      {
         path: 'my-dashboard',
         data: { permission: 'my-dashboard:read' },
         loadComponent: () => import('./features/dashboard/my-dashboard/my-dashboard.component').then(c => c.MyDashboardComponent),

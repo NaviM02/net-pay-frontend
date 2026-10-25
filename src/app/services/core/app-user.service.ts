@@ -80,6 +80,10 @@ export class AppUserService {
     return this.http.post<AppUser>(this.baseUrl, request);
   }
 
+  updateMe(user: Pick<AppUser, 'fullName' | 'email'>) {
+    return this.http.put<AppUser>(`${this.baseUrl}/me`, user);
+  }
+
   delete(hashId: string) {
     return this.http.delete(`${this.baseUrl}/${hashId}`);
   }
