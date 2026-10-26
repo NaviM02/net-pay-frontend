@@ -1,12 +1,13 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { LoadingIndicatorComponent } from './commons/components/loading-indicator/loading-indicator.component';
+import { ToastComponent } from './commons/components/toast/toast.component';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.scss',
+  imports: [RouterOutlet, ToastComponent, LoadingIndicatorComponent],
   templateUrl: './app.html',
+  styleUrl: './app.scss',
 })
 export class App {
-  protected readonly title = signal('net-pay-frontend');
 }

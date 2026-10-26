@@ -1,0 +1,52 @@
+<div class="np-page">
+  <div class="profile-heading">
+    <div>
+      <span class="profile-eyebrow">CUENTA</span>
+      <h1>Mi perfil</h1>
+      <p>Administra tu información personal y seguridad.</p>
+    </div>
+  </div>
+
+  @if (initialized) {
+    <div class="profile-layout">
+      <section class="profile-identity np-list-card">
+        <div class="np-user-avatar">{{ initials }}</div>
+        <div class="profile-identity-copy">
+          <h2>{{ user.fullName }}</h2>
+          <p>{{ user.email }}</p>
+        </div>
+        <div class="profile-status"><app-typology-badge [typology]="user.tpStatus" /></div>
+      </section>
+
+      <section class="profile-card np-list-card">
+        <div class="profile-card-heading">
+          <div class="profile-heading-icon"><app-material-icon [size]="19">person</app-material-icon></div>
+          <div><h2>Información personal</h2><p>Estos datos se usan para identificar tu cuenta.</p></div>
+        </div>
+        <div class="profile-fields">
+          <div class="profile-field">
+            <label for="profile-name">Nombre completo</label>
+            <input id="profile-name" class="form-control" type="text" [(ngModel)]="user.fullName" maxlength="100" autocomplete="name" />
+          </div>
+          <div class="profile-field">
+            <label for="profile-email">Correo electrónico</label>
+            <input id="profile-email" #profileEmail="ngModel" class="form-control" [class.is-invalid]="profileEmail.touched && !profileEmail.valid" type="email" [(ngModel)]="user.email" maxlength="120" autocomplete="email" />
+            <div class="invalid-feedback">Introduce un correo electrónico válido.</div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button type="button" class="btn btn-light" (click)="changePassword()">Cambiar contraseña</button>
+          <button type="button" class="btn btn-primary" [disabled]="!user.fullName.trim() || !isValidEmail(user.email)" (click)="save()">Guardar cambios</button>
+        </div>
+      </section>
+
+      <section class="profile-card profile-roles np-list-card">
+        <div class="profile-card-heading">
+          <div class="profile-heading-icon"><app-material-icon [size]="19">shield_person</app-material-icon></div>
+          <div><h2>Roles y vigencia</h2><p>Roles y fechas de acceso asignados a tu cuenta.</p></div>
+        </div>
+        <app-user-roles [userHashId]="user.hashId" [readOnly]="true" />
+      </section>
+    </div>
+  }
+</div>

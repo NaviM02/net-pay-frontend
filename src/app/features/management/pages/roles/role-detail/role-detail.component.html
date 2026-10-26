@@ -1,0 +1,24 @@
+<div class="np-page">
+  @if (role) {
+    <app-detail-page-header
+      [backRoute]="['/roles']"
+      [itemName]="role.name"
+      [description]="role.description ?? 'Detalle del rol y sus permisos'"
+      [showEdit]="role.status !== 'LOCKED'"
+      [showDelete]="role.status !== 'LOCKED'"
+      [editRoute]="['/roles', role.hashId, 'edit']"
+      (deleteAction)="delete(role.hashId, role.name)"
+    />
+
+    <div class="np-role-detail">
+    <section class="np-list-card role-detail-card">
+      <div class="role-detail-permissions">
+        <div class="role-section-heading">
+          <div><h2>Permisos por área</h2><p>Los checks marcados son las acciones que concede este rol.</p></div>
+        </div>
+        <app-role-permission-table [permissions]="permissions" [selectedPermissionHashIds]="selectedPermissionHashIds" [readonly]="true" />
+      </div>
+    </section>
+    </div>
+  }
+</div>

@@ -1,0 +1,4 @@
+aws_region               = "us-east-2"
+acme_email               = "student@example.invalid"
+instance_type            = "t3.micro"
+github_actions_user_name = "netpay-github-actions"

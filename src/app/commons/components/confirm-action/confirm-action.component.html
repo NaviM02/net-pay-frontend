@@ -1,0 +1,24 @@
+<ng-container>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">{{ data.title }} @if (data.titleHelper) { {{ data.titleHelper }} }</h4>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="close()"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <p class="text-muted">{{ data.bodyQuestion }}</p>
+    @if (data.bodyText) {
+      <p class="text-muted">{{ data.bodyText }}</p>
+    }
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-info" (click)="close()">
+      {{ data.cancelText }}
+    </button>
+    <button type="button" class="btn" [ngClass]="data.buttonType" (click)="confirm()">
+      {{ data.confirmText }}
+    </button>
+  </div>
+</ng-container>

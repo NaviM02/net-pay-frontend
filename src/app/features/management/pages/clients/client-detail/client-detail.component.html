@@ -1,0 +1,201 @@
+<div class="np-page">
+  <app-detail-page-header
+    [backRoute]="['/clients']"
+    [description]="'Estado de cuenta y datos de contacto'"
+    [itemName]="client.businessName"
+    [showEdit]="client.hashId != null"
+    [showDelete]="client.hashId != null"
+    [editRoute]="['/clients', hashId, 'edit']"
+    (deleteAction)="onDelete()"
+  />
+
+  <div class="np-client-detail">
+
+    @if (client.hashId) {
+      <div class="np-detail-section">
+        <div class="np-detail-section-header">
+          <div>
+            <span class="np-detail-section-title">Información del negocio</span>
+            <span class="np-detail-section-count">{{ client.hashId }}</span>
+          </div>
+
+          @if (client.tpStatus) {
+            <app-typology-badge [typology]="client.tpStatus" />
+          }
+        </div>
+
+        <div class="np-detail-fields">
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Razón social</span>
+            <span class="np-detail-field-value">{{ client.businessName }}</span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Cliente desde</span>
+            <span class="np-detail-field-value">
+              {{ client.customerSince || 'Sin definir' }}
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Nombre de contacto</span>
+            <span class="np-detail-field-value">
+              {{ client.contactName || 'Sin definir' }}
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Teléfono de contacto</span>
+            <span class="np-detail-field-value">
+              {{ client.contactPhone || 'Sin definir' }}
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Correo de contacto</span>
+            <span class="np-detail-field-value">
+              {{ client.contactEmail || 'Sin definir' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="np-detail-section">
+        <div class="np-detail-section-header">
+          <span class="np-detail-section-title">Servicio contratado</span>
+        </div>
+
+        <div class="np-detail-fields">
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Servicio</span>
+            <span class="np-detail-field-value">
+              @if (client.service) {
+                {{ client.service.name }}
+              } @else {
+                <span class="np-detail-placeholder">Sin servicio asignado</span>
+              }
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Precio mensual</span>
+            <span class="np-detail-field-value">
+              @if (client.service) {
+                {{ client.service.monthlyPrice | currency: 'Q' : 'symbol' : '1.0-0' }}
+              } @else {
+                <span class="np-detail-placeholder">Sin definir</span>
+              }
+            </span>
+          </div>
+
+          <div class="np-detail-field">
+            <span class="np-detail-field-label">Cobrador asignado</span>
+            <span class="np-detail-field-value">
+              @if (client.collector) {
+                {{ client.collector.fullName }}
+              } @else {
+                <span class="np-detail-placeholder">Sin asignar</span>
+              }
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="np-detail-section">
+        <div class="np-detail-section-header">
+          <span class="np-detail-section-title">Ubicación</span>
+        </div>
+
+        <div class="np-form-body">
+          <div class="row g-3">
+            <div class="col-12">
+              <span class="np-detail-field-label">Dirección</span>
+              <div class="np-detail-field-value">
+                {{ client.address || 'Sin dirección registrada' }}
+              </div>
+            </div>
+
+            <div class="col-12">
+              @if (hasLocation) {
+                <app-location-picker
+                  [readonly]="true"
+                  [height]="320"
+                  [ngModel]="location"
+                />
+              } @else {
+                <div class="np-detail-placeholder">Sin ubicación registrada en el mapa.</div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="np-detail-section">
+        <div class="np-detail-section-header">
+          <div>
+            <span class="np-detail-section-title">Estado de cuenta</span>
+            <span class="np-detail-section-count">{{ chargePagination.total }} períodos</span>
+          </div>
+        </div>
+        @if (account) {
+          <div class="np-detail-fields mb-3">
+            <div class="np-detail-field"><span class="np-detail-field-label">Total esperado</span><span class="np-detail-field-value">{{ account.totalExpected | currency: 'Q' : 'symbol' : '1.2-2' }}</span></div>
+            <div class="np-detail-field"><span class="np-detail-field-label">Total pagado</span><span class="np-detail-field-value">{{ account.totalPaid | currency: 'Q' : 'symbol' : '1.2-2' }}</span></div>
+            <div class="np-detail-field"><span class="np-detail-field-label">Saldo pendiente</span><span class="np-detail-field-value">{{ account.balance | currency: 'Q' : 'symbol' : '1.2-2' }}</span></div>
+            <div class="np-detail-field"><span class="np-detail-field-label">Saldo a favor</span><span class="np-detail-field-value">{{ account.credit | currency: 'Q' : 'symbol' : '1.2-2' }}</span></div>
+            <div class="np-detail-field"><span class="np-detail-field-label">Períodos vencidos</span><span class="np-detail-field-value">{{ account.overdueCount }}</span></div>
+          </div>
+        }
+        <div class="np-table-scroll">
+          <table class="table np-table mb-0">
+            <thead><tr><th>PERÍODO</th><th>MONTO ESPERADO</th><th>PAGADO</th><th>SALDO</th><th>ESTADO</th></tr></thead>
+            <tbody>
+              @for (charge of charges; track charge.hashId) {
+                <tr>
+                  <td>{{ charge.periodLabel }}</td>
+                  <td class="np-table-mono">{{ charge.expectedAmount | currency: 'Q' : 'symbol' : '1.2-2' }}</td>
+                  <td class="np-table-mono">{{ charge.paidAmount | currency: 'Q' : 'symbol' : '1.2-2' }}</td>
+                  <td class="np-table-mono">{{ charge.balance | currency: 'Q' : 'symbol' : '1.2-2' }}</td>
+                  <td><span class="np-badge" [class.np-badge-success]="charge.status === chargeStatus.PAID" [class.np-badge-warning]="charge.status === chargeStatus.PARTIAL || charge.status === chargeStatus.PENDING" [class.np-badge-error]="charge.status === chargeStatus.OVERDUE">{{ charge.status === chargeStatus.PAID ? 'Pagado' : charge.status === chargeStatus.PARTIAL ? 'Parcial' : charge.status === chargeStatus.OVERDUE ? 'Vencido' : 'Pendiente' }}</span></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="5"><div class="np-empty-state">No hay cargos para mostrar.</div></td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <app-pagination [pagination]="chargePagination" (onPaginationChange)="chargesPageChanged()" />
+      </div>
+
+      <div class="np-detail-section">
+        <div class="np-detail-section-header">
+          <div><span class="np-detail-section-title">Pagos registrados</span><span class="np-detail-section-count">{{ paymentPagination.total }} pagos</span></div>
+        </div>
+        <div class="np-table-scroll">
+          <table class="table np-table mb-0">
+            <thead><tr><th>FECHA</th><th>MONTO</th><th>MÉTODO</th><th>ESTADO</th><th>COBRADOR</th><th class="np-table-actions-cell text-end">ACCIONES</th></tr></thead>
+            <tbody>
+              @for (payment of payments; track payment.hashId) {
+                <tr>
+                  <td class="np-table-mono">{{ payment.paidAt | date: 'dd/MM/yyyy' }}</td>
+                  <td class="np-table-mono">{{ payment.amount | currency: 'Q' : 'symbol' : '1.2-2' }}</td>
+                  <td><app-typology-badge [typology]="payment.tpPaymentMethod" /></td>
+                  <td><app-typology-badge [typology]="payment.tpPaymentStatus" /></td>
+                  <td class="np-table-muted">{{ payment.collector?.fullName || 'Sistema' }}</td>
+                  <td class="np-table-actions-cell text-end"><app-table-row-action [viewRoute]="['/payments', payment.hashId]" /></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="6"><div class="np-empty-state">No hay pagos registrados para este cliente.</div></td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <app-pagination [pagination]="paymentPagination" (onPaginationChange)="paymentsPageChanged()" />
+      </div>
+    } @else {
+      <div class="np-detail-section">
+        <div class="np-empty-state">No se encontró el cliente solicitado.</div>
+      </div>
+    }
+  </div>
+</div>

@@ -34,6 +34,17 @@ yarn-error.log
 .sass-cache/
 /connect.lock
 /coverage
+/terraform/.terraform/
+/terraform/*.tfstate
+/terraform/*.tfstate.*
+/terraform/*.tfplan
+/terraform/*.tfvars
+!terraform/*.tfvars.example
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
 /libpeerconnection.log
 testem.log
 /typings

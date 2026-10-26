@@ -1,0 +1,29 @@
+.np-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--np-background);
+}
+
+.np-app-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.np-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+@media (max-width: 767.98px) {
+  .np-main {
+    padding: 16px;
+  }
+}

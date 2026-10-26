@@ -1,0 +1,19 @@
+.np-audit-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 20px;
+}
+
+/* The change values can be long JSON payloads, so let them wrap. */
+.np-audit-value {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+/* These tables live inside a detail page, so they need a shorter body than
+   the full-height list pages. */
+.np-audit-table {
+  --np-table-min-height: 0;
+  --np-table-max-height: 360px;
+}

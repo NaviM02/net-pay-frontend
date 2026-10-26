@@ -1,0 +1,40 @@
+#!/bin/bash
+set -euo pipefail
+dnf install -y docker awscli-2 python3
+systemctl enable --now docker
+systemctl enable --now amazon-ssm-agent
+compose_version=v2.39.4
+curl -fsSL "https://github.com/docker/compose/releases/download/$compose_version/docker-compose-linux-x86_64" -o /tmp/docker-compose
+echo '7af95166a730b87e172d4fc9aefea8725d3c6c7327d59149267b452114ddb7d4  /tmp/docker-compose' | sha256sum --check --status
+install -D -m 0755 /tmp/docker-compose /usr/local/lib/docker/cli-plugins/docker-compose
+rm -f /tmp/docker-compose
+install -d -m 700 /etc/netpay-frontend
+cat >/etc/netpay-frontend/deploy.env <<'ENV'
+AWS_REGION='${region}'
+ECR_REPOSITORY='${repository}'
+API_HOST='${host}'
+ACME_EMAIL='${email}'
+ENV
+chmod 600 /etc/netpay-frontend/deploy.env
+printf '%s' '${base64encode(compose_content)}' | base64 -d >/etc/netpay-frontend/compose.prod.yml
+printf '%s' '${base64encode(start_content)}' | base64 -d >/usr/local/bin/netpay-frontend-start
+printf '%s' '${base64encode(release_content)}' | base64 -d >/usr/local/bin/netpay-frontend-release
+chmod 700 /usr/local/bin/netpay-frontend-start /usr/local/bin/netpay-frontend-release
+cat >/etc/systemd/system/netpay-frontend.service <<'UNIT'
+[Unit]
+Description=NetPay Angular frontend
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/netpay-frontend-start
+TimeoutStartSec=600
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+systemctl daemon-reload
+systemctl enable netpay-frontend.service

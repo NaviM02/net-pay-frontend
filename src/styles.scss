@@ -1,1 +1,1397 @@
 /* You can add global styles to this file, and also import other style files */
+
+// Importing ng-select default theme.
+@import "../node_modules/@ng-select/ng-select/themes/default.theme.css";
+
+// Importing Leaflet base styles (OpenStreetMap map for location picking).
+@import "../node_modules/leaflet/dist/leaflet.css";
+
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/functions';
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+$primary: #1E5CE6;
+$secondary: #64748B;
+$success: #15803D;
+$info: #E2E8F0;
+$warning: #B45309;
+$danger: #B91C1C;
+$light: #F8FAFC;
+$dark: #0F172A;
+
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/maps';
+
+@import 'bootstrap/scss/root';
+@import 'bootstrap/scss/reboot';
+@import 'bootstrap/scss/type';
+@import 'bootstrap/scss/images';
+@import 'bootstrap/scss/containers';
+@import 'bootstrap/scss/grid';
+@import 'bootstrap/scss/tables';
+@import 'bootstrap/scss/forms';
+@import 'bootstrap/scss/buttons';
+@import 'bootstrap/scss/transitions';
+@import 'bootstrap/scss/dropdown';
+@import 'bootstrap/scss/button-group';
+@import 'bootstrap/scss/nav';
+@import 'bootstrap/scss/navbar';
+@import 'bootstrap/scss/card';
+@import 'bootstrap/scss/accordion';
+@import 'bootstrap/scss/breadcrumb';
+@import 'bootstrap/scss/pagination';
+@import 'bootstrap/scss/badge';
+@import 'bootstrap/scss/alert';
+@import 'bootstrap/scss/progress';
+@import 'bootstrap/scss/list-group';
+@import 'bootstrap/scss/close';
+@import 'bootstrap/scss/toasts';
+@import 'bootstrap/scss/modal';
+@import 'bootstrap/scss/tooltip';
+@import 'bootstrap/scss/popover';
+@import 'bootstrap/scss/carousel';
+@import 'bootstrap/scss/spinners';
+@import 'bootstrap/scss/offcanvas';
+@import 'bootstrap/scss/placeholders';
+@import 'bootstrap/scss/utilities';
+
+// Helpers
+@import 'bootstrap/scss/helpers';
+@import 'bootstrap/scss/utilities/api';
+
+:root {
+  /* Primary */
+  --np-primary: #1E5CE6;
+  --np-primary-hover: #1A50CC;
+  --np-primary-light: #EEF3FD;
+  --np-primary-soft: #BFDBFE;
+
+  /* Blue accent */
+  --np-blue: #3B7AF0;
+  --np-blue-light: #60A5FA;
+  --np-blue-dark: #1E3A6E;
+
+  /* Backgrounds */
+  --np-background: #F8FAFC;
+  --np-surface: #FFFFFF;
+  --np-surface-hover: #F8FAFC;
+
+  /* Dark */
+  --np-dark: #0F172A;
+  --np-dark-login: #0B1D3A;
+
+  /* Text */
+  --np-text: #0F172A;
+  --np-text-secondary: #374151;
+  --np-text-muted: #64748B;
+  --np-text-light: #94A3B8;
+
+  /* Borders */
+  --np-border: #E2E8F0;
+  --np-border-light: #F1F5F9;
+
+  /* Status - Success */
+  --np-success-background: #F0FDF4;
+  --np-success-text: #15803D;
+  --np-success-border: #BBF7D0;
+
+  /* Status - Error */
+  --np-error-background: #FEF2F2;
+  --np-error-text: #B91C1C;
+  --np-error-border: #FECACA;
+
+  /* Status - Warning */
+  --np-warning-background: #FFFBEB;
+  --np-warning-text: #B45309;
+  --np-warning-border: #FDE68A;
+
+  /* Status - Neutral */
+  --np-neutral-background: #F8FAFC;
+  --np-neutral-text: #475569;
+  --np-neutral-border: #E2E8F0;
+
+  /* Typography */
+  --np-font-family: 'Inter', system-ui, sans-serif;
+  --np-mono-family: 'JetBrains Mono', monospace;
+
+  /* List table sizing (override per page when a list needs a taller/shorter body) */
+  --np-table-min-height: 320px;
+  /* Upper bound of the scrollable body, so long lists scroll instead of stretching. */
+  --np-table-max-height: calc(100vh - 300px);
+
+  /* Radius */
+  --np-radius-sm: 5px;
+  --np-radius-md: 7px;
+  --np-radius-lg: 10px;
+  --np-radius-xl: 12px;
+
+  /* Shadows */
+  --np-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --np-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.05);
+  --np-shadow-modal: 0 20px 60px rgba(15, 23, 42, 0.18);
+}
+
+
+/* ============================================================
+   Reset
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--np-background);
+  color: var(--np-text);
+  font-family: var(--np-font-family);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   Typography
+   ============================================================ */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-top: 0;
+}
+
+.np-page-title {
+  margin: 0;
+  color: var(--np-text);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.np-page-subtitle {
+  margin: 3px 0 0;
+  color: var(--np-text-muted);
+  font-size: 13px;
+}
+
+.np-mono {
+  font-family: var(--np-mono-family);
+}
+
+// For inputs
+.is-dark-theme {
+  color: var(--np-neutral-text) !important;
+}
+
+.is-dark-placeholder::placeholder {
+  color: var(--np-neutral-text) !important;
+  opacity: 0.6;
+}
+
+/* ============================================================
+   Layout
+   ============================================================ */
+
+.np-content {
+  flex: 1;
+  padding: 20px 24px;
+  overflow-y: auto;
+}
+
+/* ============================================================
+   Cards
+   ============================================================ */
+
+.np-card {
+  background-color: var(--np-surface);
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-lg);
+  box-shadow: var(--np-shadow-card);
+}
+
+.np-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 14px 18px 12px;
+
+  border-bottom: 1px solid var(--np-border-light);
+}
+
+.np-card-title {
+  color: var(--np-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.np-card-subtitle {
+  margin-left: 8px;
+  color: var(--np-text-light);
+  font-size: 12px;
+}
+
+/* ============================================================
+   List page
+   ============================================================ */
+
+/* Page fills the scroll area of the layout, so list cards can stretch to the
+   bottom of the viewport while still respecting the layout padding as a margin. */
+.np-page {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100%;
+}
+
+.np-list-card {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1 1 auto;
+
+  background-color: var(--np-surface);
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-lg);
+  box-shadow: var(--np-shadow-card);
+
+  overflow: hidden;
+}
+
+.np-table-actions-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  flex-shrink: 0;
+
+  padding: 12px 16px;
+
+  border-bottom: 1px solid var(--np-border-light);
+}
+
+.np-table-footer {
+  flex-shrink: 0;
+
+  padding: 12px 16px;
+
+  border-top: 1px solid var(--np-border-light);
+}
+
+
+/* ============================================================
+   Tables
+   ============================================================ */
+
+/* Scroll container for the table body. `max-height` is what actually turns on the
+   scrollbar: the page/card have no height limit, so without it the container just
+   grows with the rows and `overflow: auto` never engages. It subtracts the app
+   header, the page header, the filter bar and the pagination, so the card ends up
+   filling the viewport. `min-height` acts as the floor when the window is too
+   short; then the card grows and the layout scrolls instead of squashing the table. */
+.np-table-scroll {
+  flex: 1 1 auto;
+
+  min-height: var(--np-table-min-height);
+  max-height: var(--np-table-max-height);
+
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.np-table {
+  width: 100%;
+
+  border-collapse: separate;
+  border-spacing: 0;
+
+  font-size: 13px;
+}
+
+.np-table thead tr th {
+  border-bottom: 1px solid var(--np-border);
+}
+
+/* Header stays visible while the body scrolls. */
+.np-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+
+  background-color: var(--np-surface);
+
+  padding: 10px 14px;
+
+  color: var(--np-text-light);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.np-table tbody tr {
+  transition: background-color 0.1s;
+}
+
+.np-table tbody tr:hover {
+  background-color: var(--np-surface-hover);
+}
+
+.np-table td {
+  padding: 10px 14px;
+
+  border-bottom: 1px solid var(--np-border-light);
+
+  color: var(--np-text-secondary);
+  vertical-align: middle;
+}
+
+.np-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Cell modifiers: usable on the <td> or on any element inside it. */
+.np-table .np-table-id {
+  color: var(--np-text-muted);
+  font-family: var(--np-mono-family);
+  font-size: 12px;
+}
+
+.np-table .np-table-primary {
+  color: var(--np-text);
+  font-weight: 500;
+}
+
+.np-table .np-table-mono {
+  color: var(--np-text);
+  font-family: var(--np-mono-family);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.np-table .np-table-muted {
+  color: var(--np-text-muted);
+  font-size: 12px;
+}
+
+/* Cells that hold a row action group keep a fixed width so the actions column
+   does not shift between pages with different content. */
+.np-table .np-table-actions-cell {
+  width: 1%;
+  white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+  .np-table-scroll {
+    --np-table-min-height: 240px;
+    --np-table-max-height: calc(100vh - 260px);
+  }
+}
+
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+
+.np-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  border: 1px solid transparent;
+  border-radius: var(--np-radius-md);
+
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+
+  transition: all 0.12s;
+}
+
+.np-btn-sm {
+  height: 34px;
+  padding: 6px 12px;
+}
+
+.np-btn-xs {
+  height: 28px;
+  padding: 4px 9px;
+  font-size: 12px;
+}
+
+.np-btn-primary {
+  background-color: var(--np-primary);
+  border-color: var(--np-primary);
+  box-shadow: 0 1px 2px rgba(30, 92, 230, 0.2);
+  color: #fff;
+}
+
+.np-btn-primary:hover {
+  background-color: var(--np-primary-hover);
+  border-color: var(--np-primary-hover);
+}
+
+.np-btn-secondary {
+  background-color: #fff;
+  border-color: var(--np-border);
+  box-shadow: var(--np-shadow-sm);
+  color: var(--np-text-secondary);
+}
+
+.np-btn-secondary:hover {
+  background-color: var(--np-surface-hover);
+}
+
+.np-btn-ghost {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--np-text-muted);
+}
+
+.np-btn-ghost:hover {
+  background-color: var(--np-border-light);
+}
+
+.np-btn-danger {
+  background-color: var(--np-error-background);
+  border-color: var(--np-error-border);
+  color: var(--np-error-text);
+}
+
+.np-btn-danger:hover {
+  background-color: #FEE2E2;
+}
+
+
+/* ============================================================
+   Inputs
+   ============================================================ */
+
+.np-input,
+.np-select {
+  width: 100%;
+  height: 34px;
+
+  padding: 0 10px;
+
+  background-color: #fff;
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-md);
+  outline: none;
+
+  color: var(--np-text);
+  font-size: 13px;
+
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+.np-input:focus,
+.np-select:focus {
+  border-color: var(--np-primary);
+  box-shadow: 0 0 0 3px rgba(30, 92, 230, 0.1);
+}
+
+.np-input::placeholder {
+  color: var(--np-text-light);
+}
+
+.np-select {
+  cursor: pointer;
+}
+
+
+/* ============================================================
+   Form
+   ============================================================ */
+
+.np-field {
+  margin-bottom: 14px;
+}
+
+.np-field-label {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--np-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Body for form sections built on top of `.np-detail-section`. */
+.np-form-body {
+  padding: 18px 20px;
+}
+
+.np-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+
+/* ============================================================
+   Badges
+   ============================================================ */
+
+.np-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 3px 8px;
+
+  border: 1px solid transparent;
+  border-radius: var(--np-radius-sm);
+
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.np-badge-success {
+  background-color: var(--np-success-background);
+  border-color: var(--np-success-border);
+  color: var(--np-success-text);
+}
+
+.np-badge-error {
+  background-color: var(--np-error-background);
+  border-color: var(--np-error-border);
+  color: var(--np-error-text);
+}
+
+.np-badge-warning {
+  background-color: var(--np-warning-background);
+  border-color: var(--np-warning-border);
+  color: var(--np-warning-text);
+}
+
+.np-badge-primary {
+  background-color: var(--np-primary-light);
+  border-color: var(--np-primary-soft);
+  color: var(--np-primary);
+}
+
+.np-badge-neutral {
+  background-color: var(--np-neutral-background);
+  border-color: var(--np-neutral-border);
+  color: var(--np-neutral-text);
+}
+
+
+/* ============================================================
+   Modal
+   ============================================================ */
+
+.np-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.np-modal-backdrop {
+  position: absolute;
+  inset: 0;
+
+  background-color: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.np-modal-content {
+  position: relative;
+
+  width: 560px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 48px);
+
+  overflow-y: auto;
+
+  background-color: #fff;
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-xl);
+  box-shadow: var(--np-shadow-modal);
+}
+
+.np-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid var(--np-border-light);
+}
+
+.np-modal-title {
+  color: var(--np-text);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.np-modal-body {
+  padding: 20px;
+}
+
+.np-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  margin-top: 24px;
+  padding-top: 20px;
+
+  border-top: 1px solid var(--np-border-light);
+}
+
+@media (max-width: 576px) {
+  .np-modal-content {
+    width: 100%;
+    max-width: calc(100vw - 20px);
+  }
+}
+
+.np-modal :focus-visible {
+  outline: 2px solid var(--np-primary);
+  outline-offset: 2px;
+}
+
+
+/* ============================================================
+   Detail (shared by every *-detail page)
+   ============================================================ */
+
+.np-detail-card,
+.np-detail-section {
+  background: #fff;
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-lg);
+  box-shadow: var(--np-shadow-sm);
+}
+
+.np-detail-card {
+  min-height: 154px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.np-detail-label {
+  color: var(--np-text-light);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.57px;
+  text-transform: uppercase;
+}
+
+.np-detail-value {
+  padding-top: 8px;
+  color: var(--np-text);
+  font-family: var(--np-mono-family);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 45px;
+}
+
+.np-detail-value.np-success {
+  color: var(--np-success-text);
+}
+
+.np-detail-description {
+  padding-top: 4px;
+  color: var(--np-text-light);
+  font-size: 12px;
+}
+
+.np-detail-section {
+  overflow: hidden;
+}
+
+.np-detail-section-header {
+  min-height: 51px;
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid var(--np-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.np-detail-section-header > div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.np-detail-section-title {
+  color: var(--np-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.np-detail-section-count {
+  color: var(--np-text-light);
+  font-size: 12px;
+}
+
+.np-detail-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+  padding: 22px;
+}
+
+.np-detail-field {
+  min-width: 0;
+}
+
+.np-detail-field-label {
+  display: block;
+  color: var(--np-text-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.np-detail-field-value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 4px;
+  color: var(--np-text);
+  font-size: 14px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.np-detail-placeholder {
+  color: var(--np-text-light);
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.np-empty-state {
+  padding: 32px 20px;
+  color: var(--np-text-light);
+  font-size: 13px;
+  text-align: center;
+}
+
+.np-export-button {
+  padding: 4px 9px;
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-md);
+  background: #fff;
+  color: var(--np-text-secondary);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 28px;
+}
+
+@media (max-width: 576px) {
+  .np-detail-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ============================================================
+   KPI
+   ============================================================ */
+
+/* Row of `.np-card.np-kpi` blocks, used by the dashboard and the reports. */
+.np-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 1399.98px) {
+  .np-kpi-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 575.98px) {
+  .np-kpi-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.np-kpi {
+  padding: 20px;
+}
+
+.np-kpi-label {
+  margin: 0 0 8px;
+
+  color: var(--np-text-light);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.np-kpi-value {
+  margin: 0 0 4px;
+
+  color: var(--np-text);
+  font-family: var(--np-mono-family);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.np-kpi-value.success {
+  color: var(--np-success-text);
+}
+
+.np-kpi-subtitle {
+  margin: 0;
+
+  color: var(--np-text-light);
+  font-size: 12px;
+}
+
+/* ============================================================
+   Auth screens (forgot / reset password)
+   Shared by the recovery pages; the login keeps its own two column shell.
+   ============================================================ */
+
+.np-auth {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+
+  background-color: var(--np-dark-login);
+  font-family: var(--np-font-family);
+}
+
+.np-auth-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.np-auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.np-auth-logo {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+  background-color: var(--np-primary);
+
+  color: #fff;
+
+  .material-symbols-outlined {
+    font-size: 19px;
+  }
+}
+
+.np-auth-brand-name {
+  color: #F1F5F9;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.np-auth-brand-subtitle {
+  margin-top: 3px;
+  color: var(--np-blue);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.np-auth-heading {
+  margin-bottom: 24px;
+
+  h2 {
+    margin: 0 0 6px;
+    color: #F1F5F9;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin: 0;
+    color: #64748B;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+}
+
+.np-auth-group {
+  margin-bottom: 20px;
+}
+
+.np-auth-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #94A3B8;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.np-auth-required::after {
+  content: " *";
+  color: #EF4444;
+  font-weight: 600;
+}
+
+/* Inline feedback: error keys coming from the API, hints and success notes. */
+.np-auth-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 10px 12px;
+
+  border: 1px solid transparent;
+  border-radius: var(--np-radius-md);
+
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.np-auth-alert .material-symbols-outlined {
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.np-auth-alert-error {
+  background-color: var(--np-error-background);
+  border-color: var(--np-error-border);
+  color: var(--np-error-text);
+}
+
+.np-auth-alert-success {
+  background-color: var(--np-success-background);
+  border-color: var(--np-success-border);
+  color: var(--np-success-text);
+}
+
+.np-auth-alert-info {
+  background-color: var(--np-neutral-background);
+  border-color: var(--np-neutral-border);
+  color: var(--np-neutral-text);
+}
+
+.np-auth-hint {
+  margin-top: 6px;
+  color: #64748B;
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.np-auth-requirements {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #64748B;
+    font-size: 11.5px;
+    transition: color 0.15s ease;
+
+    .material-symbols-outlined {
+      font-size: 15px;
+    }
+
+    &.done {
+      color: var(--np-success-text);
+    }
+  }
+}
+
+.np-auth-hint-error {
+  margin-top: 6px;
+  color: #FCA5A5;
+  font-size: 11.5px;
+}
+
+.np-auth-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.np-auth-link {
+  color: var(--np-blue);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    color: #93C5FD;
+    text-decoration: underline;
+  }
+}
+
+.np-auth-submit {
+  width: 100%;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border-radius: 8px;
+  background-color: var(--np-primary);
+  border-color: var(--np-primary);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--np-primary-hover);
+    border-color: var(--np-primary-hover);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+/* ============================================================
+   Dashboards (shared by the admin and the collector ones)
+   ============================================================ */
+
+.np-dashboard-period {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+
+  padding: 16px 0 4px;
+}
+
+.np-dashboard-period-label {
+  padding-bottom: 9px;
+  color: var(--np-text-light);
+  font-size: 12.5px;
+}
+
+.np-dashboard-kpis {
+  padding-top: 14px;
+}
+
+.np-dashboard-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+
+  padding-top: 14px;
+}
+
+.np-dashboard-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.np-dashboard-chart {
+  padding: 12px 8px 4px;
+}
+
+/* Method legend below the donut: dot, label, total and payment count. */
+.np-dashboard-chart-legend {
+  border-top: 1px solid var(--np-border-light);
+
+  td {
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+}
+
+.np-dashboard-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 7px;
+  border-radius: 50%;
+}
+
+.np-dashboard-tables {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+
+  padding: 14px 0;
+}
+
+/* Tables inside a dashboard panel are short, never the full list height. */
+.np-dashboard-table {
+  --np-table-min-height: 0;
+  --np-table-max-height: 320px;
+}
+
+@media (max-width: 991.98px) {
+  .np-dashboard-charts,
+  .np-dashboard-tables {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .np-dashboard-kpis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}/* ============================================================
+   Reports (shared by every report tab)
+   ============================================================ */
+
+.np-report {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.np-report-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+
+  padding: 14px 18px;
+
+  background-color: var(--np-surface);
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-lg);
+  box-shadow: var(--np-shadow-card);
+}
+
+.np-report-toolbar-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+
+.np-flex {
+  display: flex;
+}
+
+.np-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.np-flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.np-gap-1 {
+  gap: 4px;
+}
+
+.np-gap-2 {
+  gap: 8px;
+}
+
+.np-gap-3 {
+  gap: 12px;
+}
+
+.np-gap-4 {
+  gap: 16px;
+}
+
+.np-gap-5 {
+  gap: 20px;
+}
+
+.np-text-primary {
+  color: var(--np-text);
+}
+
+.np-text-secondary {
+  color: var(--np-text-secondary);
+}
+
+.np-text-muted {
+  color: var(--np-text-muted);
+}
+
+.np-text-light {
+  color: var(--np-text-light);
+}
+
+.np-text-primary-color {
+  color: var(--np-primary);
+}
+
+.np-text-success {
+  color: var(--np-success-text);
+}
+
+.np-text-error {
+  color: var(--np-error-text);
+}
+
+.np-text-warning {
+  color: var(--np-warning-text);
+}
+
+/* ============================================================
+   Accessibility
+   ============================================================ */
+
+.required-field::after {
+  content: ' *';
+  color: #EF4444;
+  font-weight: 600;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--np-primary);
+  outline-offset: 2px;
+}
+
+button,
+[role='button'],
+a[href] {
+  min-width: 24px;
+  min-height: 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   Location picker (Leaflet)
+   ============================================================ */
+
+/* Leaflet creates the marker/panes nodes dynamically, outside Angular's
+   view encapsulation, so these rules must live in the global stylesheet. */
+.np-map-div-icon {
+  background: transparent;
+  border: 0;
+}
+
+.np-map-marker {
+  display: block;
+
+  width: 22px;
+  height: 22px;
+
+  background-color: var(--np-primary);
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.35);
+
+  transform: rotate(-45deg);
+}
+
+.leaflet-container {
+  font-family: var(--np-font-family);
+  background-color: var(--np-border-light);
+}
+
+
+// Toggle icon remove
+.dropdown-toggle {
+  &::after {
+    display: none !important;
+  }
+
+  &::before {
+    display: none !important;
+  }
+}
+
+.np-payment-attachment-link {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.35rem;
+  color: var(--np-primary);
+  vertical-align: middle;
+
+  &:hover { color: #174dcc; }
+
+  .material-symbols-outlined { font-size: 17px; }
+}
+
+// ng-select menus appended to `body` need to sit above Bootstrap modal dialogs.
+.ng-dropdown-panel {
+  z-index: 1065 !important;
+}

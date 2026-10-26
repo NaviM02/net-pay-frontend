@@ -1,0 +1,62 @@
+<div
+  class="d-flex flex-column justify-content-center align-items-start gap-2 flex-md-row justify-content-md-between align-items-md-start"
+>
+  <div>
+    <div class="d-flex justify-content-start align-items-center gap-2">
+      @if (backRoute) {
+        <app-material-icon role="button" aria-label="Volver" [routerLink]="backRoute">arrow_back</app-material-icon>
+      }
+
+      @if (itemName) {
+        <h1 class="fw-normal h4 m-0">{{ itemName }}</h1>
+      }
+    </div>
+
+    @if (description) {
+      <p class="m-0 mt-1 fw-light">{{ description }}</p>
+    }
+  </div>
+  <div class="d-flex justify-content-end align-items-center gap-2">
+    @if (additionalAction.observed && additionalActionText && can('update')) {
+      <button
+        type="button"
+        class="btn px-4"
+        [class.btn-outline-primary]="!additionalActionEmphasis"
+        [class.np-header-action-emphasis]="additionalActionEmphasis"
+        (click)="additionalAction.emit()"
+      >
+        {{ additionalActionText }}
+      </button>
+    }
+
+    @if (deleteAction.observed && showDelete && can('delete')) {
+      <button
+        type="button"
+        class="btn btn-light text-danger fw-semibold px-4"
+        (click)="deleteAction.emit()"
+      >
+        {{ deleteText }}
+      </button>
+    }
+
+    @if (showEdit && can('update')) {
+      @if (editRoute) {
+        <button
+          type="button"
+          class="btn btn-primary px-4"
+          [routerLink]="editRoute"
+        >
+          {{ editText }}
+        </button>
+      } @else if (editAction.observed) {
+        <button
+          type="button"
+          class="btn btn-primary px-4"
+          (click)="editAction.emit()"
+        >
+          {{ editText }}
+        </button>
+      }
+    }
+  </div>
+</div>

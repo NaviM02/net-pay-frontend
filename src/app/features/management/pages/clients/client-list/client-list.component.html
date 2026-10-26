@@ -1,0 +1,70 @@
+<div class="np-page">
+
+  <app-list-page-header
+    title="Clientes"
+    description="Cartera de clientes y su servicio contratado"
+    saveText="Nuevo cliente"
+    (buttonClick)="add()"
+  />
+
+  <div class="np-list-card">
+    <div class="np-table-actions-bar">
+      <app-filter-menu
+        [filterGroup]="listStateService.filter"
+        (onFilterChange)="listStateService.onFilterChange($event)"
+      />
+      <app-data-import resource="clients" (imported)="findAll()" />
+    </div>
+
+    <div class="np-table-scroll">
+      <table class="table np-table mb-0">
+        <thead>
+        <tr>
+          <th>NEGOCIO</th>
+          <th>CONTACTO</th>
+          <th>SERVICIO</th>
+          <th>COBRADOR</th>
+          <th>ESTADO</th>
+          <th class="np-table-actions-cell text-end">ACCIONES</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          @for (client of clients; track client.hashId) {
+            <tr>
+              <td>
+                <span class="np-table-primary">{{ client.businessName }}</span>
+              </td>
+              <td>
+                <div class="np-table-primary">{{ client.contactName }}</div>
+                @if (client.contactPhone) {
+                  <div class="np-table-muted">{{ client.contactPhone }}</div>
+                }
+              </td>
+              <td class="np-table-muted">{{ client.service?.name ?? '—' }}</td>
+              <td class="np-table-muted">{{ client.collector?.fullName ?? 'Sin asignar' }}</td>
+              <td><app-typology-badge [typology]="client.tpStatus" /></td>
+              <td class="np-table-actions-cell text-end">
+                <app-table-row-action
+                  [viewRoute]="['/clients', client.hashId]"
+                  (editAction)="edit(client.hashId)"
+                  (deleteAction)="delete(client.hashId, client.businessName)" />
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6">
+                <div class="np-empty-state">No hay clientes que coincidan con el filtro.</div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pagination
+      [pagination]="listStateService.pagination"
+      (onPaginationChange)="listStateService.onPaginationChange($event)"
+    />
+  </div>
+</div>

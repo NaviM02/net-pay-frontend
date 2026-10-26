@@ -1,0 +1,25 @@
+.np-export-dropdown ::ng-deep .dropdown-toggle::after {
+  margin-left: 4px;
+}
+
+.np-export-dropdown ::ng-deep .dropdown-menu {
+  min-width: 170px;
+  padding: 4px;
+}
+
+.np-export-option {
+  border-radius: var(--np-radius-sm);
+  font-size: 13px;
+  text-align: left;
+}
+
+.np-export-hint {
+  margin: 4px -4px -4px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--np-border-light);
+
+  color: var(--np-text-light);
+  font-size: 11.5px;
+  font-style: italic;
+  text-align: center;
+}

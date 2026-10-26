@@ -1,0 +1,29 @@
+<div *appPermission="'reports:export'" class="np-export-dropdown" ngbDropdown placement="bottom-end">
+  <button
+    type="button"
+    class="np-btn np-btn-sm np-btn-secondary"
+    ngbDropdownToggle
+    [disabled]="loading"
+    [title]="label"
+  >
+    <app-material-icon [size]="16">{{ loading ? 'progress_activity' : 'download' }}</app-material-icon>
+    {{ loading ? 'Generando…' : label }}
+  </button>
+
+  <div ngbDropdownMenu>
+    @for (format of formats; track format) {
+      <button
+        ngbDropdownItem
+        type="button"
+        class="np-export-option"
+        (click)="onSelect(format)"
+      >
+        {{ formatLabels[format] }}
+      </button>
+    }
+
+    @if (formats.length > 1) {
+      <div class="np-export-hint">CSV compatible con Excel</div>
+    }
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<div class="np-table-actions">
+  @if (viewRoute && can('read')) {
+    <button
+      type="button"
+      class="np-action-button"
+      title="Ver"
+      [routerLink]="viewRoute"
+    >
+      <span class="material-symbols-outlined">visibility</span>
+    </button>
+  }
+
+  @if (editAction.observed && showEdit && can('update')) {
+    <button
+      type="button"
+      class="np-action-button"
+      title="Editar"
+      (click)="editAction.emit()"
+    >
+      <span class="material-symbols-outlined">edit</span>
+    </button>
+  }
+
+  @for (customAction of customActions; track customAction.label) {
+    @if (canRun(customAction)) {
+    <button
+      type="button"
+      class="np-action-button"
+      [class.np-action-danger]="customAction.danger"
+      [title]="customAction.label"
+      [attr.aria-label]="customAction.label"
+      (click)="customAction.action()"
+    >
+      @if (customAction.icon) {
+        <span class="material-symbols-outlined">{{ customAction.icon }}</span>
+      } @else {
+        {{ customAction.label }}
+      }
+    </button>
+    }
+  }
+
+  @if (deleteAction.observed && showDelete && can('delete')) {
+    <button
+      type="button"
+      class="np-action-button np-action-danger"
+      title="Eliminar"
+      (click)="deleteAction.emit()"
+    >
+      <span class="material-symbols-outlined">delete</span>
+    </button>
+  }
+</div>

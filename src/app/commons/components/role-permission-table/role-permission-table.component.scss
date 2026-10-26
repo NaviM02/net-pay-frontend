@@ -1,0 +1,61 @@
+.role-permission-table {
+  --np-table-min-height: 0;
+  --np-table-max-height: 28rem;
+
+  max-height: 28rem;
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-md);
+}
+
+.role-permission-table table {
+  width: 100%;
+  min-width: 42rem;
+  table-layout: fixed;
+}
+
+.role-permission-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--np-surface);
+  vertical-align: middle;
+}
+
+.permission-resource-heading {
+  width: 25%;
+}
+
+.permission-check-heading,
+.role-permission-table td {
+  width: 10.7%;
+  padding-right: 0.35rem !important;
+  padding-left: 0.35rem !important;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.permission-check-heading {
+  white-space: normal !important;
+}
+
+.resource-name {
+  text-transform: capitalize;
+  vertical-align: middle;
+}
+
+.permission-not-available {
+  color: var(--np-text-muted);
+}
+
+.form-check-input {
+  float: none;
+  margin: 0;
+  width: 1.05rem;
+  height: 1.05rem;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.form-check-input:disabled {
+  cursor: default;
+}

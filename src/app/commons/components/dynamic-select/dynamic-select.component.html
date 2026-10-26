@@ -1,0 +1,31 @@
+<ng-select
+  [items]="items"
+  (scrollToEnd)="onScrollEnd()"
+  (open)="onOpen()"
+  [typeahead]="$search"
+  [clearable]="clearable"
+  [disabled]="disabled"
+  [loading]="loading"
+  [bindLabel]="bindLabel"
+  [(ngModel)]="value"
+  (blur)="onBlur()"
+  [multiple]="multiple"
+  [closeOnSelect]="!multiple"
+  [notFoundText]="notFoundTExt"
+  [typeToSearchText]="typeToSearchText"
+  [placeholder]="placeholder"
+  appendTo="body"
+  loadingText="{{ loadingText }}"
+>
+  @if (bindLabelFn) {
+    <ng-template ng-label-tmp let-item="item" let-clear="clear">
+      <div class="ng-value">
+        <span aria-hidden="true" class="ng-value-icon left mr-2" (click)="clear(item)">&times;</span>
+        <span>{{ bindLabelFn(item) }}</span>
+      </div>
+    </ng-template>
+    <ng-template ng-option-tmp let-item="item">
+      <span>{{ bindLabelFn(item) }}</span>
+    </ng-template>
+  }
+</ng-select>

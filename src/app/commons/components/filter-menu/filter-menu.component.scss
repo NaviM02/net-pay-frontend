@@ -1,0 +1,112 @@
+.menu-filter-dropdown {
+  width: 600px;
+  max-width: calc(100vw - 32px);
+  height: 380px;
+  max-height: calc(100vh - 120px);
+
+  padding: 0;
+  background-color: var(--np-surface);
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-lg);
+  box-shadow: var(--np-shadow-modal);
+  overflow: hidden;
+}
+
+.filter-list {
+  height: 100%;
+  width: 280px;
+  flex-shrink: 0;
+
+  .filter-group {
+    min-width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+
+    .filter {
+      padding: 10px;
+      border-radius: var(--np-radius-md);
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--np-surface-hover);
+      }
+
+      &.filter-active {
+        background-color: var(--np-primary-light);
+
+        .text-muted {
+          color: var(--np-primary) !important;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.filter-details {
+  border-left: 1px solid var(--np-border);
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+
+  .filter-detail {
+    height: 100%;
+  }
+}
+
+.btn.bg-transparent {
+  &:hover {
+    background-color: var(--np-border-light) !important;
+  }
+}
+
+.filter-detail-footer, .filter-list-footer {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.dynamic-list-results {
+  max-height: 215px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  //scrollbar-gutter: stable both-edges;
+}
+
+.dynamic-list-results .form-check {
+  padding-left: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.dynamic-list-results .form-check-input {
+  float: none;
+  margin-left: 0;
+  margin-top: 0;
+  transform-origin: left center;
+}
+
+.menu-column-dropdown {
+  min-width: 200px;
+  white-space: nowrap;
+}
+
+// Increase the size of the checkbox
+input[type="checkbox"] {
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(1.25);
+  /* IE */
+  -moz-transform: scale(1.25);
+  /* FF */
+  -webkit-transform: scale(1.25);
+  /* Safari and Chrome */
+  -o-transform: scale(1.25);
+  /* Opera */
+  transform: scale(1.25);
+}
+
+.form-check-input:checked, :focus {
+  box-shadow: none; // avoid the clipping effect in the dynamic filter inputs
+}

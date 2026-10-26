@@ -1,0 +1,173 @@
+:host {
+  display: block;
+}
+
+.pagination-content {
+  --np-pagination-control-height: 26px;
+
+  /* Let the pagination drop to its own line when the footer runs out of room,
+     instead of overflowing and being clipped by the card's `overflow: hidden`. */
+  flex-wrap: wrap;
+  row-gap: 8px;
+
+  gap: 10px;
+}
+
+.np-pagination-text {
+  color: var(--np-text-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.np-pagination-text strong {
+  color: var(--np-text);
+  font-weight: 600;
+}
+
+.np-pagination-divider {
+  align-self: stretch;
+  border-left: 1px solid var(--np-border);
+}
+
+.np-pagination-pages {
+  margin-left: 4px;
+}
+
+.np-pagination-pages-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--np-pagination-control-height);
+
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.np-pagination-input {
+  width: 44px;
+  height: var(--np-pagination-control-height);
+  padding: 0 4px;
+
+  background-color: #fff;
+  border: 1px solid var(--np-border);
+  border-radius: var(--np-radius-md);
+  outline: none;
+
+  color: var(--np-text);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+
+  transition: border-color 0.12s, box-shadow 0.12s;
+
+  &:focus {
+    border-color: var(--np-primary);
+    box-shadow: 0 0 0 3px rgba(30, 92, 230, 0.1);
+  }
+}
+
+.dropdown-item {
+  font-size: 12px;
+}
+
+/* ============================================================
+   Page controls (arrows + page numbers)
+
+   The <ul class="pagination">, the `.page-item` wrappers and the
+   `.page-link` anchors are all rendered by ng-bootstrap's own template,
+   so they carry ng-bootstrap's encapsulation attribute, not ours. Scoped
+   selectors here would never match, hence ::ng-deep.
+
+   Note: ng-bootstrap binds `[class]` on the <ul>, which replaces the whole
+   attribute, so the `np-pagination` class never lands on it. Targeting the
+   library's own `pagination` class is what actually sticks.
+   ============================================================ */
+
+:host ::ng-deep .pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+
+  /* Breathing room so the last arrow never sits flush against the card edge. */
+  margin: 0;
+  padding: 0 4px 0 0;
+}
+
+/* Every direct child keeps its natural size. The "Página [input] de N" box is
+   rendered as a bare <li> (ng-bootstrap does not wrap `ngbPaginationPages` in
+   `.page-item`), so targeting `.page-item` alone leaves it shrinkable and its
+   `nowrap` text overflows underneath the arrow buttons. */
+:host ::ng-deep .pagination > * {
+  flex-shrink: 0;
+}
+
+:host ::ng-deep .pagination .page-item {
+  display: flex;
+}
+
+:host ::ng-deep .pagination .page-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: var(--np-pagination-control-height);
+  height: var(--np-pagination-control-height);
+  padding: 0 6px;
+
+  border: 1px solid transparent;
+  border-radius: var(--np-radius-md);
+
+  background-color: transparent;
+
+  color: var(--np-text-secondary);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+
+  transition: background-color 0.12s, border-color 0.12s, color 0.12s;
+}
+
+:host ::ng-deep .pagination .page-link:hover:not(.disabled):not([aria-disabled='true']) {
+  background-color: var(--np-surface-hover);
+  border-color: var(--np-border);
+  color: var(--np-text);
+}
+
+:host ::ng-deep .pagination .page-item.active .page-link {
+  background-color: var(--np-primary);
+  border-color: var(--np-primary);
+
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Boundary / direction arrows when they are the active navigation target. */
+:host ::ng-deep .pagination .page-item.active .page-link:hover {
+  background-color: var(--np-primary-hover);
+  border-color: var(--np-primary-hover);
+  color: #fff;
+}
+
+:host ::ng-deep .pagination .page-item.disabled .page-link {
+  background-color: transparent;
+  border-color: transparent;
+
+  color: var(--np-text-light);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@media (max-width: 575.98px) {
+  :host ::ng-deep .pagination {
+    justify-content: center;
+  }
+
+  .np-pagination-pages {
+    margin-left: 0;
+  }
+}

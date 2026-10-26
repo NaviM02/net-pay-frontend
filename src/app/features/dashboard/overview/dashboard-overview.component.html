@@ -1,0 +1,242 @@
+<div class="np-page">
+
+  <app-list-page-header
+    title="Dashboard"
+    description="Resumen de la operación del mes"
+  />
+
+  <div class="np-dashboard-period">
+    <app-period-picker [year]="year" [month]="month" (periodChange)="onPeriodChange($event)" />
+
+    @if (monthLabel) {
+      <span class="np-dashboard-period-label">{{ monthLabel }}</span>
+    }
+  </div>
+
+  <div class="np-kpi-row np-dashboard-kpis">
+    <div class="np-card np-kpi">
+      <p class="np-kpi-label">Clientes activos</p>
+      <p class="np-kpi-value">{{ summary?.activeClients ?? 0 | number }}</p>
+      <p class="np-kpi-subtitle">con estado activo</p>
+    </div>
+
+    <div class="np-card np-kpi">
+      <p class="np-kpi-label">Cobro del mes</p>
+      <p class="np-kpi-value success">
+        {{ summary?.monthCollection ?? 0 | currency: 'Q' : 'symbol' : '1.0-0' }}
+      </p>
+      <p class="np-kpi-subtitle">pagos completados</p>
+    </div>
+
+    <div class="np-card np-kpi">
+      <p class="np-kpi-label">Clientes en mora</p>
+      <p class="np-kpi-value">{{ summary?.overdueClients ?? 0 | number }}</p>
+      <p class="np-kpi-subtitle">con deuda vencida</p>
+    </div>
+
+    <div class="np-card np-kpi">
+      <p class="np-kpi-label">Recibos emitidos</p>
+      <p class="np-kpi-value">{{ summary?.receiptsIssued ?? 0 | number }}</p>
+      <p class="np-kpi-subtitle">en el periodo</p>
+    </div>
+  </div>
+
+  <div class="np-dashboard-charts">
+    <div class="np-card np-dashboard-panel">
+      <div class="np-card-header">
+        <div>
+          <span class="np-card-title">Cobros por método</span>
+          <span class="np-card-subtitle">{{ monthLabel }}</span>
+        </div>
+      </div>
+
+      <div class="np-dashboard-chart">
+        <apx-chart
+          [chart]="methodChart"
+          [series]="methodChartSeries"
+          [labels]="methodChartLabels"
+          [colors]="methodChartColors"
+          [stroke]="methodChartStroke"
+          [legend]="methodChartLegend"
+          [dataLabels]="methodChartDataLabels"
+          [plotOptions]="methodChartPlotOptions"
+          [tooltip]="methodChartTooltip"
+          [noData]="methodChartNoData"
+        />
+      </div>
+
+      <table class="table np-table np-dashboard-chart-legend mb-0">
+        <tbody>
+          @for (collection of collectionsByMethod; track collection.methodName) {
+            <tr>
+              <td>
+                <span
+                  class="np-dashboard-dot"
+                  [style.background-color]="getPaymentMethodColor(collection.methodName)"
+                ></span>
+                {{ getPaymentMethodLabel(collection.methodName) }}
+              </td>
+              <td class="text-end np-table-mono">
+                {{ collection.total | currency: 'Q' : 'symbol' : '1.2-2' }}
+              </td>
+              <td class="text-end np-table-muted">{{ collection.count }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="np-card np-dashboard-panel">
+      <div class="np-card-header">
+        <div>
+          <span class="np-card-title">Cobros por método</span>
+          <span class="np-card-subtitle">por mes</span>
+        </div>
+      </div>
+
+      <div class="np-dashboard-chart">
+        <apx-chart
+          [chart]="monthlyChart"
+          [series]="monthlyChartSeries"
+          [colors]="monthlyChartColors"
+          [plotOptions]="monthlyChartPlotOptions"
+          [stroke]="monthlyChartStroke"
+          [dataLabels]="monthlyChartDataLabels"
+          [legend]="monthlyChartLegend"
+          [xaxis]="monthlyChartXaxis"
+          [yaxis]="monthlyChartYaxis"
+          [grid]="monthlyChartGrid"
+          [tooltip]="monthlyChartTooltip"
+          [noData]="monthlyChartNoData"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="np-card np-dashboard-panel">
+    <div class="np-card-header">
+      <div>
+        <span class="np-card-title">Clientes activos por plan</span>
+        <span class="np-card-subtitle">{{ clientsByPlan.length }} planes</span>
+      </div>
+    </div>
+
+    <div class="np-dashboard-chart">
+      <apx-chart
+        [chart]="planChart"
+        [series]="planChartSeries"
+        [colors]="planChartColors"
+        [plotOptions]="planChartPlotOptions"
+        [stroke]="planChartStroke"
+        [dataLabels]="planChartDataLabels"
+        [legend]="planChartLegend"
+        [xaxis]="planChartXaxis"
+        [grid]="planChartGrid"
+        [tooltip]="planChartTooltip"
+        [noData]="planChartNoData"
+      />
+    </div>
+  </div>
+
+  <div class="np-dashboard-tables">
+    <div class="np-detail-section">
+      <div class="np-detail-section-header">
+        <div>
+          <span class="np-detail-section-title">Pagos recientes</span>
+          <span class="np-detail-section-count">{{ recentPayments.length }} registros</span>
+        </div>
+      </div>
+
+      <div class="np-table-scroll np-dashboard-table">
+        <table class="table np-table mb-0">
+          <thead>
+          <tr>
+            <th>FECHA</th>
+            <th>CLIENTE</th>
+            <th>MONTO</th>
+            <th>MÉTODO</th>
+            <th>ESTADO</th>
+            <th class="np-table-actions-cell text-end">ACCIONES</th>
+          </tr>
+          </thead>
+
+          <tbody>
+            @for (payment of recentPayments; track payment.hashId) {
+              <tr>
+                <td class="np-table-mono">{{ payment.paidAt | date: 'dd/MM/yyyy' }}</td>
+                <td>
+                  <span class="np-table-primary">{{ payment.client?.businessName ?? '—' }}</span>
+                </td>
+                <td class="np-table-mono">
+                  {{ payment.amount | currency: 'Q' : 'symbol' : '1.2-2' }}
+                </td>
+                <td><app-typology-badge [typology]="payment.tpPaymentMethod" /></td>
+                <td><app-typology-badge [typology]="payment.tpPaymentStatus" /></td>
+                <td class="np-table-actions-cell text-end">
+                  <app-table-row-action [viewRoute]="['/payments', payment.hashId]" />
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6">
+                  <div class="np-empty-state">No hay pagos registrados.</div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="np-detail-section">
+      <div class="np-detail-section-header">
+        <div>
+          <span class="np-detail-section-title">Actividades recientes</span>
+          <span class="np-detail-section-count">{{ recentActivities.length }} registros</span>
+        </div>
+      </div>
+
+      <div class="np-table-scroll np-dashboard-table">
+        <table class="table np-table mb-0">
+          <thead>
+          <tr>
+            <th>FECHA</th>
+            <th>USUARIO</th>
+            <th>ACCIÓN</th>
+            <th>ENTIDAD</th>
+            <th>NIVEL</th>
+            <th class="np-table-actions-cell text-end">ACCIONES</th>
+          </tr>
+          </thead>
+
+          <tbody>
+            @for (log of recentActivities; track log.id) {
+              <tr>
+                <td class="np-table-mono">{{ log.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td class="np-table-muted">{{ log.userEmail || 'sistema' }}</td>
+                <td><span class="np-table-primary">{{ getAuditActionLabel(log.action) }}</span></td>
+                <td class="np-table-muted">{{ getAuditEntityLabel(log.entityType) }}</td>
+                <td>
+                  <span class="np-badge {{ getAuditLevelClass(log.levelName) }}">
+                    {{ getAuditLevelLabel(log.levelName) }}
+                  </span>
+                </td>
+                <td class="np-table-actions-cell text-end">
+                  <app-table-row-action
+                    [customActions]="activityActions(log)"
+                  />
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6">
+                  <div class="np-empty-state">No hay actividades registradas.</div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

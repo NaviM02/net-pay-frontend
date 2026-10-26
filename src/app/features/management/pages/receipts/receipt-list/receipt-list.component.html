@@ -1,0 +1,71 @@
+<div class="np-page">
+
+  <app-list-page-header
+    title="Recibos"
+    description="Recibos emitidos al completar un pago"
+  />
+
+  <div class="np-list-card">
+    <div class="np-table-actions-bar">
+      <app-filter-menu
+        [filterGroup]="listStateService.filter"
+        (onFilterChange)="listStateService.onFilterChange($event)"
+      />
+    </div>
+
+    <div class="np-table-scroll">
+      <table class="table np-table mb-0">
+        <thead>
+        <tr>
+          <th>N° RECIBO</th>
+          <th>CLIENTE</th>
+          <th>PERIODO</th>
+          <th>MONTO</th>
+          <th>EMITIDO</th>
+          <th>COBRADOR</th>
+          <th>IMPRESO</th>
+          <th class="np-table-actions-cell text-end">ACCIONES</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          @for (receipt of receipts; track receipt.hashId) {
+            <tr>
+              <td><span class="np-table-primary">{{ receipt.receiptNumber }}</span></td>
+              <td class="np-table-muted">{{ receipt.clientName }}</td>
+              <td class="np-table-muted">{{ receipt.periodLabel }}</td>
+              <td class="np-table-mono">
+                {{ receipt.amount | currency: 'Q' : 'symbol' : '1.2-2' }}
+              </td>
+              <td class="np-table-mono">{{ receipt.issuedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td class="np-table-muted">{{ receipt.collectorName || 'Sistema' }}</td>
+              <td class="np-table-mono">
+                @if (receipt.printedAt) {
+                  {{ receipt.printedAt | date: 'dd/MM/yyyy HH:mm' }}
+                } @else {
+                  <span class="np-badge np-badge-warning">Pendiente</span>
+                }
+              </td>
+              <td class="np-table-actions-cell text-end">
+                <app-table-row-action [customActions]="rowActions(receipt)" />
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8">
+                <div class="np-empty-state">
+                  No hay recibos que coincidan con el filtro.
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pagination
+      [pagination]="listStateService.pagination"
+      (onPaginationChange)="listStateService.onPaginationChange($event)"
+    />
+  </div>
+</div>

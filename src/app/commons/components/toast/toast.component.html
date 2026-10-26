@@ -1,0 +1,14 @@
+<ng-container>
+  @for (toast of toastService.toasts; track toast) {
+    <ngb-toast [delay]="toast.delay" [classList]="toast.className">
+      <ng-template ngbToastHeader>
+        <div class="me-auto d-flex align-items-center gap-1">
+          <app-material-icon>{{ toast.icon }}</app-material-icon>
+          <strong class="toast-title">{{ toast.header }}</strong>
+        </div>
+      </ng-template>
+      {{ toast.message }}
+    </ngb-toast>
+  }
+</ng-container>
+

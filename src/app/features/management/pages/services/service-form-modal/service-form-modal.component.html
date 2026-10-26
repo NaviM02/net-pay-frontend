@@ -1,0 +1,150 @@
+<div class="np-modal" (keydown.escape)="cancel()">
+  <div class="np-modal-backdrop" (click)="cancel()"></div>
+
+  <div
+    class="np-modal-content"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="isEdit ? 'service-modal-title-edit' : 'service-modal-title-new'">
+
+    <div class="np-modal-header">
+      <span class="np-modal-title" [id]="isEdit ? 'service-modal-title-edit' : 'service-modal-title-new'">
+        {{ isEdit ? 'Editar plan' : 'Nuevo plan' }}
+      </span>
+
+      <button type="button" class="btn-close" aria-label="Cerrar" (click)="cancel()">
+      </button>
+    </div>
+
+    @if (initialized) {
+      <div class="np-modal-body">
+        <div class="row">
+          <div class="col-12 mb-3">
+            <label for="serviceName" class="form-label required-field">Nombre del plan</label>
+            <input
+              id="serviceName"
+              type="text"
+              class="form-control"
+              [(ngModel)]="service.name"
+              placeholder="Ej. Empresarial 200M"
+              autocomplete="off"
+              [maxLength]="100"
+              #name="ngModel"
+              [ngClass]="{ 'is-invalid': name.touched && !(service.name && service.name.trim()) }"
+              [attr.aria-invalid]="name.touched && !(service.name && service.name.trim())"
+              aria-describedby="serviceNameError"
+            />
+            <div id="serviceNameError" class="invalid-feedback" role="alert">
+              Introduce el nombre del plan.
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-lg-6 mb-3">
+            <label for="serviceSpeed" class="form-label required-field">Velocidad</label>
+            <input
+              id="serviceSpeed"
+              type="text"
+              class="form-control"
+              [(ngModel)]="service.speed"
+              placeholder="Ej. 200 Mbps"
+              autocomplete="off"
+              [maxLength]="50"
+              #speed="ngModel"
+              [ngClass]="{ 'is-invalid': speed.touched && !(service.speed && service.speed.trim()) }"
+              [attr.aria-invalid]="speed.touched && !(service.speed && service.speed.trim())"
+              aria-describedby="serviceSpeedError"
+            />
+            <div id="serviceSpeedError" class="invalid-feedback" role="alert">
+              Introduce la velocidad del plan.
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6 mb-3">
+            <label for="servicePrice" class="form-label required-field">Precio mensual</label>
+            <input
+              id="servicePrice"
+              type="number"
+              required
+              class="form-control"
+              [(ngModel)]="service.monthlyPrice"
+              placeholder="Ej. 9800"
+              autocomplete="off"
+              min="0"
+              step="0.01"
+              #price="ngModel"
+              [ngClass]="{ 'is-invalid': price.touched && (service.monthlyPrice === null || service.monthlyPrice === undefined || service.monthlyPrice < 0) }"
+              [attr.aria-invalid]="price.touched && (service.monthlyPrice === null || service.monthlyPrice === undefined || service.monthlyPrice < 0)"
+              aria-describedby="servicePriceHint servicePriceError"
+            />
+            <div id="servicePriceHint" class="form-text">Monto en quetzales (Q).</div>
+            <div id="servicePriceError" class="invalid-feedback" role="alert">
+              Introduce un precio válido mayor o igual a 0.
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-lg-6 mb-3">
+            <label class="form-label required-field">Tipo</label>
+
+            <ng-select
+              placeholder="Seleccionar tipo"
+              [(ngModel)]="service.tpType"
+              [clearable]="false"
+              name="tpType"
+              #typeSelect="ngModel"
+              [ngClass]="{ 'is-invalid': typeSelect.touched && !service.tpType }"
+              [attr.aria-invalid]="typeSelect.touched && !service.tpType"
+              aria-describedby="serviceTypeError"
+              [compareWith]="compareTps"
+            >
+              @for (tp of tpsTypes; track tp.internalId) {
+                <ng-option [value]="tp">{{ tp.description }}</ng-option>
+              }
+            </ng-select>
+            <div id="serviceTypeError" class="invalid-feedback" role="alert">
+              Selecciona el tipo del plan.
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6 mb-3">
+            <label class="form-label required-field">Estado</label>
+
+            <ng-select
+              placeholder="Seleccionar estado"
+              [(ngModel)]="service.tpStatus"
+              [clearable]="false"
+              name="tpStatus"
+              #statusSelect="ngModel"
+              [ngClass]="{ 'is-invalid': statusSelect.touched && !service.tpStatus }"
+              [attr.aria-invalid]="statusSelect.touched && !service.tpStatus"
+              [compareWith]="compareTps"
+            >
+              <ng-option [value]="tpActive">{{ tpActive.description }}</ng-option>
+              <ng-option [value]="tpDiscontinued">{{ tpDiscontinued.description }}</ng-option>
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="np-modal-actions">
+          <button
+            type="button"
+            class="btn btn-light"
+            (click)="cancel()">
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="!isValid"
+            (click)="save()">
+            {{ isEdit ? 'Guardar cambios' : 'Crear plan' }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
