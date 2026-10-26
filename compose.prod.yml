@@ -1,0 +1,17 @@
+services:
+  frontend:
+    image: ${ECR_REPOSITORY}:${APP_IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      API_HOST: ${API_HOST}
+      ACME_EMAIL: ${ACME_EMAIL}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  caddy-data:
+  caddy-config:

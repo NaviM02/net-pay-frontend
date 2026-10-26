@@ -2,7 +2,8 @@ import packageInfo from '../../package.json';
 
 export const environment = {
   production: true,
-  baseUrl: 'http://localhost:8080/api',
-  backendDomain: 'localhost:8080',
+  // Public production endpoint; never put credentials in the browser bundle.
+  baseUrl: 'https://18.226.182.232/api',
+  backendDomain: '18.226.182.232',
   version: packageInfo.version,
 };

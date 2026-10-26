@@ -1,0 +1,29 @@
+{
+	email {$ACME_EMAIL}
+	default_sni {$API_HOST}
+}
+
+{$API_HOST} {
+	tls {
+		issuer acme {
+			profile shortlived
+		}
+	}
+	root * /srv
+	encode gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+	@entry path / /index.html
+	header @entry Cache-Control "no-cache, no-store, must-revalidate"
+	file_server
+}
+
+# Container readiness is private, independent of initial ACME issuance.
+http://127.0.0.1:8081 {
+	respond /health "UP" 200
+}
