@@ -11,7 +11,7 @@ import { TypologyEnum } from '../../../../../model/typology.enum';
 import { AdmTypologyService } from '../../../../../services/core/adm-typology.service';
 import { AppClientService } from '../../../../../services/core/app-client.service';
 import { ToastService } from '../../../../../services/other/toast.service';
-import { compareTps } from '../../../../../commons/utils/typology.utils';
+import { compareTps, getTypologyLabel } from '../../../../../commons/utils/typology.utils';
 import { DynamicSelectComponent } from '../../../../../commons/components/dynamic-select/dynamic-select.component';
 import { DetailPageHeaderComponent } from '../../../../../commons/components/detail-page-header/detail-page-header.component';
 import {
@@ -34,6 +34,7 @@ import {
 })
 export class ClientFormComponent implements OnInit {
   protected readonly compareTps = compareTps;
+  protected readonly getTypologyLabel = getTypologyLabel;
   protected readonly DynamicProviderKey = DynamicProviderKey;
 
   hashId: string | null = null;

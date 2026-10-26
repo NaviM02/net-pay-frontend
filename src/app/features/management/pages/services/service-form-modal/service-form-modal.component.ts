@@ -10,7 +10,7 @@ import { TypologyEnum } from '../../../../../model/typology.enum';
 import { AppServiceService } from '../../../../../services/core/app-service.service';
 import { AdmTypologyService } from '../../../../../services/core/adm-typology.service';
 import { ToastService } from '../../../../../services/other/toast.service';
-import { compareTps } from '../../../../../commons/utils/typology.utils';
+import { compareTps, getTypologyLabel } from '../../../../../commons/utils/typology.utils';
 
 @Component({
   selector: 'app-service-form-modal',
@@ -25,6 +25,7 @@ import { compareTps } from '../../../../../commons/utils/typology.utils';
 })
 export class ServiceFormModalComponent implements OnChanges {
   protected readonly compareTps = compareTps;
+  protected readonly getTypologyLabel = getTypologyLabel;
 
   @Input() hashId: string | null = null;
   @Output() close = new EventEmitter<boolean>();

@@ -101,7 +101,7 @@
               [compareWith]="compareTps"
             >
               @for (tp of tpsTypes; track tp.internalId) {
-                <ng-option [value]="tp">{{ tp.description }}</ng-option>
+                <ng-option [value]="tp">{{ getTypologyLabel(tp) }}</ng-option>
               }
             </ng-select>
             <div id="serviceTypeError" class="invalid-feedback" role="alert">
@@ -122,8 +122,8 @@
               [attr.aria-invalid]="statusSelect.touched && !service.tpStatus"
               [compareWith]="compareTps"
             >
-              <ng-option [value]="tpActive">{{ tpActive.description }}</ng-option>
-              <ng-option [value]="tpDiscontinued">{{ tpDiscontinued.description }}</ng-option>
+              <ng-option [value]="tpActive">{{ getTypologyLabel(tpActive) }}</ng-option>
+              <ng-option [value]="tpDiscontinued">{{ getTypologyLabel(tpDiscontinued) }}</ng-option>
             </ng-select>
           </div>
         </div>

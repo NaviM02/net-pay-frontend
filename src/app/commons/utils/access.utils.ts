@@ -50,7 +50,6 @@ export function permissionForUrl(url: string, action: string): string {
   if (resource === 'my-payments' && action === 'create') return 'my-payments:create';
   // Personal payment edits and receipt document operations have no my-* grants.
   if (resource === 'my-payments' && action === 'update') return 'payments:update';
-  if (resource === 'my-receipts' && action === 'export') return 'receipts:export';
   if (resource?.startsWith('my-')) return `${resource}:${action}`;
   return `${resource === 'audit' ? 'audit-logs' : resource}:${action}`;
 }

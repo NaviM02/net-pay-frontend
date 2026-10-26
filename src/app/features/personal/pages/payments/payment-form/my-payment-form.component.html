@@ -105,7 +105,7 @@
               appendTo="body"
             >
               @for (tp of tpsMethods; track tp.internalId) {
-                <ng-option [value]="tp">{{ tp.description }}</ng-option>
+                <ng-option [value]="tp">{{ getTypologyLabel(tp) }}</ng-option>
               }
             </ng-select>
           </div>

@@ -5,6 +5,29 @@ export function compareTps(tp1: AdmTypology | undefined, tp2: AdmTypology | unde
   return !!tp1 && !!tp2 && tp1.internalId === tp2.internalId;
 }
 
+const TYPOLOGY_LABELS: Partial<Record<TypologyEnum, string>> = {
+  [TypologyEnum.ACTIVE]: 'Activo',
+  [TypologyEnum.INACTIVE]: 'Inactivo',
+  [TypologyEnum.LOCKED]: 'Bloqueado',
+  [TypologyEnum.RESIDENTIAL]: 'Residencial',
+  [TypologyEnum.EMPRESARIAL]: 'Empresarial',
+  [TypologyEnum.CORPORATE]: 'Corporativo',
+  [TypologyEnum.CASH]: 'Efectivo',
+  [TypologyEnum.TRANSFER]: 'Transferencia',
+  [TypologyEnum.CAR]: 'Tarjeta',
+  [TypologyEnum.COMPLETED]: 'Completado',
+  [TypologyEnum.PENDING]: 'Pendiente',
+  [TypologyEnum.FAILED]: 'Fallido',
+  [TypologyEnum.INFO]: 'Información',
+  [TypologyEnum.WARNING]: 'Advertencia',
+  [TypologyEnum.ERROR]: 'Error'
+};
+
+export function getTypologyLabel(typology: AdmTypology | null | undefined): string {
+  if (!typology) return '';
+  return TYPOLOGY_LABELS[typology.internalId as TypologyEnum] ?? typology.description;
+}
+
 const TYPOLOGY_CLASS_BY_INTERNAL_ID: Partial<Record<TypologyEnum, string>> = {
   [TypologyEnum.ACTIVE]: 'text-white bg-success',
   [TypologyEnum.INACTIVE]: 'text-dark bg-gray',

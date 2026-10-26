@@ -19,7 +19,7 @@ export class RolePermissionTableComponent {
   @Output() selectedPermissionHashIdsChange = new EventEmitter<string[]>();
   groups: PermissionResourceGroup[] = [];
   private readonly resourceLabels: Record<string, string> = {
-    'audit-logs': 'Auditoría', 'my-dashboard': 'Mi panel', 'my-clients': 'Mis clientes',
+    'audit-logs': 'Auditoría', 'my-dashboard': 'Mi Dashboard', 'my-clients': 'Mis clientes',
     'my-payments': 'Mis pagos', 'my-receipts': 'Mis recibos', clients: 'Clientes',
     services: 'Servicios', payments: 'Pagos', receipts: 'Recibos', users: 'Usuarios',
     roles: 'Perfiles y permisos', reports: 'Reportes', dashboard: 'Dashboard',

@@ -12,7 +12,7 @@ import { AppUserService } from '../../../../../services/core/app-user.service';
 import { AdmTypologyService } from '../../../../../services/core/adm-typology.service';
 import { ToastService } from '../../../../../services/other/toast.service';
 import { TypologyEnum } from '../../../../../model/typology.enum';
-import { compareTps } from '../../../../../commons/utils/typology.utils';
+import { compareTps, getTypologyLabel } from '../../../../../commons/utils/typology.utils';
 import {
   InputForPasswordComponent
 } from '../../../../../commons/components/input-for-password/input-for-password.component';
@@ -39,6 +39,7 @@ import { AccessControlService } from '../../../../../services/core/access-contro
 export class UserFormModalComponent implements OnInit {
 
   protected readonly compareTps = compareTps;
+  protected readonly getTypologyLabel = getTypologyLabel;
 
   hashId: string | null = null;
 

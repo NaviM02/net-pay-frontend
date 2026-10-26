@@ -104,10 +104,10 @@
               appendTo="body"
             >
               @if (tpActive) {
-                <ng-option [value]="tpActive">{{ tpActive.description }}</ng-option>
+                <ng-option [value]="tpActive">{{ getTypologyLabel(tpActive) }}</ng-option>
               }
               @if (tpInactive) {
-                <ng-option [value]="tpInactive">{{ tpInactive.description }}</ng-option>
+                <ng-option [value]="tpInactive">{{ getTypologyLabel(tpInactive) }}</ng-option>
               }
             </ng-select>
           </div>

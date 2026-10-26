@@ -18,7 +18,7 @@ import { DetailPageHeaderComponent } from '../../../../../commons/components/det
 import { DynamicSelectComponent } from '../../../../../commons/components/dynamic-select/dynamic-select.component';
 import { getChargeStatusClass, getChargeStatusLabel } from '../../../../../commons/utils/charge-status.utils';
 import { isPaymentLocked } from '../../../../../commons/utils/payment.utils';
-import { compareTps } from '../../../../../commons/utils/typology.utils';
+import { compareTps, getTypologyLabel } from '../../../../../commons/utils/typology.utils';
 import { FileDropzoneComponent } from '../../../../../commons/components/file-dropzone/file-dropzone.component';
 import { FileUploadService } from '../../../../../services/core/file-upload.service';
 
@@ -38,6 +38,7 @@ import { FileUploadService } from '../../../../../services/core/file-upload.serv
 })
 export class PaymentFormComponent implements OnInit {
   protected readonly compareTps = compareTps;
+  protected readonly getTypologyLabel = getTypologyLabel;
   protected readonly DynamicProviderKey = DynamicProviderKey;
   protected readonly getChargeStatusLabel = getChargeStatusLabel;
   protected readonly getChargeStatusClass = getChargeStatusClass;

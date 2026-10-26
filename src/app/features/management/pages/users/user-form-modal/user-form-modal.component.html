@@ -50,8 +50,8 @@
               name="tpStatus"
               [compareWith]="compareTps"
             >
-              <ng-option [value]="tpActive">{{ tpActive.description }}</ng-option>
-              <ng-option [value]="tpInactive">{{ tpInactive.description }}</ng-option>
+              <ng-option [value]="tpActive">{{ getTypologyLabel(tpActive) }}</ng-option>
+              <ng-option [value]="tpInactive">{{ getTypologyLabel(tpInactive) }}</ng-option>
             </ng-select>
           </div>
         </div>

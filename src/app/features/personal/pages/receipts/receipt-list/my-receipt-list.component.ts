@@ -58,7 +58,7 @@ export class MyReceiptListComponent implements OnInit {
   }
 
   get canExport(): boolean {
-    return this.accessControlService.hasPermission('receipts:export');
+    return this.accessControlService.hasPermission('my-receipts:export');
   }
 
   ngOnInit(): void {
