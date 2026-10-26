@@ -56,6 +56,12 @@
           </div>
         </div>
 
+        <div class="form-check mb-3">
+          <input id="user-two-factor" class="form-check-input" type="checkbox" [(ngModel)]="user.twoFactorEnabled" />
+          <label class="form-check-label" for="user-two-factor">Exigir verificación en dos pasos por correo</label>
+          <div class="form-text">Se solicitará un código de seis dígitos en los próximos inicios de sesión.</div>
+        </div>
+
         @if (!isEdit) {
           <div class="row">
             <div class="col-12">

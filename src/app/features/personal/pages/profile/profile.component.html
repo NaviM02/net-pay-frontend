@@ -28,6 +28,13 @@
             <label for="profile-name">Nombre completo</label>
             <input id="profile-name" class="form-control" type="text" [(ngModel)]="user.fullName" maxlength="100" autocomplete="name" />
           </div>
+          <div class="profile-field profile-security-field">
+            <label class="d-flex align-items-center gap-2" for="profile-two-factor">
+              <input id="profile-two-factor" type="checkbox" [(ngModel)]="user.twoFactorEnabled" />
+              Activar verificación en dos pasos por correo
+            </label>
+            <small>En los próximos inicios de sesión se solicitará un código enviado a tu correo.</small>
+          </div>
           <div class="profile-field">
             <label for="profile-email">Correo electrónico</label>
             <input id="profile-email" #profileEmail="ngModel" class="form-control" [class.is-invalid]="profileEmail.touched && !profileEmail.valid" type="email" [(ngModel)]="user.email" maxlength="120" autocomplete="email" />

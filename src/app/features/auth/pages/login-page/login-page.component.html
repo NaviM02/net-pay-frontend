@@ -48,10 +48,11 @@
         </div>
       </div>
 
-      <div class="np-login-heading">
-        <h2>Iniciar sesión</h2>
-        <p>Ingresa con tu cuenta de acceso.</p>
-      </div>
+      @if (!challengeId) {
+        <div class="np-login-heading">
+          <h2>Iniciar sesión</h2>
+          <p>Ingresa con tu cuenta de acceso.</p>
+        </div>
 
       <div class="np-form-group">
         <label class="np-form-label required-field">Correo electrónico</label>
@@ -81,7 +82,20 @@
         </a>
       </div>
 
-      <button type="submit" class="btn btn-primary np-login-submit" [disabled]="!isValid" (click)="doLogin()">Iniciar Sesión</button>
+      <button type="submit" class="btn btn-primary np-login-submit" [disabled]="!isValid || submitting" (click)="doLogin()">Iniciar Sesión</button>
+      } @else {
+        <div class="np-login-heading">
+          <h2>Verificación en dos pasos</h2>
+          <p>Enviamos un código de seis dígitos a <strong>{{ authReq.email }}</strong>. Introdúcelo para continuar.</p>
+        </div>
+        <div class="np-form-group">
+          <label class="np-form-label required-field" for="two-factor-code">Código de verificación</label>
+          <input id="two-factor-code" class="form-control np-two-factor-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" [(ngModel)]="twoFactorCode" (input)="twoFactorCode = twoFactorCode.replaceAll(' ', '')" />
+          @if (expiresAt) { <small class="np-code-expiry">El código vence en unos minutos.</small> }
+        </div>
+        <button type="button" class="btn btn-primary np-login-submit" [disabled]="!isCodeValid || submitting" (click)="verifyTwoFactor()">Verificar código</button>
+        <button type="button" class="np-login-link np-back-login" [disabled]="submitting" (click)="cancelTwoFactor()">Volver al inicio de sesión</button>
+      }
     </div>
 
   </section>

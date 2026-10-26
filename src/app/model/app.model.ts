@@ -51,10 +51,19 @@ export class AppUser {
   public tpStatus!: AdmTypology;
   public entryDate!: string;
   public lastLoginAt!: string;
+  public twoFactorEnabled = false;
 }
 
 export class AppToken {
   public authc!: string;
+  public twoFactorRequired!: boolean;
+  public challengeId!: string | null;
+  public expiresAt!: string | null;
+}
+
+export class TwoFactorVerifyRequest {
+  public challengeId!: string;
+  public code!: string;
 }
 
 export class AppService {

@@ -48,7 +48,11 @@ export class ProfileComponent implements OnInit {
       this.toastService.warning('Introduce un nombre y un correo electrónico válido.');
       return;
     }
-    this.userService.updateMe({ fullName: this.user.fullName.trim(), email: this.user.email.trim() }).subscribe({
+    this.userService.updateMe({
+      fullName: this.user.fullName.trim(),
+      email: this.user.email.trim(),
+      twoFactorEnabled: this.user.twoFactorEnabled,
+    }).subscribe({
       next: user => {
         this.user = user;
         this.currentUserService.updateCurrentUser(user);

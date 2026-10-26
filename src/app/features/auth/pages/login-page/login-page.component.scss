@@ -193,6 +193,26 @@
   display: none;
 }
 
+.np-two-factor-code {
+  height: 48px;
+  text-align: center;
+  letter-spacing: 0.45em;
+  font-size: 21px;
+}
+
+.np-code-expiry {
+  display: block;
+  margin-top: 8px;
+  color: #94A3B8;
+}
+
+.np-back-login {
+  display: block;
+  margin: 18px auto 0;
+  background: none;
+  border: 0;
+}
+
 @media (max-width: 991.98px) {
   .np-login-info { padding: 40px; }
   .np-login-form-section { width: 380px; padding: 32px; }

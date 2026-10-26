@@ -75,12 +75,13 @@ export class AppUserService {
       email: user.email,
       password: user.password || null,
       status: user.tpStatus.internalId,
+      twoFactorEnabled: user.twoFactorEnabled,
     };
     if (user.hashId) return this.http.put<AppUser>(`${this.baseUrl}/${user.hashId}`, request);
     return this.http.post<AppUser>(this.baseUrl, request);
   }
 
-  updateMe(user: Pick<AppUser, 'fullName' | 'email'>) {
+  updateMe(user: Pick<AppUser, 'fullName' | 'email' | 'twoFactorEnabled'>) {
     return this.http.put<AppUser>(`${this.baseUrl}/me`, user);
   }
 
