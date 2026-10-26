@@ -88,7 +88,7 @@ jobs:
           parameters=$(jq -n --arg release "$GITHUB_SHA" '{Release:[$release]}')
           command_id=$(aws ssm send-command --document-name "$SSM_DEPLOY_DOCUMENT" \
             --instance-ids "$EC2_INSTANCE_ID" --parameters "$parameters" --query Command.CommandId --output text)
-          for attempt in {1..90}; do
+          for _attempt in {1..90}; do
             status=$(aws ssm get-command-invocation --command-id "$command_id" \
               --instance-id "$EC2_INSTANCE_ID" --query Status --output text 2>/dev/null || true)
             case "$status" in
