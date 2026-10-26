@@ -1,0 +1,15 @@
+node_modules
+dist
+.angular
+.git
+.github
+.idea
+.vscode
+terraform
+docs
+.agents
+*.md
+.env
+.env.*
+*.pem
+*.key
